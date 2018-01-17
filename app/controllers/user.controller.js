@@ -28,7 +28,7 @@ module.exports.userRegisterPost = (req, res, next) => {
 };
 
 module.exports.userLoginGet = (req, res) => {
-    return res.render('user/login.ejs');
+    return res.render('user/login');
 };
 
 module.exports.userLoginPost = (req, res, next) => {
@@ -61,7 +61,7 @@ module.exports.userProfileGet = (req, res, next) => {
                     err.status = 400;
                     return next(err);
                 } else {
-                    return res.render('user/profile.ejs', { username: user.username, email: user.email });
+                    return res.render('user/profile', { username: user.username, email: user.email });
                 }
             }
         });

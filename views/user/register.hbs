@@ -1,0 +1,30 @@
+<div class="col-12">
+    <h1>{{ __ 'register.header' }}</h1>
+</div>
+<div class="col-12">
+    <form id="registerForm" action="/user/register" method="post">
+        <div class="form-group">
+            <label for="usernameInput">{{ __ 'register.username' }}</label>
+            <input type="text" id="usernameInput" name="username" class="form-control" placeholder="{{ __ 'register.username.placeholder' }}">
+        </div>
+        <div class="form-group">
+            <label for="emailInput">{{ __ 'register.email' }}</label>
+            <input type="email" id="emailInput" name="email" class="form-control" placeholder="{{ __ 'register.email.placeholder' }}">
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="passwordInput">{{ __ 'register.password' }}</label>
+                <input type="password" id="passwordInput" name="password" class="form-control" placeholder="{{ __ 'register.password.placeholder' }}">
+                <small id="passwordHelpBlock" class="form-text text-muted">{{ __ 'register.password.help' }}</small>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="passwordConfirmationInput">{{ __ 'register.passwordConfirmation' }}</label>
+                <input type="password" id="passwordConfirmationInput" name="passwordConfirmation" class="form-control" placeholder="{{ __ 'register.passwordConfirmation.placeholder' }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">{{ __ 'register.submit' }}</button>
+        </div>
+    </form>
+</div>

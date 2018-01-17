@@ -18,5 +18,12 @@
   "login.submit": "Login",
   "user.profile.header": "User profile",
   "user.profile.username": "Username",
-  "user.profile.email": "Email"
+  "user.profile.email": "Email",
+  "navbar.home": "Home",
+  "navbar.profile": "Profile",
+  "navbar.logout": "Logout",
+  "navbar.login": "Login",
+  "navbar.register": "Register",
+  "navbar.username.placeholder": "Username",
+  "navbar.password.placeholder": "Password"
 }

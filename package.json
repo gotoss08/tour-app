@@ -11,8 +11,8 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "connect-mongo": "^2.0.1",
-    "ejs": "^2.5.7",
     "express": "^4.16.2",
+    "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
     "marked": "^0.3.12",
     "method-override": "^2.3.10",

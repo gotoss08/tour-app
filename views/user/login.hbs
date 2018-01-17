@@ -1,0 +1,22 @@
+{{#if session.userId }}
+    <p>You are currently logged in</p>
+{{else}}
+    <div class="col-12">
+        <h1>{{ __ 'login.header' }}</h1>
+    </div>
+    <div class="col-12">
+        <form id="loginForm" action="/user/login" method="post">
+            <div class="form-group">
+                <label for="usernameInput">{{ __ 'login.username' }}</label>
+                <input type="text" id="usernameInput" name="username" class="form-control" placeholder="{{ __ 'login.username.placeholder' }}">
+            </div>
+            <div class="form-group">
+                <label for="passwordInput">{{ __ 'login.password' }}</label>
+                <input type="password" id="passwordInput" name="password" class="form-control" placeholder="{{ __ 'login.password.placeholder' }}">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">{{ __ 'login.submit' }}</button>
+            </div>
+        </form>
+    </div>
+{{/if}}

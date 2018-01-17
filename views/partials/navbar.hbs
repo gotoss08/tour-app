@@ -7,28 +7,28 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/notes">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/notes">{{ __ 'navbar.home' }}<span class="sr-only">(current)</span></a>
             </li>
         </ul>
 
-        <% if(session.userId) { %>
+        {{#if session.userId }}
             <form class="form-inline" action="/user/profile/" method="get">
-                <button type="submit" class="btn btn-outline-success mb-1 mr-1 btn-sm">Profile</button>
+                <button type="submit" class="btn btn-outline-success mb-1 mr-1 btn-sm">{{ __ 'navbar.profile' }}</button>
             </form>
             <form class="form-inline" action="/user/logout/" method="post">
-                <button type="submit" class="btn btn-outline-success mb-1 btn-sm">Logout</button>
+                <button type="submit" class="btn btn-outline-success mb-1 btn-sm">{{ __ 'navbar.logout' }}</button>
             </form>
-        <% } else { %>
+        {{ else }}
             <form class="form-inline" action="/user/login" method="post">
                 <div class="input-group mb-1 mr-sm-1">
-                    <input type="text" class="form-control form-control-sm" placeholder="Username" name="username">
-                    <input type="password" class="form-control form-control-sm" placeholder="Password" name="password">
+                    <input type="text" class="form-control form-control-sm" placeholder="{{ __ 'navbar.username.placeholder' }}" name="username">
+                    <input type="password" class="form-control form-control-sm" placeholder="{{ __ 'navbar.password.placeholder' }}" name="password">
                 </div>
-                <button type="submit" class="btn btn-outline-success mb-1 mr-1 btn-sm">Login</button>
+                <button type="submit" class="btn btn-outline-success mb-1 mr-1 btn-sm">{{ __ 'navbar.login' }}</button>
             </form>
             <form class="form-inline" action="/user/register" method="get">
-                <button type="submit" class="btn btn-outline-success mb-1 btn-sm">Register</button>
+                <button type="submit" class="btn btn-outline-success mb-1 btn-sm">{{ __ 'navbar.register' }}</button>
             </form>
-        <% } %>
+        {{/if}}
     </div>
 </nav>

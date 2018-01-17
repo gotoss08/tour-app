@@ -1,0 +1,30 @@
+{
+  "name": "tour-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --exec node ./server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "connect-mongo": "^2.0.1",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "marked": "^0.3.12",
+    "method-override": "^2.3.10",
+    "mongoose": "^4.13.9",
+    "simplemde": "^1.11.2",
+    "striptags": "^3.1.1",
+    "y18n": "^4.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-env": "^2.4.1",
+    "bcrypt": "^1.0.3",
+    "nodemon": "^1.14.11"
+  }
+}

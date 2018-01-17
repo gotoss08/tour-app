@@ -1,0 +1,22 @@
+{
+  "register.header": "Registration",
+  "register.username": "Username",
+  "register.username.placeholder": "Enter username",
+  "register.email": "Email",
+  "register.email.placeholder": "Enter email",
+  "register.password": "Password",
+  "register.password.placeholder": "Enter password",
+  "register.password.help": "Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.",
+  "register.passwordConfirmation": "Password confirmation",
+  "register.passwordConfirmation.placeholder": "Enter password confirmation",
+  "register.submit": "Register",
+  "login.header": "Login",
+  "login.username": "Username",
+  "login.username.placeholder": "Username",
+  "login.password": "Password",
+  "login.password.placeholder": "Password",
+  "login.submit": "Login",
+  "user.profile.header": "User profile",
+  "user.profile.username": "Username",
+  "user.profile.email": "Email"
+}

@@ -1,2 +1,14 @@
 {
+  "navbar.brand": "Своим ходом",
+  "navbar.brand.posts": "блоги о путешествиях",
+  "navbar.home": "Домой",
+  "navbar.profile": "Мой профиль",
+  "navbar.logout": "Выйти",
+  "user.profile.header": "user.profile.header",
+  "user.profile.username": "user.profile.username",
+  "user.profile.email": "user.profile.email",
+  "navbar.username.placeholder": "navbar.username.placeholder",
+  "navbar.password.placeholder": "navbar.password.placeholder",
+  "navbar.login": "navbar.login",
+  "navbar.register": "navbar.register"
 }

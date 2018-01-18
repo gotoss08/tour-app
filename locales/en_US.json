@@ -25,5 +25,8 @@
   "navbar.login": "Login",
   "navbar.register": "Register",
   "navbar.username.placeholder": "Username",
-  "navbar.password.placeholder": "Password"
+  "navbar.password.placeholder": "Password",
+  "sidebar.brand": "Travel Blog",
+  "navbar.brand": "navbar.brand",
+  "navbar.brand.posts": "navbar.brand.posts"
 }

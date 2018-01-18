@@ -1,0 +1,66 @@
+#background-wrapper {
+    background: url('https://www.votpusk.ru/country/ctimages/new/es02.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+
+    -webkit-filter: blur(5px); /* Safari 6.0 - 9.0 */
+    filter: blur(5px);
+
+    position: fixed;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: #0D47A1;
+}
+
+#selectCountryForm {
+     position: absolute;
+     top: 25%;
+     left: 25%;
+     margin: 0px;
+     padding: 0px;
+     width: 50%;
+ }
+
+#selectCountryForm input {
+    margin: 0px;
+    padding: 10px;
+    font-size: 26pt;
+
+    border: 0;
+
+    color: white;
+    background-color: rgba(1,1,1,0.5);
+}
+
+#selectCountryForm input::placeholder {
+    color: rgba(255,255,255,0.65);
+}
+
+#selectCountryForm ul {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+}
+
+#selectCountryForm ul li {
+    padding: 10px;
+    background-color: rgba(1,1,1,0.5);
+}
+
+#selectCountryForm ul li.active {
+    background-color: rgba(1,1,1,0.75);
+}
+
+#selectCountryForm ul li a {
+    color: white;
+    padding-left: 7px;
+    font-size: 20pt;
+}

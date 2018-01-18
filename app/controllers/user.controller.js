@@ -32,6 +32,7 @@ module.exports.userLoginGet = (req, res) => {
 };
 
 module.exports.userLoginPost = (req, res, next) => {
+    console.log(req.body);
     if (req.body.username && req.body.password) {
         User.authenticate(req.body.username, req.body.password, (error, user) => {
             if (error || !user) {

@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const hbs = require('express-handlebars');
-const __y18n = require('y18n')({ locale: 'en_US' }).__;
+const __y18n = require('y18n')({ locale: 'ru_RU' }).__;
 
 const app = express();
 
@@ -29,14 +29,14 @@ app.set('view engine', 'hbs');
 mongoose
     .connect(dbConfig.url, {
         useMongoClient: true
-    })
-    .connection.on('error', () => {
-        console.log('Could not connect to database. Exiting now...');
-        process.exit();
-    })
-    .connection.once('open', () => {
-        console.log('Successfully connected to database');
     });
+mongoose.connection.on('error', () => {
+    console.log('Could not connect to database. Exiting now...');
+    process.exit();
+});
+mongoose.connection.once('open', () => {
+    console.log('Successfully connected to database');
+});
 
 
 // use session for user authentication tracking
@@ -73,8 +73,9 @@ app.locals.toMarkdownHelper = (text) => {
 };
 
 // include routes
-const userRoutes = require('./app/routes/user.routes');
-app.use('/user', userRoutes);
+app.use('/user', require('./app/routes/user.routes'));
+
+app.use('/post', require('./app/routes/post.routes'));
 
 // home page
 app.get('/', (req, res) => {

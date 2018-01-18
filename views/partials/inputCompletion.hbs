@@ -1,10 +1,3 @@
-<div id="background-wrapper"></div>
-
-<form id="selectCountryForm" action="/post/all" method="post" enctype="application/x-www-form-urlencoded">
-    <input id="selectCountryInput" type="text" class="form-control" autofocus autocomplete="off" placeholder="Введите название страны..." name="country">
-    <button hidden type="submit"></button>
-</form>
-
 <script src="/js/bootstrap-typeahead.js"></script>
 <script>
 
@@ -38,11 +31,10 @@
         items: 5,
         item: "<li><a href=\"#\"></a></li>",
         onSelect: function (item) {
-            console.log(selectCountryInput.val());
-            selectCountryInput.value = 'asdas';
+
         },
         onSelectionUpdate: function (item) {
-            if (!executed && !backgroundWrapper.css('background').includes(pictures[item.value])) {
+            if (typeof backgroundWrapper !== typeof undefined && !executed && !backgroundWrapper.css('background').includes(pictures[item.value])) {
                 executed = true;
 
                 changeBg(pictures[item.value], function() {
@@ -51,7 +43,7 @@
             }
         },
         onSelectionUpOrDown: function (item) {
-            changeBg(pictures[item.value]);
+            if (typeof backgroundWrapper !== typeof undefined) changeBg(pictures[item.value]);
         }
     });
 </script>

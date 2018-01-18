@@ -11,4 +11,9 @@ router.get('/profile', userController.userProfileGet);
 
 router.post('/logout', userController.userLogoutPost);
 
+
+router.get('/posts', (req, res) => {
+    res.render('posts');
+});
+
 module.exports = router;

@@ -106,7 +106,17 @@ html, body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-weight: bold;
-    font-size: 24pt;
+    font-size: 18pt;
+}
+
+.topic-title {
+    color: slategrey;
+    font-family: 'PT Serif', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: bold;
+    font-size:  18pt;
+    margin-bottom: 24px;
 }
 
 .post-body {
@@ -126,7 +136,7 @@ html, body {
 }
 
 #new-post-title-input::placeholder, #new-post-body-input::placeholder {
-    color: slategrey;
+    color: #868e96;
 }
 
 #new-post-footer {

@@ -18,7 +18,18 @@ module.exports.newPostGet = (req, res, next) => {
             if (err) {
                 return next(err);
             }
-            return res.render('post/new', { countries: countries });
+
+            // TODO remove crap from choose editor route controller
+            if (req.params.editorType && (req.params.editorType === 'simple' || req.params.editorType === 'advanced')) {
+                console.log(req.params.editorType);
+
+                if (req.params.editorType === 'simple')
+                    return res.render('post/simple', { countries: countries });
+                if (req.params.editorType === 'advanced')
+                    return res.render('post/advanced', { countries: countries });
+            }
+
+            return res.render('post/simple', { countries: countries });
         });
     } else {
         res.cookie('return-page', '/post/new');

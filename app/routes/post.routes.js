@@ -4,6 +4,7 @@ const postController = require('../controllers/post.controller');
 router.get('/all', postController.allGet);
 router.post('/all', postController.allPost);
 
+router.get('/new/:editorType', postController.newPostGet);
 router.get('/new', postController.newPostGet);
 router.post('/new', postController.newPostPost);
 

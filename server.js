@@ -8,6 +8,20 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo')(session);
 const __y18n = require('y18n')({ locale: 'ru_RU' }).__;
+const dateformat = require('dateformat');
+dateformat.i18n = {
+    dayNames: [
+        'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',
+        __y18n('Sunday'), __y18n('Monday'), __y18n('Tuesday'), __y18n('Wednesday'), __y18n('Thursday'), __y18n('Friday'), __y18n('Saturday')
+    ],
+    monthNames: [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+        __y18n('January'), __y18n('February'), __y18n('March'), __y18n('April'), __y18n('May'), __y18n('June'), __y18n('July'), __y18n('August'), __y18n('September'), __y18n('October'), __y18n('November'), __y18n('December')
+    ],
+    timeNames: [
+        'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
+    ]
+};
 
 const app = express();
 
@@ -54,6 +68,9 @@ app.use(express.static('public'));
 // set hbs as default template engine
 app.locals.__ = __y18n;
 app.set('view engine', 'ejs');
+
+// date format
+app.locals.dateformat = dateformat;
 
 // markdown
 const marked = require('marked');

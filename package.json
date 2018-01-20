@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./server.js",
+    "start": "node server.js",
     "dev": "nodemon --exec node ./server.js"
   },
   "author": "",
@@ -12,12 +12,15 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "connect-mongo": "^2.0.1",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.7",
     "express": "^4.16.2",
-    "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
+    "express-validator": "^4.3.0",
     "marked": "^0.3.12",
     "method-override": "^2.3.10",
     "mongoose": "^4.13.9",
+    "request": "^2.83.0",
     "simplemde": "^1.11.2",
     "striptags": "^3.1.1",
     "y18n": "^4.0.0"

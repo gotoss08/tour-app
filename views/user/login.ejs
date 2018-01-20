@@ -1,0 +1,22 @@
+<% include ../partials/full_header.ejs %>
+
+<div class="container mt-5">
+    <div class="col-12">
+        <form action="/user/login" method="post" class="d-inline">
+            <div class="form-group">
+                <label for="usernameInput"><%= __('login.username') %></label>
+                <input type="text" class="form-control" id="usernameInput" required placeholder="<%= __('login.username.placeholder') %>" name="username">
+            </div>
+            <div class="form-group">
+                <label for="passwordInput"><%= __('login.password') %></label>
+                <input type="password" class="form-control" id="passwordInput" required placeholder="<%= __('login.password.placeholder') %>" name="password">
+            </div>
+            <button type="submit" class="btn btn-primary"><%= __('login.submit') %></button>
+        </form>
+        <form action="/user/register" class="d-inline">
+            <button type="submit" class="btn btn-secondary"><%= __('register.submit') %></button>
+        </form>
+    </div>
+</div>
+
+<% include ../partials/footer.ejs %>

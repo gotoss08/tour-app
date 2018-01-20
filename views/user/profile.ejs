@@ -1,0 +1,35 @@
+<% include ../partials/full_header.ejs %>
+
+<div class="container mt-5">
+    <div class="col-12 mt-4 profile">
+        <% if(String(session.userId) === String(user._id) ) { %>
+        <h1 class="mb-4"><%= __('user.profile.my.header') %></h1>
+        <p><span class="text-muted"><%= __('user.profile.username') %>:</span> <%= user.username %></p>
+        <p><span class="text-muted"><%= __('user.profile.email') %>:</span> <%= user.email %></p>
+        <p><span class="text-muted">User id:</span> <%= user._id %></p>
+        <p><span class="text-muted">Session id:</span> <%= session.userId %></p>
+        <% } else { %>
+        <h1><%= __('user.profile.of') %><%= user.username %></h1>
+        <% } %>
+        <hr>
+        <h2><%= __('user.profile.posts.header') %></h2>
+        <div class="list-group mt-3">
+            <% for(var i = 0; i < posts.length; i++) { %>
+            <% var post = posts[i]; %>
+                <% if(String(session.userId) === String(user._id) ) { %>
+                    <div class="list-group-item">
+
+                        <a href="/post/<%= post._id %>"><%= post.title %></a>
+                        <a role="button" href="/post/remove/<%= post._id %>" class="btn btn-outline-danger float-right"><%= __('user.profile.posts.remove') %></a>
+                        <a role="button" href="/post/edit/<%= post._id %>" class="btn btn-outline-primary float-right mr-1"><%= __('user.profile.posts.edit') %></a>
+                    </div>
+                <% } else { %>
+                    <a href="/post/<%= post._id %>" class="list-group-item"><%= post.title %></a>
+                <% } %>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+
+<% include ../partials/footer.ejs %>

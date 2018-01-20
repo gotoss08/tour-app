@@ -1,0 +1,76 @@
+<% include partials/full_header.ejs %>
+
+<div id="background-wrapper"></div>
+
+<form id="select-country-form" action="/post/all" method="post">
+    <input id="select-country-input" type="text" class="form-control" autocomplete="off" placeholder="<%= __('index.country.input.placeholder') %>" name="country">
+</form>
+
+<script src="/js/bootstrap-typeahead.js"></script>
+<script>
+    let countriesDict = [];
+    let pictures = {};
+
+    <% for(var i = 0; i < countries.length; i++) { %>
+        <% var country = countries[i]; %>
+        countriesDict.push({ value: '<%= country.name %>', text: '<%= __(country.name); %>'});
+        pictures['<%= country.name %>'] = '<%= country.img %>';
+    <% } %>
+
+    let selectCountryForm = $('#select-country-form');
+    let selectCountryInput = $('#select-country-input');
+    let backgroundWrapper = $('#background-wrapper');
+    let executed = false;
+
+    selectCountryInput.focus(function() {
+        selectCountryForm.animate({
+            top: "35%"
+        }, 500, "easeInOutBack");
+    });
+
+    selectCountryInput.focusout(function() {
+        selectCountryForm.animate({
+            top: "50%"
+        }, 500, "easeInOutBack");
+    });
+
+    function changeBg (picName, finishCallback) {
+        return backgroundWrapper.fadeTo('fast', 0, function() {
+            backgroundWrapper.css('background', `url('${picName}') no-repeat center center fixed`);
+            backgroundWrapper.css('backgroundSize', 'cover');
+        }).delay(100).fadeTo('fast', 1, finishCallback);
+    }
+
+    selectCountryInput.typeahead({
+        source: countriesDict,
+        items: 5,
+        valueField: 'value',
+        displayField: 'text',
+        item: "<li><a href=\"#\"></a></li>",
+        onSelect: function (item) {
+            if (item.value === undefined) return;
+
+            selectCountryInput.val(item.value);
+            selectCountryForm.submit();
+        },
+        onSelectionUpdate: function (item) {
+            if (item.value === undefined) return;
+
+            if (!executed && !backgroundWrapper.css('background').includes(pictures[item.value])) {
+                executed = true;
+
+                changeBg(pictures[item.value], function() {
+                    executed = false;
+                });
+            }
+        },
+        onSelectionUpOrDown: function (item) {
+            if (item.value === undefined) return;
+
+            changeBg(pictures[item.value]);
+        }
+    });
+
+</script>
+
+<% include partials/footer.ejs %>

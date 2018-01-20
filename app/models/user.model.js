@@ -33,7 +33,7 @@ UserSchema.statics.authenticate = (username, password, callback) => {
                 return callback(err);
             }
             bcrypt.compare(password, user.password, (err, result) => {
-                if(result == true) {
+                if(result === true) {
                     return callback(null, user);
                 } else {
                     return callback();

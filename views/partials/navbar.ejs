@@ -1,0 +1,45 @@
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/"><%= __('navbar.brand') %></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="mr-auto">
+
+            </div>
+            <!--<ul class="navbar-nav mr-auto">-->
+                <!--<li class="nav-item active">-->
+                    <!--<a class="nav-link text-muted" href="/post/all"><small class="text-muted"><%= __('navbar.posts') %></small>-->
+                    <!--</a>-->
+                <!--</li>-->
+            <!--</ul>-->
+
+            <% if(session.userId) { %>
+            <div class="d-block mt-2">
+                <form class="form d-inline" action="/user/" method="get">
+                    <button type="submit" class="btn btn-sm btn-dark mb-1 navbar-font-size text-muted"><%= __('navbar.profile') %></button>
+                </form>
+                <form class="form d-inline" action="/user/logout/" method="post">
+                    <button type="submit" class="btn btn-sm btn-dark mb-1 navbar-font-size text-muted"><%= __('navbar.logout') %></button>
+                </form>
+            </div>
+            <% } else { %>
+            <div class="d-block mt-2">
+                <form class="form d-inline" action="/user/login" method="post">
+                    <div class="input-group mb-1 mr-sm-1">
+                        <input type="text" class="form-control form-control-sm bg-transparent" placeholder="<%= __('navbar.username.placeholder') %>" name="username">
+                        <input type="password" class="form-control form-control-sm bg-transparent" placeholder="<%= __('navbar.password.placeholder') %>" name="password">
+                    </div>
+                    <button type="submit" class="btn btn-dark mt-1 btn-sm float-md-right"><%= __('navbar.login') %></button>
+                </form>
+                <form class="form d-inline float-md-right mr-md-1" action="/user/register" method="get">
+                    <button type="submit" class="btn btn-dark mt-1 btn-sm"><%= __('navbar.register') %></button>
+                </form>
+            </div>
+
+            <% } %>
+        </div>
+    </div>
+</nav>

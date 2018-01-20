@@ -1,12 +1,14 @@
+const request = require('request');
+const querystring = require('querystring');
+
 const User = require('../models/user.model');
+const Post = require('../models/post.model');
 
 module.exports.userRegisterGet = (req, res) => {
     return res.render('user/register');
 };
 
 module.exports.userRegisterPost = (req, res, next) => {
-    console.log(req.session);
-
     if(req.body.username && req.body.email && req.body.password) {
         const userData = {
             username: req.body.username,
@@ -16,10 +18,18 @@ module.exports.userRegisterPost = (req, res, next) => {
 
         User.create(userData, (err, user) => {
             if (err) {
-                console.log(err);
                 return next(err);
             } else {
-                return res.redirect('/user/login');
+                request('http://localhost:3000/user/login?' + querystring.stringify({ username: req.body.username, password: req.body.password }), (error, response, body) => {
+                    if(error) {
+                        return next(error);
+                    }
+
+                    console.log(response);
+                });
+
+
+                // return res.redirect('/user/login');
             }
         });
     } else {
@@ -28,11 +38,14 @@ module.exports.userRegisterPost = (req, res, next) => {
 };
 
 module.exports.userLoginGet = (req, res) => {
-    return res.render('user/login');
+    if(req.session.userId) {
+        return res.redirect('/user/');
+    } else {
+        return res.render('user/login');
+    }
 };
 
 module.exports.userLoginPost = (req, res, next) => {
-    console.log(req.body);
     if (req.body.username && req.body.password) {
         User.authenticate(req.body.username, req.body.password, (error, user) => {
             if (error || !user) {
@@ -41,7 +54,11 @@ module.exports.userLoginPost = (req, res, next) => {
                 return next(error);
             } else {
                 req.session.userId = user._id;
-                return res.redirect('/user/profile');
+                if (req.cookies['return-page']) {
+                    res.clearCookie('return-page');
+                    return res.redirect(req.cookies['return-page']);
+                }
+                return res.redirect('back');
             }
         });
     } else {
@@ -51,9 +68,8 @@ module.exports.userLoginPost = (req, res, next) => {
     }
 };
 
-module.exports.userProfileGet = (req, res, next) => {
-    User.findById(req.session.userId)
-        .exec((error, user) => {
+module.exports.userGet = (req, res, next) => {
+    User.findById(req.session.userId, (error, user) => {
             if (error) {
                 return next(error);
             } else {
@@ -62,7 +78,36 @@ module.exports.userProfileGet = (req, res, next) => {
                     err.status = 400;
                     return next(err);
                 } else {
-                    return res.render('user/profile', { username: user.username, email: user.email });
+                    Post.find({ userId: user._id }, (err, posts) => {
+                        if (err) {
+                            return next(err);
+                        }
+
+                        return res.render('user/profile', { user: user, posts: posts });
+                    });
+                }
+            }
+        });
+};
+
+module.exports.userNameGet = (req, res, next) => {
+    console.log('trying to get user profile');
+    User.findOne({ username: req.params.userName }, (error, user) => {
+            if (error) {
+                return next(error);
+            } else {
+                if (user == null) {
+
+                } else {
+                    Post.find({ userId: user._id }, (err, posts) => {
+                        if (err) {
+                            return next(err);
+                        }
+
+                        console.log(user);
+
+                        return res.render('user/profile', { user: user, posts: posts });
+                    });
                 }
             }
         });
@@ -74,7 +119,7 @@ module.exports.userLogoutPost = (req, res, next) => {
             if (err) {
                 return next(err);
             } else {
-                return res.redirect('/notes/');
+                return res.redirect('/');
             }
         });
     }

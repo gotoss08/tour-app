@@ -14,4 +14,6 @@ router.get('/remove/:postId', postController.removePostGet);
 
 router.get('/:postId', postController.viewPostGet);
 
+router.post('/upload', postController.uploadPost);
+
 module.exports = router;

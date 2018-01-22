@@ -66,6 +66,7 @@
   "October": "Октября",
   "November": "Ноября",
   "December": "Декабря",
-  "post.topic.select": "post.topic.select",
-  "post.topic.add": "post.topic.add"
+  "fill.all.fields.error": "Пожалуста, заполните все поля обозначенные * (здвездочкой)",
+  "post.new.topic.input.placeholder": "Название нового топика",
+  "post.new.topic.button": "Добавить"
 }

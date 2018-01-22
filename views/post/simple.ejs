@@ -1,35 +1,104 @@
-<% include ../partials/full_header.ejs %>
+<% include ../partials/header_start.ejs %>
+<link rel="stylesheet" href="/css/trix.css">
+<script src="/js/trix.js"></script>
+<% include ../partials/header_end.ejs %>
 
-<!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">-->
-<!--<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>-->
 <div class="container mt-5">
-    <div class="row">
-        <div id="new-post-footer" class="position-sticky position-fixed fixed-bottom">
-            <div class="col-12 col-md-6 form-group d-flex flex-row float-right">
-                <select id="countrySelect" class="custom-select mr-1" name="country" required >
-                    <option value="" disabled selected hidden>* <%= __('post.country.select') %></option>
-                    <% for(var i = 0; i < countries.length; i++) { %>
-                    <% var country = countries[i]; %>
-                    <option value="<%= country._id %>"><%= __(country.name) %></option>
-                    <% } %>
-                </select>
-                <button type="button" class="btn btn-outline-success"><%= __('post.submit') %></button>
+    <form id="newPostForm" action="/post/new" method="post">
+        <div class="row">
+            <div class="col-12">
+                    <div class="form-group">
+                        <input type="text" class="form-control post-title border-0" name="title" placeholder="* <%= __('post.title.placeholder') %>" required autofocus autocomplete="off" value="<%= locals.post ? post.title : ''%>">
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <input id="body-input" type="hidden" name="body">
+                        <trix-editor class="form-control post-body border-0" input="body-input" placeholder="* <%= __('post.body.placeholder') %>" required autocomplete="off"></trix-editor>
+ 
+                    </div>
+                    <hr>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <form id="newPostForm" action="/post/new" method="post">
-                <div class="form-group">
-                    <input type="text" id="new-post-title-input" class="form-control post-title" name="title" placeholder="* <%= __('post.title.placeholder') %>" required autofocus autocomplete="off" value="<%= locals.post ? post.title : ''%>">
+        <div class="row mb-2">
+            <div id="new-post-footer" class="position-sticky position-fixed fixed-bottom">
+                <div class="col-12 col-md-6 form-group d-flex flex-row float-right">
+                    <select id="countrySelect" class="custom-select mr-1" name="country" required >
+                        <option value="" disabled selected hidden>* <%= __('post.country.select') %></option>
+                        <% for(var i = 0; i < countries.length; i++) { %>
+                        <% var country = countries[i]; %>
+                        <option value="<%= country._id %>"><%= __(country.name) %></option>
+                        <% } %>
+                    </select>
+                    <button type="button" class="btn btn-outline-success" onclick="$('#newPostForm').submit()"><%= __('post.submit') %></button>
                 </div>
-                <div class="form-group">
-
-                    <textarea id="new-post-body-input" class="form-control post-body" name="body" rows="10" placeholder="* <%= __('post.body.placeholder') %>" required autocomplete="off"></textarea>
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
+
+
+<script>
+    (() => {
+        let createStorageKey, host, uploadAttachment;
+
+        Trix.config.attachments.preview.caption = {
+            name: false,
+            size: false
+        };
+
+        document.addEventListener('trix-attachment-add', (event) => {
+            let attachment = event.attachment;
+            if (attachment.file) {
+                return uploadAttachment(attachment);
+            }
+        });
+
+        host = 'http://localhost:3000/post/upload/';
+
+        uploadAttachment = (attachment) => {
+            let file, form, key, xhr;
+
+            file = attachment.file;
+            key = createStorageKey(file);
+            form = new FormData;
+            form.append('dir', key.dir);
+            form.append('filename', key.filename);
+            form.append('Content-Type', file.type);
+            form.append('file', file);
+            xhr = new XMLHttpRequest;
+            xhr.open("POST", host, true);
+            xhr.upload.onprogress = (event) => {
+                var progress = event.loaded / event.total * 100;
+                return attachment.setUploadProgress(progress);
+            };
+            xhr.onload = () => {
+                let href, url;
+                if (xhr.status === 204) {
+                    url = href = 'http://localhost:3000/' + key.dir + key.filename;
+
+                    console.log('href: ' + href);
+                    console.log('url: ' + url);
+
+                    return attachment.setAttributes({
+                        url: url,
+                        href: href
+                    });
+                }
+            };
+            return xhr.send(form);
+        };
+
+        createStorageKey = (file) => {
+            let date, day, time;
+            date = new Date();
+            day = date.toISOString().slice(0, 10);
+            time = date.getTime();
+
+            return { dir: 'imgs/post/' + day + '/', filename: time + '-' + file.name }
+        };
+    }).call(this);
+
+
+</script>
 
 <% include ../partials/footer.ejs %>

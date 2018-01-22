@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const MongoStore = require('connect-mongo')(session);
+const fileUpload = require('express-fileupload');
 const __y18n = require('y18n')({ locale: 'ru_RU' }).__;
 const dateformat = require('dateformat');
 dateformat.i18n = {
@@ -33,6 +34,7 @@ mongoose.connection.on('error', () => {
 });
 mongoose.connection.once('open', () => { console.log('Successfully connected to database'); });
 
+app.use(fileUpload());
 
 // use session for user authentication tracking
 app.use(session({

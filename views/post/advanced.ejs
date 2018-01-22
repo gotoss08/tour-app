@@ -1,35 +1,188 @@
-<% include ../partials/full_header.ejs %>
+<% include ../partials/header_start.ejs %>
+<link rel="stylesheet" href="/css/trix.css">
+<script src="public/js/trix.js"></script>
+<% include ../partials/header_end.ejs %>
 
-<!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">-->
-<!--<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>-->
-<div class="container mt-5">
+<div class="container mt-5 mb-1">
     <div class="row">
-        <div id="new-post-footer" class="position-sticky position-fixed fixed-bottom">
-            <div class="col-12 col-md-6 form-group d-flex flex-row float-right">
-                <select id="countrySelect" class="custom-select mr-1" name="country" required >
-                    <option value="" disabled selected hidden>* <%= __('post.country.select') %></option>
-                    <% for(var i = 0; i < countries.length; i++) { %>
-                    <% var country = countries[i]; %>
-                    <option value="<%= country._id %>"><%= __(country.name) %></option>
-                    <% } %>
-                </select>
-                <button type="button" class="btn btn-outline-success"><%= __('post.submit') %></button>
+        <div class="col-12">
+            <div id="errors" class="alert alert-warning" role="alert"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div id="accordion">
+
+
+                <div class="card">
+                    <div class="card-header" id="heading${accordionChildCount+1}">
+                        <h5 class="mb-0">
+                            <a class="btn btn-outline" data-toggle="collapse" data-target="#collapse${accordionChildCount+1}">
+                                Свой топик
+                            </a>
+                        </h5>
+                    </div>
+
+                    <div id="collapse${accordionChildCount+1}" class="collapse ${accordionChildCount === 0 ? 'show' : ''}" data-parent="#accordion">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <textarea class="form-control post-body border-0" rows="10" placeholder="Текст" autocomplete="off" ></textarea>
+                            </div>
+                            <hr>
+                            <h3>Загрузка фотографии</h3>
+                            <form action="">
+                                <div class="input-group mt-3 mb-3">
+
+                                    <div class="custom-file mb-2">
+                                        <input type="file" class="custom-file-input" id="inputGroupFile01">
+                                        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                                    </div>
+                                    <div class="input-group">
+                                        <input class="form-control" type="text" placeholder="Введите описание картинки">
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <button class="btn btn-primary">Загрузить</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <hr>
+                            <div class="d-flex flex-row">
+                                <div class="card" style="width: 18rem;">
+                                    <img class="card-img-top" src="http://www.medingermany.tv/wp-content/uploads/2016/10/germany-3.jpg" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">pic.jpg</h5>
+                                        <a href="#" class="btn btn-primary">Удалить</a>
+                                    </div>
+                                </div>
+                                <div class="card" style="width: 18rem;">
+                                    <img class="card-img-top" src="https://www.usnews.com/dims4/USNEWS/057f64d/2147483647/resize/1200x%3E/quality/85/?url=http%3A%2F%2Fmedia.beam.usnews.com%2Fa2%2Fdc%2F9273d7af4f0c88b0c3bd933f6911%2Fbc16-germany-gallery-07.JPG" alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">pic2.jpg</h5>
+                                        <a href="#" class="btn btn-primary">Удалить</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12">
-            <form id="newPostForm" action="/post/new" method="post">
-                <div class="form-group">
-                    <input type="text" id="new-post-title-input" class="form-control post-title" name="title" placeholder="* <%= __('post.title.placeholder') %>" required autofocus autocomplete="off" value="<%= locals.post ? post.title : ''%>">
-                </div>
-                <div class="form-group">
-
-                    <textarea id="new-post-body-input" class="form-control post-body" name="body" rows="10" placeholder="* <%= __('post.body.placeholder') %>" required autocomplete="off"></textarea>
-                </div>
-            </form>
+    <hr>
+    <div class="row mt-2">
+        <div class="col-12 form-group">
+            <button id="postSubmit" type="button" class="btn btn-success float-right" style="font-size: 16pt;"><%= __('post.submit') %></button>
         </div>
     </div>
+
+    <form action="/country/test" method="post" id="postForm">
+
+    </form>
 </div>
+
+<script type="text/javascript">
+
+    $('#errors').hide();
+
+    const accordion = $('#accordion');
+
+    addAccordionCard = (title, body) => {
+        const accordionChildCount = accordion.children().length;
+
+        accordion.append(`
+            <div class="card">
+                <div class="card-header" id="heading${accordionChildCount+1}">
+                    <h5 class="mb-0">
+                        <a class="btn btn-outline" data-toggle="collapse" data-target="#collapse${accordionChildCount+1}">
+                            ${title}
+                        </a>
+                    </h5>
+                </div>
+
+                <div id="collapse${accordionChildCount+1}" class="collapse ${accordionChildCount === 0 ? 'show' : ''}" data-parent="#accordion">
+                    <div class="card-body">
+                        ${body}
+                    </div>
+                </div>
+            </div>
+        `);
+    };
+
+    getDefaultTextarea = (name, placeholder='', required=false, id='') => {
+        return `
+            <div class="form-group">
+                <textarea ${id ? 'id="' + id + '"' : ''} class="form-control post-body border-0" name="${name}" rows="10" placeholder="${placeholder}" autocomplete="off" ${required ? 'required' : ''}></textarea>
+            </div>
+        `;
+    };
+
+    let introTitle = '* Вступление: выбор страны, заголовка';
+    addAccordionCard(introTitle, `
+        <div class="form-group">
+            <select id="country-select" class="custom-select mr-1" name="country" required autofocus>
+                <option value="" disabled selected hidden>* <%= __('post.country.select') %></option>
+                <% for(var i = 0; i < countries.length; i++) { %>
+                <% var country = countries[i]; %>
+                <option value="<%= country._id %>"><%= __(country.name) %></option>
+                <% } %>
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control post-title border-0" name="title" placeholder="* <%= __('post.title.placeholder') %>" required autocomplete="off">
+        </div>
+        ${getDefaultTextarea('intro', introTitle, true, 'intro-input')}
+    `);
+
+    const topics = [
+        { name: 'whereToStay', title: 'Где остановиться' },
+        { name: 'food', title: 'О еде' },
+        { name: 'transport', title: 'Транспорт, проезд' },
+        { name: 'nature', title: 'Природа, климат' },
+        { name: 'whereToGo', title: 'Что посмотреть, куда сходить' },
+        { name: 'travelNotes', title: 'Путевые заметки' },
+        { name: 'shoping', title: 'Валюта, шопинг' },
+        { name: 'medicine', title: 'Медицина' },
+        { name: 'localTraditions', title: 'Местные порядки, традиции' }
+    ];
+
+    topics.forEach(topic => addAccordionCard(topic.title, getDefaultTextarea(topic.name, topic.title + '...')));
+
+    addAccordionCard('Новый топик', `
+
+        <p>Добавить свой уникальный топик.</p>
+        <div class="input-group">
+            <input type="text" class="form-control" id="newTopicInput" placeholder="<%= __('post.new.topic.input.placeholder') %>">
+            <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" id="newTopicButton"><%= __('post.new.topic.button') %></button>
+            </div>
+        </div>
+
+    `);
+
+    $('#newTopicButton').click(() => {
+        const newTopicInput = $('#newTopicInput');
+        if(newTopicInput.val()) {
+            console.log(`new topic '${newTopicInput.val()}' added.`);
+            newTopicInput.val('');
+        }
+    });
+
+    $('#postSubmit').click(() => {
+        if($('#countrySelect').val() && $('#intro-input')) {
+            accordion.children().each((i, e) => {
+                console.log(e);
+                $('#postForm').append($(e));
+            });
+
+            $('#postForm').submit();
+        } else {
+            let errors = $('#errors');
+            errors.html('<%= __('fill.all.fields.error') %>');
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            errors.show();
+        }
+    });
+</script>
 
 <% include ../partials/footer.ejs %>

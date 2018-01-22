@@ -43,7 +43,6 @@ html, body {
 
     position: fixed;
     left: 0;
-    top: 0;
     margin: 0;
     padding: 0;
 
@@ -109,16 +108,6 @@ html, body {
     font-size: 18pt;
 }
 
-.topic-title {
-    color: slategrey;
-    font-family: 'PT Serif', Georgia, serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-weight: bold;
-    font-size:  18pt;
-    margin-bottom: 24px;
-}
-
 .post-body {
     color: #333;
     font-family: 'PT Serif', Georgia, serif;
@@ -127,15 +116,7 @@ html, body {
     font-size: 16pt;
 }
 
-#new-post-title-input {
-    border: 0;
-}
-
-#new-post-body-input {
-    border: 0;
-}
-
-#new-post-title-input::placeholder, #new-post-body-input::placeholder {
+.post-title::placeholder, .post-body::placeholder {
     color: #868e96;
 }
 
@@ -167,7 +148,6 @@ html, body {
     font-size: 16pt;
 }
 
-
 .CodeMirror-code {
     border: 0;
     color: #333;
@@ -175,4 +155,16 @@ html, body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: 16pt;
+}
+
+.card-header h5 a {
+    text-decoration: none;
+    color: black;
+    font-family: 'PT Serif', Georgia, serif;
+    font-size: 20pt;
+}
+
+.card {
+    padding: 0;
+    margin: 0;
 }

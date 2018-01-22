@@ -38,7 +38,10 @@ module.exports.newPostGet = (req, res, next) => {
 };
 
 module.exports.newPostPost = (req, res, next) => {
+    console.log('post post');
     if (req.body.title && req.body.body && req.body.country) {
+        console.log('post post');
+
         const postData = {
             title: req.body.title,
             body: req.body.body,
@@ -103,21 +106,33 @@ module.exports.viewPostGet = (req, res, next) => {
             });
         });
     });
+};
 
-    // Post.findById(postId, (err, post) => {
-    //     if(err) {
-    //         return next(err);
-    //     }
-    //
-    //     if(post) {
-    //         Country.findById(post.countryId, (err, country) => {
-    //             if (err) {
-    //                 return next(err);
-    //             }
-    //
-    //         });
-    //     } else {
-    //         console.log('cannot find post with that id.');
-    //     }
-    // });
+const fs = require('fs');
+const mkdirp = require('mkdirp');
+
+module.exports.uploadPost = (req, res, next) => {
+    if (!req.files) {
+        return console.log('no files were uploaded');
+    }
+
+    console.log('key: ' + req.body.key);
+
+    let file = req.files.file;
+    let filepath = __dirname + '/../../public/' + req.body.dir + req.body.filename;
+
+    mkdirp(req.body.dir, function (err) {
+        if (err) console.error(err)
+        else console.log('pow!')
+    });
+
+    console.log('storing file at: ' + filepath);
+
+    file.mv(filepath, (err) => {
+        if (err) return next(err);
+
+        console.log('uploaded');
+    });
+
+    res.sendStatus(204);
 };

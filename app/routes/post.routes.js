@@ -16,4 +16,6 @@ router.get('/:postId', postController.viewPostGet);
 
 router.post('/upload', postController.uploadPost);
 
+router.post('/key', postController.keyPost);
+
 module.exports = router;

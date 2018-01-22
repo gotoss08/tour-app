@@ -109,30 +109,44 @@ module.exports.viewPostGet = (req, res, next) => {
 };
 
 const fs = require('fs');
+const path = require('path');
 const mkdirp = require('mkdirp');
 
 module.exports.uploadPost = (req, res, next) => {
     if (!req.files) {
-        return console.log('no files were uploaded');
+        next(new Error('No files were uploaded'));
+        return res.status(400).send('No files were uploaded');
+    }
+    if (!req.body.dir || !req.body.filename) {
+        next(new Error('Missing directory path or filename'));
+        return res.status(400).send('Missing directory path or filename');
     }
 
-    console.log('key: ' + req.body.key);
-
     let file = req.files.file;
-    let filepath = __dirname + '/../../public/' + req.body.dir + req.body.filename;
+    let filepath = path.join(__dirname, '..', '..', 'public', req.body.dir, req.body.filename);
+    let dirname = path.dirname(filepath);
 
-    mkdirp(req.body.dir, function (err) {
-        if (err) console.error(err)
-        else console.log('pow!')
-    });
-
-    console.log('storing file at: ' + filepath);
-
-    file.mv(filepath, (err) => {
+    mkdirp(dirname, function (err) {
         if (err) return next(err);
 
-        console.log('uploaded');
-    });
+        console.log('Storing user file at: ' + filepath);
 
-    res.sendStatus(204);
+        file.mv(filepath, (err) => {
+            if (err) return next(err);
+            return res.sendStatus(204);
+        });
+    });
+};
+
+module.exports.keyPost = (req, res, next) => {
+    if (req.body.filename) {
+        let date, day, time;
+        date = new Date();
+        day = date.toISOString().slice(0, 10);
+        time = date.getTime();
+
+        return res.status(200).send({ dir: 'post_files/' + day + '/', filename: time + '-' + req.body.filename });
+    } else {
+        return res.status(400).send({ error: 'invalid filename' });
+    }
 };

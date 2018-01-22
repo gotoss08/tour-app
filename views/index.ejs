@@ -1,12 +1,15 @@
-<% include partials/full_header.ejs %>
+<% include partials/header_start.ejs %>
+<% include partials/header_end_nonav.ejs %>
 
 <div id="background-wrapper"></div>
+
+<% include partials/navbar.ejs %>
 
 <form id="select-country-form" action="/post/all" method="post">
     <input id="select-country-input" type="text" class="form-control" autocomplete="off" placeholder="<%= __('index.country.input.placeholder') %>" name="country">
 </form>
 
-<script src="/js/bootstrap-typeahead.js"></script>
+<script src="/js/bootstrap-typeahead.min.js"></script>
 <script>
     let countriesDict = [];
     let pictures = {};

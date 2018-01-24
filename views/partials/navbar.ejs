@@ -19,6 +19,9 @@
             <% if(session.userId) { %>
             <div class="d-block mt-2">
                 <form class="form d-inline" action="/user/" method="get">
+                    <button type="submit" class="btn btn-sm btn-dark mb-1 navbar-font-size text-muted"><%= __('navbar.new.post') %></button>
+                </form>
+                <form class="form d-inline" action="/user/" method="get">
                     <button type="submit" class="btn btn-sm btn-dark mb-1 navbar-font-size text-muted"><%= __('navbar.profile') %></button>
                 </form>
                 <form class="form d-inline" action="/user/logout/" method="post">

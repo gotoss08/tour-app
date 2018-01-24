@@ -1,0 +1,15 @@
+<% include ../partials/full_header.ejs %>
+
+<div class="container mb-5 mt-5">
+    <div class="col-12">
+        <form action="/post/topic/create" method="post">
+            <div class="form-group">
+                <label for="topic-body">Topic name</label>
+                <input type="text" class="form-control" id="topic-body" name="name">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+<% include ../partials/footer.ejs %>

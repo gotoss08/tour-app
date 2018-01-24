@@ -2,7 +2,7 @@ const request = require('request');
 const querystring = require('querystring');
 
 const User = require('../models/user.model');
-const Post = require('../models/post.model');
+const Post = require('../models/post.model').Post;
 
 module.exports.userRegisterGet = (req, res) => {
     return res.render('user/register');

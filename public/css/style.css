@@ -133,35 +133,11 @@ html, body {
     font-size: 16pt;
 }
 
-.text-super-muted {
-    color: slategrey;
-}
-
-.CodeMirror {
-    border: 0;
-}
-
-.CodeMirror .CodeMirror-lines .CodeMirror-placeholder {
-    opacity: 1;
-    color: slategrey;
-    font-family: 'PT Serif', Georgia, serif;
-    font-size: 16pt;
-}
-
-.CodeMirror-code {
-    border: 0;
-    color: #333;
-    font-family: 'PT Serif', Georgia, serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: 16pt;
-}
-
 .card-header h5 a {
     text-decoration: none;
     color: black;
     font-family: 'PT Serif', Georgia, serif;
-    font-size: 20pt;
+    font-size: 16pt;
 }
 
 .card {

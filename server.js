@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const expressValidator = require('express-validator');
 const methodOverride = require('method-override');
 const dbConfig = require('./config/database.config');
 const mongoose = require('mongoose');
@@ -34,6 +33,7 @@ mongoose.connection.on('error', () => {
 });
 mongoose.connection.once('open', () => { console.log('Successfully connected to database'); });
 
+// middleware for easy file uploading
 app.use(fileUpload());
 
 // use session for user authentication tracking
@@ -58,9 +58,6 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// use express validator
-app.use(expressValidator());
-
 // use non standard request methods
 app.use(methodOverride('_method'));
 
@@ -74,13 +71,6 @@ app.set('view engine', 'ejs');
 // date format
 app.locals.dateformat = dateformat;
 
-// markdown
-const marked = require('marked');
-const striptags = require('striptags');
-app.locals.toMarkdownHelper = (text) => {
-    return(marked(striptags(text)));
-};
-
 // include routes
 app.use('/user', require('./app/routes/user.routes'));
 app.use('/post', require('./app/routes/post.routes'));
@@ -93,6 +83,10 @@ app.get('/', (req, res) => {
     });
 });
 
+app.post('/back', (req, res) => {
+    return res.redirect('back');
+});
+
 // print all errors to console
 app.use((err, req, res, next) => {
     console.error(err.stack);
@@ -102,7 +96,7 @@ app.use((err, req, res, next) => {
 // handle errors
 app.use((err, req, res, next) => {
     res.status(err.status || 500);
-    res.send(err.message);
+    res.render('error.ejs', { error: err.message });
 });
 
 // start server

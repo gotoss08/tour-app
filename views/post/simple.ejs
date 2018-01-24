@@ -4,102 +4,41 @@
 <% include ../partials/header_end.ejs %>
 
 <div class="container mt-5">
-    <form id="newPostForm" action="/post/new" method="post">
+    <div id="errors"></div>
+    <form id="post-form" action="/post/new/simple" method="post">
         <div class="row">
             <div class="col-12">
-                    <div class="form-group">
-                        <input type="text" class="form-control post-title border-0" name="title" placeholder="* <%= __('post.title.placeholder') %>" required autofocus autocomplete="off" value="<%= locals.post ? post.title : ''%>">
-                    </div>
-                    <hr>
-                    <div class="form-group">
-                        <input id="body-input" type="hidden" name="body">
-                        <trix-editor class="form-control post-body border-0" input="body-input" placeholder="* <%= __('post.body.placeholder') %>" required autocomplete="off"></trix-editor>
- 
-                    </div>
-                    <hr>
+                <div class="form-group mb-3">
+                    <input id="post-title-main" type="text" class="form-control post-title border-0" name="title" placeholder="* <%= __('post.title.placeholder') %>" required autofocus autocomplete="off" value="<%= locals.post ? post.title : ''%>">
+                    <small id="post-title-main-error" class="form-text text-danger"></small>
+                </div>
+                <hr>
+                <div class="form-group">
+                    <input id="body-input" type="hidden" name="body">
+                    <trix-editor id="post-body-main" class="form-control post-body border-0" input="body-input" placeholder="* <%= __('post.body.placeholder') %>"></trix-editor>
+                    <small id="post-body-main-error" class="form-text text-danger"></small>
+                    <p><small class="text-muted"><%= __('post.body.editor.help') %></small></p>
+                </div>
             </div>
         </div>
+        <hr>
         <div class="row mb-2">
             <div id="new-post-footer" class="position-sticky position-fixed fixed-bottom">
                 <div class="col-12 col-md-6 form-group d-flex flex-row float-right">
-                    <select id="countrySelect" class="custom-select mr-1" name="country" required >
+                    <select id="country-select" class="custom-select mr-1" name="country" required >
                         <option value="" disabled selected hidden>* <%= __('post.country.select') %></option>
                         <% for(var i = 0; i < countries.length; i++) { %>
-                        <% var country = countries[i]; %>
-                        <option value="<%= country._id %>"><%= __(country.name) %></option>
+                            <% var country = countries[i]; %>
+                            <option value="<%= country._id %>"><%= __(country.name) %></option>
                         <% } %>
                     </select>
-                    <button type="button" class="btn btn-outline-success" onclick="$('#newPostForm').submit()"><%= __('post.submit') %></button>
+                    <button type="button" class="btn btn-outline-success" onclick="$('#post-form').submit()"><%= __('post.submit') %></button>
                 </div>
             </div>
         </div>
     </form>
 </div>
 
-
-<script>
-    (() => {
-        let createStorageKey, uploadHost, uploadAttachment;
-
-        Trix.config.attachments.preview.caption = {
-            name: false,
-            size: false
-        };
-
-        document.addEventListener('trix-attachment-add', (event) => {
-            let attachment = event.attachment;
-            if (attachment.file) {
-                return uploadAttachment(attachment);
-            }
-        });
-
-        host = 'http://localhost:3000/post/';
-        uploadHost = host + 'upload/';
-        requestKeyHost = host + 'key/';
-
-        uploadAttachment = (attachment) => {
-            let file, form, key, xhr;
-
-            file = attachment.file;
-
-            return $.post(requestKeyHost, { filename: file.name })
-                .done((key) => {
-                    console.log(`key: dir=${key.dir} filename=${key.filename}`);
-
-                    form = new FormData();
-                    form.append('dir', key.dir);
-                    form.append('filename', key.filename);
-                    form.append('Content-Type', file.type);
-                    form.append('file', file);
-                    xhr = new XMLHttpRequest;
-                    xhr.open("POST", uploadHost, true);
-                    xhr.upload.onprogress = (event) => {
-                        var progress = event.loaded / event.total * 100;
-                        return attachment.setUploadProgress(progress);
-                    };
-                    xhr.onload = () => {
-                        let href, url;
-                        if (xhr.status === 204) {
-                            url = href = 'http://localhost:3000/' + key.dir + key.filename;
-
-                            console.log('href: ' + href);
-                            console.log('url: ' + url);
-
-                            return attachment.setAttributes({
-                                url: url,
-                                href: href
-                            });
-                        }
-                    };
-
-                    return xhr.send(form);
-                })
-                .fail((xhr, status, error) => {
-                    return console.error(`${status}: ${error}: ${xhr.responseJSON.error}`);
-                });
-        };
-    }).call(this);
-
-</script>
+<% include ../partials/editor_preparation.ejs %>
 
 <% include ../partials/footer.ejs %>

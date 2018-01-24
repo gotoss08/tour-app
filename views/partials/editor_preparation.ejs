@@ -1,0 +1,122 @@
+<script>
+(() => {
+    addError = (text) => {
+        $('#errors').append(`
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                ${text}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        `);
+    };
+
+    $('#post-form').submit(() => {
+        let error = false;
+
+        if ($(".alert").children().length)
+            $(".alert").alert('close');
+
+        if (!$('#post-title-main').val()) {
+            error = true;
+            $('#post-title-main-error').html('<%= __('post.title.error') %>');
+        } else {
+            $('#post-title-main-error').html('');
+        }
+
+        if (!$('#post-body-main').val()) {
+            error = true;
+            $('#post-body-main-error').html('<%= __('post.body.error') %>');
+        } else {
+            $('#post-body-main-error').html('');
+        }
+
+        if (!$('#country-select').val()) {
+            error = true;
+            $('#post-country-select-error').html('<%= __('post.country.select.error') %>');
+        } else {
+            $('#post-country-select-error').html('');
+        }
+
+        // if advanced editor then scroll to main card and open it
+        if (error) {
+            // determine if its advanced redactor
+            let mainCard = $('#main-card');
+            if (mainCard.length) {
+                if($('.show').length) {
+                    $('.show').removeClass('show');
+                }
+
+                mainCard.children('.collapse').first().addClass('show');
+
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 500);
+            }
+        }
+        return !error;
+    });
+
+
+    // send file to server handlers
+    let createStorageKey, uploadHost, uploadAttachment;
+
+    Trix.config.attachments.preview.caption = {
+        name: false,
+        size: false
+    };
+
+    document.addEventListener('trix-attachment-add', (event) => {
+        let attachment = event.attachment;
+        if (attachment.file) {
+            return uploadAttachment(attachment);
+        }
+    });
+
+    host = 'http://localhost:3000/post/';
+    uploadHost = host + 'upload/';
+    requestKeyHost = host + 'key/';
+
+    uploadAttachment = (attachment) => {
+        let file, form, key, xhr;
+
+        file = attachment.file;
+
+        return $.post(requestKeyHost, { filename: file.name })
+            .done((key) => {
+                console.log(`key: dir=${key.dir} filename=${key.filename}`);
+
+                form = new FormData();
+                form.append('dir', key.dir);
+                form.append('filename', key.filename);
+                form.append('Content-Type', file.type);
+                form.append('file', file);
+                xhr = new XMLHttpRequest;
+                xhr.open("POST", uploadHost, true);
+                xhr.upload.onprogress = (event) => {
+                    var progress = event.loaded / event.total * 100;
+                    return attachment.setUploadProgress(progress);
+                };
+                xhr.onload = () => {
+                    let href, url;
+                    if (xhr.status === 204) {
+                        url = href = 'http://localhost:3000/' + key.dir + key.filename;
+
+                        console.log('href: ' + href);
+                        console.log('url: ' + url);
+
+                        return attachment.setAttributes({
+                            url: url,
+                            href: href
+                        });
+                    }
+                };
+
+                return xhr.send(form);
+            })
+            .fail((xhr, status, error) => {
+                return console.error(`${status}: ${error}: ${xhr.responseJSON.error}`);
+            });
+    };
+}).call(this);
+</script>

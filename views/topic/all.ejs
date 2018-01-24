@@ -1,0 +1,25 @@
+<% include ../partials/full_header.ejs %>
+<div class="container mt-5 mb-5">
+    <div class="col-12">
+        <div class="row mb-5">
+            <a href="/post/topic/new" role="button" class="btn btn-primary">New topic</a>
+        </div>
+        <div class="row">
+            <ul>
+                <% for(var i = 0; i < topics.length; i++) { %>
+                <% var topic = topics[i]; %>
+                <li>
+                    <div class="d-flex flex-row">
+                        <%= topic._id %> - <%= topic.name %>(custom: <%= topic.custom %>)
+                        <form action="/post/topic/remove/<%= topic._id %>" method="post" class="mr-1 ml-2">
+                            <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                        </form>
+                        <a href="/post/topic/edit/<%= topic._id %>" role="button" class="btn btn-sm btn-primary">Edit</a>
+                    </div>
+                </li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</div>
+<% include ../partials/footer.ejs %>

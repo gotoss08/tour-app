@@ -1,0 +1,24 @@
+<% include ../partials/full_header.ejs %>
+<div class="container mb-5 mt-5">
+    <div class="col-12">
+        <form action="/post/topic/update/<%= topic._id %>" method="post">
+            <div class="form-group">
+                <label for="topic-body">Topic name</label>
+                <input type="text" class="form-control" id="topic-body" value="<%= topic.name %>" name="name" autocomplete="off">
+            </div>
+            <div class="form-group">
+            	<label for="topic-custom-checkbox">Is topic custom</label>
+                <input type="checkbox" class="form-control" id="topic-custom-checkbox" value="<%= topic.custom %>" name="isCustom" autocomplete="off">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+<script>
+$('#topic-custom-checkbox').prop('checked', <%= topic.custom  %>);
+$('#topic-custom-checkbox').click(() => {
+	$('#topic-custom-checkbox').val($('#topic-custom-checkbox').is(':checked'));
+});
+</script>
+<% include ../partials/footer.ejs %>

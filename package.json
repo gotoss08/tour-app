@@ -18,13 +18,10 @@
     "express": "^4.16.2",
     "express-fileupload": "^0.3.0",
     "express-session": "^1.15.6",
-    "express-validator": "^4.3.0",
-    "marked": "^0.3.12",
     "method-override": "^2.3.10",
     "mkdirp": "^0.5.1",
     "mongoose": "^4.13.9",
     "request": "^2.83.0",
-    "simplemde": "^1.11.2",
     "striptags": "^3.1.1",
     "y18n": "^4.0.0"
   },

@@ -24,7 +24,12 @@
                 <a href="/user/<%= user.username %>"><%= user.username %></a>
                 <%= dateformat(post.createdAt, "в dddd в h:MM:ss, d mmmm yyyy") %></span>
                     <hr>
-                    Медицина, Культура
+
+                    <% for(var i = 0; i < post.topics.length; i++) { %>
+                        <% var topic = post.topics[i]; %>
+                        <a class="text-white" href="#<%= topic.topicId %>"><%= topics[topic.topicId] %></a>
+                        <% if(i < post.topics.length-1) { %>,<% } %>
+                    <% } %>
                 </div>
             </div>
         </div>
@@ -33,10 +38,16 @@
 
 <!-- Post Content -->
 <article>
-    <div class="container">
+    <div class="container mb-5">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto post-body">
+                <h1 class="color-black mt-2 mb-4"><%= post.title %></h1>
                 <%- post.body %>
+                <% for(var i = 0; i < post.topics.length; i++) { %>
+                    <% var topic = post.topics[i]; %>
+                    <h2 id="<%= topic.topicId %>"><a href="#<%= topic.topicId %>"><%= topics[topic.topicId] %></a></h2>
+                    <p><%- topic.body %></p>
+                <% } %>
             </div>
         </div>
     </div>

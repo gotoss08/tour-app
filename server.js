@@ -68,6 +68,15 @@ app.use(express.static('public'));
 app.locals.__ = __y18n;
 app.set('view engine', 'ejs');
 
+const striptags = require('striptags');
+// limit post card description text
+app.locals.cropText = (text) => {
+    text = striptags(text, '<strong><em><strike><a><img>');
+    var length = 255;
+    if(text.length > length) return text.substring(0, length) + '...';
+    else return text;
+};
+
 // date format
 app.locals.dateformat = dateformat;
 

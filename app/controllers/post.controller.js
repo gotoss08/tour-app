@@ -7,8 +7,20 @@ const User = require('../models/user.model');
 
 const querystring = require('querystring');
 
-module.exports.allGet = (req, res) => {
-    return res.render('post/all', { country: req.query.country });
+module.exports.allGet = (req, res, next) => {
+    if(req.query.country) {
+        Country.findOne({ name: req.query.country }, (err, country) => {
+            if(err) return next(err);
+
+            Post.find({ countryId: country._id }, (err, posts) => {
+                if(err) return next(err);
+
+                console.log('posts count: ' + posts.length);
+
+                return res.render('post/all', { country: country, posts: posts });
+            });
+        });
+    }
 };
 
 module.exports.allPost = (req, res) => {
@@ -28,8 +40,6 @@ module.exports.newPostGet = (req, res, next) => {
             } else if (req.params.editorType === 'advanced') {
                 Topic.find({ custom: false }, (err, topics) => {
                     if (err) return next(err);
-
-                    console.log(topics);
 
                     return res.render('post/advanced', { countries: countries, topics: topics });
                 });
@@ -61,11 +71,6 @@ module.exports.newPostPost = (req, res, next) => {
                 });
             }
         } else if (req.params.editorType === 'advanced') {
-            for(item in req.body) {
-                console.log('arrived item: ' + item);
-                console.log('arrived item value: ' + req.body[item]);
-            }
-
             Topic.find({}, (err, topics) => {
                 if(err) return next(err);
 

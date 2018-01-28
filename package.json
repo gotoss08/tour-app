@@ -23,6 +23,7 @@
     "mongoose": "^4.13.9",
     "request": "^2.83.0",
     "striptags": "^3.1.1",
+    "uniqid": "^4.1.1",
     "y18n": "^4.0.0"
   },
   "devDependencies": {

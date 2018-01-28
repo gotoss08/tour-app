@@ -18,14 +18,12 @@
 
             <% if(session.userId) { %>
             <div class="d-block mt-2">
+                <button type="submit" class="btn btn-sm btn-dark mb-1 navbar-font-size text-muted" data-toggle="modal" data-target="#writePostModal"><i class="fa fa-pencil mr-2" aria-hidden="true"></i><%= __('navbar.new.post') %></button>
                 <form class="form d-inline" action="/user/" method="get">
-                    <button type="submit" class="btn btn-sm btn-dark mb-1 navbar-font-size text-muted"><%= __('navbar.new.post') %></button>
-                </form>
-                <form class="form d-inline" action="/user/" method="get">
-                    <button type="submit" class="btn btn-sm btn-dark mb-1 navbar-font-size text-muted"><%= __('navbar.profile') %></button>
+                    <button type="submit" class="btn btn-sm btn-dark mb-1 navbar-font-size text-muted"><i class="fa fa-user mr-2" aria-hidden="true"></i><%= __('navbar.profile') %></button>
                 </form>
                 <form class="form d-inline" action="/user/logout/" method="post">
-                    <button type="submit" class="btn btn-sm btn-dark mb-1 navbar-font-size text-muted"><%= __('navbar.logout') %></button>
+                    <button type="submit" class="btn btn-sm btn-dark mb-1 navbar-font-size text-muted"><i class="fa fa-sign-out mr-1" aria-hidden="true"></i><%= __('navbar.logout') %></button>
                 </form>
             </div>
             <% } else { %>
@@ -35,14 +33,46 @@
                         <input type="text" class="form-control form-control-sm" placeholder="<%= __('navbar.username.placeholder') %>" name="username">
                         <input type="password" class="form-control form-control-sm" placeholder="<%= __('navbar.password.placeholder') %>" name="password">
                     </div>
-                    <button type="submit" class="btn btn-dark mt-1 btn-sm float-md-right"><%= __('navbar.login') %></button>
+                    <button type="submit" class="btn btn-dark mt-1 btn-sm float-md-right"><i class="fa fa-sign-in mr-1" aria-hidden="true"></i><%= __('navbar.login') %></button>
                 </form>
                 <form class="form d-inline float-md-right mr-md-1" action="/user/register" method="get">
-                    <button type="submit" class="btn btn-dark mt-1 btn-sm"><%= __('navbar.register') %></button>
+                    <button type="submit" class="btn btn-dark mt-1 btn-sm"><i class="fa fa-registered mr-1" aria-hidden="true"></i><%= __('navbar.register') %></button>
                 </form>
             </div>
 
             <% } %>
+        </div>
+
+
+        <!-- Write new post modal modal-dialog-centered -->
+        <div class="modal fade" id="writePostModal" tabindex="-1" role="dialog" aria-labelledby="writePostModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="writePostModalLabel">Write post</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 d-flex flex-column p-2">
+                            <a href="/post/new/simple" role="button" class="btn btn-secondary btn-lg align-middle"><%= __('navbar.new.post.simple') %></a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 d-flex flex-column p-2">
+                            <a href="/post/new/advanced" role="button" class="btn btn-light btn-lg align-middle"><%= __('navbar.new.post.advanced') %></a>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal"><%= __('navbar.new.post.close') %></button>
+              </div>
+            </div>
+          </div>
         </div>
     </div>
 </nav>

@@ -27,6 +27,12 @@
 
 <script type="text/javascript">
 
+    /* Base accordion stuff */
+
+    $('#postSubmit').click(() => {
+        $('#post-form').submit();
+    });
+
     const accordion = $('#accordion');
 
     addAccordionCard = (title, body, element=accordion, divide=false, cardHeaderClass='') => {
@@ -93,7 +99,7 @@
         </div>
     `, accordion, false, 'bg-warning');
 
-    // ${getDefaultTextarea('intro', introTitle, true, 'intro-input')}
+    /* topics */
 
     const topics = [];
 
@@ -107,7 +113,6 @@
     // accordion.append('<div id="custom-topics"></div>');
 
     addAccordionCard('<%= __('post.topic.new') %>', `
-
         <div class="input-group mb-3">
             <input type="text" class="form-control" id="newTopicInput" placeholder="<%= __('post.new.topic.input.placeholder') %>">
             <div class="input-group-append">
@@ -128,8 +133,6 @@
             let newTopicName = newTopicInput.val();
 
             $.post('/post/topic/create_custom', { name: newTopicName }).done((topic) => {
-                console.log(topic._id);
-
                 addAccordionCard(newTopicName, getDefaultTextarea(topic._id, newTopicName + '...', false, topic._id), $('#custom-topics'));
 
                 $('#custom-topics').children('.card').children('.collapse').removeClass('show');
@@ -140,11 +143,47 @@
         }
     });
 
-    $('#postSubmit').click(() => {
-        $('#post-form').submit();
-    });
+    /* votes */
+
+    addAccordionCard('<%= __('post.vote.new') %>', `
+        <div class="input-group">
+            <input type="text" class="form-control" id="voteThemeInput" name="voteTheme" placeholder="<%= __('post.vote.theme.input.placeholder') %>">
+        </div>
+        <hr>
+        <div class="input-group">
+            <input type="text" class="form-control" id="addVoteOptionInput" placeholder="<%= __('post.vote.option.input.placeholder') %>">
+            <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" id="addVoteOptionButton"><%= __('post.vote.option.add.button') %></button>
+            </div>
+        </div>
+        <hr>
+        <div id="voteOptions">
+            <div class="input-group mb-2">
+                <input type="text" class="form-control" id="addVoteOptionInput" value="option 1" placeholder="<%= __('post.vote.option.input.placeholder') %>">
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-danger" id="addVoteOptionButton"><%= __('post.vote.option.remove.button') %></button>
+                </div>
+            </div>
+        </div>
+    `, accordion, true, 'bg-success text-white');
+
+    removeVoteOption = (optionId) => {
+        $('#' + optionId).remove();
+    };
+
+    addVoteOption = (optionValue, optionId, optionName) => {
+        return `
+            <div class="input-group mb-2">
+                <input type="text" class="form-control" id="${optionId}" value="${optionValue}" placeholder="<%= __('post.vote.option.input.placeholder') %>">
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-danger" id="addVoteOptionButton" onclick="removeVoteOption(${optionId});"><%= __('post.vote.option.remove.button') %></button>
+                </div>
+            </div>
+        `;
+    };
+
+    let voteOptions = $('#voteOptions');
 </script>
 
 <% include ../partials/editor_preparation.ejs %>
-
 <% include ../partials/footer.ejs %>

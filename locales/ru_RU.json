@@ -1,18 +1,19 @@
 {
   "error.header": "Упс...",
   "error.back": "Назад",
-
   "navbar.brand": "своим ходом",
   "navbar.posts": "блоги о путешествиях",
   "navbar.home": "Домой",
   "navbar.profile": "Мой профиль",
   "navbar.logout": "Выйти",
-  "navbar.new.post": "",
+  "navbar.new.post": "Новый пост",
+  "navbar.new.post.simple": "Простой редактор",
+  "navbar.new.post.advanced": "Продвинутый редактор",
+  "navbar.new.post.close": "Закрыть",
   "navbar.username.placeholder": "Имя пользователя",
   "navbar.password.placeholder": "Пароль",
   "navbar.login": "Войти",
   "navbar.register": "Регистрация",
-
   "user.profile.my.header": "Мой профиль",
   "user.profile.of": "Профиль пользователя - ",
   "user.profile.username": "Имя пользователя",
@@ -20,7 +21,6 @@
   "user.profile.posts.header": "Посты",
   "user.profile.posts.remove": "Удалить",
   "user.profile.posts.edit": "Изменить",
-
   "register.header": "Регистрация",
   "register.username": "Имя пользователя",
   "register.username.placeholder": "Имя пользователя",
@@ -32,13 +32,11 @@
   "register.passwordConfirmation": "Подтверждение пароля",
   "register.passwordConfirmation.placeholder": "Подтверждение пароля",
   "register.submit": "Зарегестрироваться",
-
   "login.username": "Имя пользователя",
   "login.username.placeholder": "Имя пользователя",
   "login.password": "Пароль",
   "login.password.placeholder": "Пароль",
   "login.submit": "Войти",
-
   "post.header": "Новый пост",
   "post.title.placeholder": "Название статьи...",
   "post.body.placeholder": "Вступление",
@@ -54,19 +52,20 @@
   "post.your.topic": "post.your.topic",
   "post.topic.new": "+ Добавить свою оригинальную тему",
   "post.title": "Выбор страны, название статьи, вступительная часть",
-
+  "post.vote.new": "+ Добавить голосование",
+  "post.vote.theme.input.placeholder": "Тема голосования...",
+  "post.vote.option.input.placeholder": "Вариант ответа...",
+  "post.vote.option.add.button": "Добавить",
+  "post.vote.option.remove.button": "Удалить",
   "index.country.input.placeholder": "Введите название страны...",
-
   "post.all.showing.results": "Результаты по стране ",
   "post.all.change.country": "изменить",
-  
   "spain": "Испания",
   "france": "Франция",
   "italy": "Италия",
   "germany": "Германия",
   "argentina": "Аргентина",
   "russia": "Россия",
-
   "Sunday": "Воскресенье",
   "Monday": "Понедельник",
   "Tuesday": "Вторник",
@@ -85,5 +84,6 @@
   "September": "Сентября",
   "October": "Октября",
   "November": "Ноября",
-  "December": "Декабря"
+  "December": "Декабря",
+  "title": "title"
 }

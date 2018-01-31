@@ -35,15 +35,15 @@
 
     const accordion = $('#accordion');
 
-    addAccordionCard = (title, body, element=accordion, divide=false, cardHeaderClass='') => {
+    addAccordionCard = (title, body, element=accordion, divide=false, cardHeaderClass='', id='') => {
         let accordionChildCount = accordion.children().length;
         if (element != accordion) {
             accordionChildCount += element.children().length;
         }
 
-        element.append(`
+        return element.append(`
             ${divide ? '<hr>' : ''}
-            <div class="card" ${accordionChildCount === 0 ? 'id="main-card"' : ''}>
+            <div class="card" ${accordionChildCount === 0 ? 'id="main-card"' : ''} ${id ? 'id="' + id +'"' : ''}>
                 <div class="card-header ${cardHeaderClass}" id="heading${accordionChildCount+1}">
                     <h5 class="mb-0">
                         <a class="btn btn-outline" data-toggle="collapse" data-target="#collapse${accordionChildCount+1}">
@@ -147,8 +147,9 @@
 
     addAccordionCard('<%= __('post.vote.new') %>', `
         <div class="input-group">
-            <input type="text" class="form-control" id="voteThemeInput" name="voteTheme" placeholder="<%= __('post.vote.theme.input.placeholder') %>">
+            <input type="text" class="form-control" id="voteThemeInput" name="voteThemeName" placeholder="<%= __('post.vote.theme.input.placeholder') %>">
         </div>
+        <small id="voteThemeError" class="form-text text-danger"></small>
         <hr>
         <div class="input-group">
             <input type="text" class="form-control" id="addVoteOptionInput" placeholder="<%= __('post.vote.option.input.placeholder') %>">
@@ -157,32 +158,77 @@
             </div>
         </div>
         <hr>
-        <div id="voteOptions">
-            <div class="input-group mb-2">
-                <input type="text" class="form-control" id="addVoteOptionInput" value="option 1" placeholder="<%= __('post.vote.option.input.placeholder') %>">
-                <div class="input-group-append">
-                    <button type="button" class="btn btn-outline-danger" id="addVoteOptionButton"><%= __('post.vote.option.remove.button') %></button>
-                </div>
-            </div>
-        </div>
-    `, accordion, true, 'bg-success text-white');
+        <div id="voteOptions"></div>
+    `, accordion, true, 'bg-success text-white', 'votesCard');
 
-    removeVoteOption = (optionId) => {
-        $('#' + optionId).remove();
+    let voteOptions = $('#voteOptions');
+    let addVoteOptionInput = $('#addVoteOptionInput');
+
+    addVoteError = (errorText) => { $('#voteErrors').append(`<div class="alert alert-danger" role="alert">${errorText}</div>`); };
+    clearVoteErrors = () => { $('#voteErrors').empty(); };
+
+    makeRequest = (url, data, doneCallback) => {
+        $.ajax({
+            url: url,
+            method: 'post',
+            data: data
+        }).done(doneCallback).fail((xhr, status) => {
+            console.log(status + ': ' + xhr.responseText);
+        });
     };
 
-    addVoteOption = (optionValue, optionId, optionName) => {
+    removeVoteOption = (id) => {
+        makeRequest('http://localhost:3000/vote/option/remove/', { id: id }, () => {
+            console.log('removed item from dom');
+            $('#div-' + id).remove();
+        });
+    };
+
+    generateVoteOptionHTML = (optionValue, optionId) => {
         return `
-            <div class="input-group mb-2">
-                <input type="text" class="form-control" id="${optionId}" value="${optionValue}" placeholder="<%= __('post.vote.option.input.placeholder') %>">
+            <div class="input-group mb-2" id="div-${optionId}">
+                <input type="text" class="form-control" id="input-${optionId}" name="${optionId}" value="${optionValue}" placeholder="<%= __('post.vote.option.input.placeholder') %>">
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-outline-danger" id="addVoteOptionButton" onclick="removeVoteOption(${optionId});"><%= __('post.vote.option.remove.button') %></button>
+                    <button type="button" class="btn btn-outline-danger" id="removeVoteOptionButton" onclick="removeVoteOption('${optionId}')"><%= __('post.vote.option.remove.button') %></button>
                 </div>
             </div>
         `;
     };
 
-    let voteOptions = $('#voteOptions');
+    createVoteOption = (name) => {
+        makeRequest('http://localhost:3000/vote/option/create/', { name: name }, (id) => {
+            console.log('received id: ' + id);
+            voteOptions.append(generateVoteOptionHTML(name, id));
+            let input = $('#input-' + id);
+            input.change(() => {
+                makeRequest('http://localhost:3000/vote/option/update/', { id: id, name: input.val() }, (name) => {
+                    console.log('current db option name: ' + name);
+                });
+            });
+        });
+    };
+
+    $('#addVoteOptionButton').click(() => {
+        if (addVoteOptionInput.val()) {
+            createVoteOption(addVoteOptionInput.val());
+
+            addVoteOptionInput.val('');
+
+            console.log('adding new vote option');
+        }
+    });
+
+    $('#post-form').submit(() => {
+        if(voteOptions.children().length) {
+            if($('#voteThemeInput').val()) return true;
+            else {
+                if($('.show').length) $('.show').removeClass('show');
+                $('#votesCard').children('.collapse').first().addClass('show');
+                $('#voteThemeError').html(`<%= __('post.vote.theme.error') %>`);
+                return false;
+            }
+        } else return true;
+    });
 </script>
 
 <% include ../partials/editor_preparation.ejs %>

@@ -48,6 +48,10 @@
                     <h2 id="<%= topic.topicId %>"><a href="#<%= topic.topicId %>"><%= topics[topic.topicId] %></a></h2>
                     <p><%- topic.body %></p>
                 <% } %>
+                <% if(post.voteId) { %>
+                    <hr>
+                    <% include ../partials/vote.ejs %>
+                <% } %>
             </div>
         </div>
     </div>

@@ -43,6 +43,7 @@ const PostSchema = new mongoose.Schema({
         topicId: String,
         body: String
     }],
+    voteId: String,
     // comments: [CommentSchema],
     hidden: {
         type: Boolean,

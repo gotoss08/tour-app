@@ -1,0 +1,14 @@
+<form>
+
+	<% for(let i = 0; i < vote.options.length; i++) { %>
+		<% let option = vote.options[i]; %>
+
+		<div class="radio">
+			<label><input type="radio" name="<%= option._id %>">0 - <%= option.name %></label>
+		</div>
+
+	<% } %>
+
+</form>
+
+<script src="/js/vote.js"></script>

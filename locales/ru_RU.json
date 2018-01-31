@@ -54,6 +54,7 @@
   "post.title": "Выбор страны, название статьи, вступительная часть",
   "post.vote.new": "+ Добавить голосование",
   "post.vote.theme.input.placeholder": "Тема голосования...",
+  "post.vote.theme.error": "Заполните название голосования или уберите варианты ответов.",
   "post.vote.option.input.placeholder": "Вариант ответа...",
   "post.vote.option.add.button": "Добавить",
   "post.vote.option.remove.button": "Удалить",

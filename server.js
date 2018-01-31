@@ -68,6 +68,9 @@ app.use(express.static('public'));
 app.locals.__ = __y18n;
 app.set('view engine', 'ejs');
 
+// set uniqid generator available from everywhere
+app.locals.uniqid = require('uniqid');
+
 const striptags = require('striptags');
 // limit post card description text
 app.locals.cropText = (text) => {
@@ -84,6 +87,7 @@ app.locals.dateformat = dateformat;
 app.use('/user', require('./app/routes/user.routes'));
 app.use('/post', require('./app/routes/post.routes'));
 app.use('/country', require('./app/routes/country.routes'));
+app.use('/vote', require('./app/routes/vote.routes'));
 
 // home page
 app.get('/', (req, res) => {

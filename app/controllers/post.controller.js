@@ -5,6 +5,9 @@ const Comment = require('../models/post.model').Comment;
 const Country = require('../models/country.model');
 const User = require('../models/user.model');
 
+const { Vote } = require('../models/vote.model');
+const { Option } = require('../models/vote.model');
+
 const querystring = require('querystring');
 
 module.exports.allGet = (req, res, next) => {
@@ -52,28 +55,39 @@ module.exports.newPostGet = (req, res, next) => {
 };
 
 module.exports.newPostPost = (req, res, next) => {
-    if(req.session.userId) {
+    if(req.body.title && req.body.body && req.session.userId && req.body.country) {
         if (!req.params.editorType || req.params.editorType === 'simple') {
-            if (req.body.title && req.body.body && req.body.country) {
-                const postData = {
-                    title: req.body.title,
-                    body: req.body.body,
-                    userId: req.session.userId,
-                    countryId: req.body.country
-                };
+            const postData = {
+                title: req.body.title,
+                body: req.body.body,
+                userId: req.session.userId,
+                countryId: req.body.country
+            };
 
-                Post.create(postData, (err, post) => {
-                    if(err) {
-                        return next(err);
-                    }
+            Post.create(postData, (err, post) => {
+                if(err) {
+                    return next(err);
+                }
 
-                    res.redirect('/post/' + post._id);
-                });
-            }
+                res.redirect('/post/' + post._id);
+            });
         } else if (req.params.editorType === 'advanced') {
+            /* post creation */
+            let createPost = (postData) => {
+                Post.create(postData, (err, post) => {
+                    if (err) return next(err);
+
+                    console.log('advanced post: ' + post);
+
+                    res.redirect('/post/' +  post._id);
+                });
+            };
+            
+            /* vote creation */
             Topic.find({}, (err, topics) => {
                 if(err) return next(err);
 
+                /* custom topics creation */
                 let filledTopics = [];
                 for (var i = 0; i < topics.length; i++) {
                     let topic = topics[i];
@@ -84,21 +98,39 @@ module.exports.newPostPost = (req, res, next) => {
 
                 console.log('filled topics: ' + filledTopics);
 
-                const postData = {
-                    title: req.body.title,
-                    body: req.body.body,
-                    userId: req.session.userId,
-                    countryId: req.body.country,
-                    editorType: 'advanced',
-                    topics: filledTopics
-                };
+                Option.find({}, (err, options) => {
+                    if(err) return next(err);
 
-                Post.create(postData, (err, post) => {
-                    if (err) return next(err);
+                    /* vote creation */
+                    console.log('vote theme name: ' + req.body.voteThemeName);
 
-                    console.log('advanced post: ' + post);
+                    let filledVoteOptions = [];
+                    for(var i = 0; i < options.length; i++) {
+                        let option = options[i];
+                        if(req.body[option._id]) {
+                            filledVoteOptions.push({ name: req.body[option._id], votes: 0 });
+                            console.log('vote option: ' + req.body[option._id]);
+                        }
+                    }
 
-                    res.redirect('/post/' +  post._id);
+                    const postData = {
+                        title: req.body.title,
+                        body: req.body.body,
+                        userId: req.session.userId,
+                        countryId: req.body.country,
+                        editorType: 'advanced'
+                    };
+
+                    if(filledVoteOptions.length) {
+                        Vote.create({ title: req.body.voteThemeName, options: filledVoteOptions }, (err, vote) => {
+                            if(err) return next(err);
+
+                            postData.voteId = vote._id;
+                            createPost(postData);
+                        });
+                    } else {
+                        createPost(postData);
+                    }
                 });
             });
         }
@@ -106,7 +138,6 @@ module.exports.newPostPost = (req, res, next) => {
 };
 
 module.exports.editPostGet = (req, res, next) => {
-
     if(req.session.userId && req.params.postId) {
         Post.findById(req.params.postId, (err, post) => {
             if (err) return next(err);
@@ -160,8 +191,19 @@ module.exports.viewPostGet = (req, res, next) => {
                             preparedTopics[topic._id] = topic.name;
                         }
 
-                        return res.render('post/post', { post: post, user: user, country: country, topics: preparedTopics });
-                    });
+                        renderPost = (props) => {
+                            return res.render('post/post', props);
+                        };
+
+                        let props = { post: post, user: user, country: country, topics: preparedTopics };
+
+                        if(post.voteId) {
+                            Vote.findById(post.voteId, (err, vote) => {
+                                props.vote = vote;
+                                renderPost(props);
+                            });
+                        } else renderPost(props);
+                    });  
                 } else {
                     return res.render('post/post', { post: post, user: user, country: country });
                 }

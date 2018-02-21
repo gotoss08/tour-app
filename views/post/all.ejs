@@ -1,27 +1,59 @@
 <% include ../partials/header_start.ejs %>
-
+<link href="https://fonts.googleapis.com/css?family=Lora:400,400i&amp;subset=cyrillic" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,800&amp;subset=cyrillic" rel="stylesheet">
+<link href="/css/clean-blog.css" rel="stylesheet">
 <% include ../partials/header_end.ejs %>
 
+<script type="text/javascript">
+    console.log('<%= country.img %>');
+</script>
 
-<div class="container mt-5">
-    <div class="row mt-1 mb-5">
-        <div class="col-12">
-            <h1 class="text-center"><%= __('post.all.showing.results') %><em><%= __(country.name) %></em> <a href="/"><small class="text-muted"><%= __('post.all.change.country') %></small></a></h1>
+<header class="masthead" style="background-image: url('<%= country.img %>')">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h1><a href="/" class="text-white" title="<%= __('post.all.change.country') %>"><%= __(country.name) %></a></h1>
+                    <span class="subheading">A Blog Theme by Start Bootstrap</span>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row">    
-        <% for(var i = 0; i < posts.length; i++) { %>
-            <% var post = posts[i]; %>
-            <div class="col-md-6 col-sm d-inline mb-3">
-                <div class="card" style="width: 100%; height: 100%;">
-                    <img class="card-img-top" src="http://hola-espana.ru/wp-content/uploads/2013/03/alicante.jpg" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title"><a href="/post/<%= post._id %>" ><%= post.title %></a></h5>
-                        <p class="card-text"><%- cropText(post.body) %></p>
-                    </div>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+
+            <% if(sort && sortType === 'date') { %>
+            <div class="alert alert-info" role="alert">
+                <small>
+                    Отсортировано по дате. Показываются результаты за <%= dateformat(sortDate, 'date') %>. <a href="/post/all?country=<%= country.name %>" class="alert-link">Отменить</a>.
+                </small>
+            </div>
+            <% } %>
+
+            <% for(var i = 0; i < posts.length; i++) { %>
+                <% var post = posts[i]; %>
+                <div class="post-preview">
+                    <a href="/post/<%= post._id %>">
+                        <h2 class="post-title"><%= post.title %></h2>
+                        <h3 class="post-subtitle"><%- cropText(post.body) %></h3>
+                    </a>
+
+                    <p class="post-meta">
+                        Опубликовано
+                        <a href="/post/all?country=<%= country.name %>&sort=date&date=<%= post.createdAt.toISOString() %>"><%= dateformat(post.createdAt, "date") %></a>
+                        в
+                        <%= dateformat(post.createdAt, "time") %>
+                        пользователем
+                        <a href="/user/<%= post.user.username %>"><%= post.user.username %></a>
+                    </p>
                 </div>
-            </div> 
-        <% } %>
+                <hr>
+            <% } %>
+        </div>
     </div>
 </div>
 

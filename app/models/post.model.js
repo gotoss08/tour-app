@@ -25,7 +25,7 @@ const PostSchema = new mongoose.Schema({
     },
     body: {
         type: String,
-        required: true,
+        required: true
     },
     userId: {
         type: String,
@@ -41,7 +41,9 @@ const PostSchema = new mongoose.Schema({
     },
     topics: [{
         topicId: String,
-        body: String
+        body: {
+            type: String
+        }
     }],
     voteId: String,
     // comments: [CommentSchema],
@@ -52,6 +54,8 @@ const PostSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+PostSchema.index({ title: 'text', body: 'text' });
 
 module.exports.Post = mongoose.model('Post', PostSchema);
 module.exports.Topic = mongoose.model('Topic', TopicSchema);

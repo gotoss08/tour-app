@@ -10,12 +10,12 @@
                 <% var topic = topics[i]; %>
                 <li>
                     <div class="d-flex flex-row">
-                        <%= topic._id %> - <%= topic.name %>(custom: <%= topic.custom %>)
-                        <form action="/post/topic/remove/<%= topic._id %>" method="post" class="mr-1 ml-2">
-                            <button type="submit" class="btn btn-sm btn-danger">Remove</button>
-                        </form>
-                        <a href="/post/topic/edit/<%= topic._id %>" role="button" class="btn btn-sm btn-primary">Edit</a>
-                    </div>
+
+                    </div><%= topic._id %> - <%= topic.name %>(custom: <%= topic.custom %>)
+                    <form action="/post/topic/remove/<%= topic._id %>" method="post" class="mr-1 ml-2">
+                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                    <a href="/post/topic/edit/<%= topic._id %>" role="button" class="btn btn-sm btn-primary">Edit</a>
                 </li>
                 <% } %>
             </ul>

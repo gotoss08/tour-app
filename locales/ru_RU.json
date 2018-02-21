@@ -1,4 +1,5 @@
 {
+  "title": "Своим ходом",
   "error.header": "Упс...",
   "error.back": "Назад",
   "navbar.brand": "своим ходом",
@@ -49,7 +50,6 @@
   "post.title.error": "Название не может быть пустым!",
   "post.body.error": "Основной текст поста не может быть пустым!",
   "post.body.editor.help": "Чтобы загрузить фотографию, просто перетащите её на текст в том месте, где вы хотете что бы она оказалась.",
-  "post.your.topic": "post.your.topic",
   "post.topic.new": "+ Добавить свою оригинальную тему",
   "post.title": "Выбор страны, название статьи, вступительная часть",
   "post.vote.new": "+ Добавить голосование",
@@ -60,7 +60,7 @@
   "post.vote.option.remove.button": "Удалить",
   "index.country.input.placeholder": "Введите название страны...",
   "post.all.showing.results": "Результаты по стране ",
-  "post.all.change.country": "изменить",
+  "post.all.change.country": "Поменять",
   "spain": "Испания",
   "france": "Франция",
   "italy": "Италия",
@@ -85,6 +85,5 @@
   "September": "Сентября",
   "October": "Октября",
   "November": "Ноября",
-  "December": "Декабря",
-  "title": "title"
+  "December": "Декабря"
 }

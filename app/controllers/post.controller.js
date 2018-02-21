@@ -15,12 +15,58 @@ module.exports.allGet = (req, res, next) => {
         Country.findOne({ name: req.query.country }, (err, country) => {
             if(err) return next(err);
 
-            Post.find({ countryId: country._id }, (err, posts) => {
+            User.find({}, (err, users) => {
                 if(err) return next(err);
 
-                console.log('posts count: ' + posts.length);
+                renderPosts = (posts, sort=false, sortType='none', sortDate=null) => {
+                    for(let i = 0; i < posts.length; i++) {
+                        console.log('i: ' + i);
+                        let post = posts[i];
+                        for(let j = 0; j < users.length; j++) {
+                            let user = users[j];
 
-                return res.render('post/all', { country: country, posts: posts });
+                            if(post.userId == user._id) {
+                                post.user = user;
+                                console.log('user: ' + post.user.username);
+                                break;
+                            }
+                        }
+                    }
+
+                    return res.render('post/all', { country: country, posts: posts, sort: sort, sortType: sortType, sortDate: sortDate });
+                };
+
+                console.log(req.query);
+
+                if(req.query.sort === 'date' && req.query.date) {
+
+                    let date = new Date(req.query.date).withoutTime();
+
+                    console.log('sort: ' + req.query.sort);
+                    console.log('date: ' + date);
+
+                    Post.find({ countryId: country._id }, (err, posts) => {
+                        if(err) return next(err);
+
+                        let sortedPosts = [];
+                        for(let i = 0; i < posts.length; i++) {
+                            let post = posts[i];
+                            if(post.createdAt.withoutTime().getTime() === date.getTime()) {
+                                sortedPosts.push(post);
+                            }
+                        }
+
+                        renderPosts(sortedPosts, true, 'date', date);
+                    });
+                } else {
+                    Post.find({ countryId: country._id }, (err, posts) => {
+                        if(err) return next(err);
+
+                        console.log(posts);
+
+                        renderPosts(posts);
+                    });
+                } 
             });
         });
     }

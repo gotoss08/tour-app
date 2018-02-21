@@ -1,4 +1,6 @@
-<% include ../partials/full_header.ejs %>
+<% include ../partials/header_start.ejs %>
+<link rel="stylesheet" href="/css/profile.css">
+<% include ../partials/header_end.ejs %>
 
 <div class="container mt-5">
     <div class="col-12 mt-4 profile">
@@ -18,8 +20,7 @@
             <% var post = posts[i]; %>
                 <% if(String(session.userId) === String(user._id) ) { %>
                     <div class="list-group-item">
-
-                        <a href="/post/<%= post._id %>"><%= post.title %></a>
+                        <a class="align-middle" href="/post/<%= post._id %>"><%= post.title %></a>
                         <a role="button" href="/post/remove/<%= post._id %>" class="btn btn-outline-danger float-right"><%= __('user.profile.posts.remove') %></a>
                         <a role="button" href="/post/edit/<%= post._id %>" class="btn btn-outline-primary float-right mr-1"><%= __('user.profile.posts.edit') %></a>
                     </div>

@@ -1,5 +1,14 @@
+@font-face {
+    font-family: MontExtraLight;
+    src: url('/fonts/MontExtraLight.ttf');
+}
+
 html, body {
     font-family: 'PT Sans', sans-serif;
+}
+
+.brand-color {
+    color: rgb(219,189,29);
 }
 
 .navbar-brand, .nav-item {
@@ -23,7 +32,7 @@ html, body {
 }
 
 .navbar-font-size {
-    font-family: 'Lobster', cursive;
+    font-family: MontExtraLight;
     font-size: 16pt;
 }
 
@@ -34,12 +43,9 @@ html, body {
     background-size: cover;
     -o-background-size: cover;
 
-    -webkit-filter: blur(5px); /* Safari 6.0 - 9.0 */
-    filter: blur(5px);
-
     position: fixed;
     left: 0;
-    top: 100px;
+    top: 0;
     bottom: 0;
     margin: 0;
     padding: 0;
@@ -63,15 +69,18 @@ html, body {
 
 #select-country-form input {
     margin: 0px;
-    padding: 10px;
     padding-left: 15px;
     padding-right: 15px;
+    padding-top: 10px;
     font-size: 26pt;
 
     border: 0;
 
     color: white;
     background-color: rgba(1,1,1,0.5);
+
+    font-family: MontExtraLight;
+    font-size: 2em;
 }
 
 #select-country-form input::placeholder {
@@ -99,48 +108,7 @@ html, body {
     font-size: 20pt;
 }
 
-.post-title {
-    color: black;
-    font-family: 'PT Serif', Georgia, serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-weight: bold;
-    font-size: 18pt;
-}
-
-.post-body {
-    color: #333;
-    font-family: 'PT Serif', Georgia, serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: 16pt;
-}
-
-.post-title::placeholder, .post-body::placeholder {
-    color: #868e96;
-}
-
-#new-post-footer {
-    left: 0;
-    width: 100%;
-    height: 50px;
-    background-color: white;
-    font-family: 'PT Serif', Georgia, serif;
-}
-
 .profile {
     font-family: 'PT Serif', Georgia, serif;
     font-size: 16pt;
-}
-
-.card-header h5 a {
-    text-decoration: none;
-    color: black;
-    font-family: 'PT Serif', Georgia, serif;
-    font-size: 16pt;
-}
-
-.card {
-    padding: 0;
-    margin: 0;
 }

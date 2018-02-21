@@ -9,6 +9,8 @@ const MongoStore = require('connect-mongo')(session);
 const fileUpload = require('express-fileupload');
 const __y18n = require('y18n')({ locale: 'ru_RU' }).__;
 const dateformat = require('dateformat');
+dateformat.masks.date = 'd.mm.yyyy';
+dateformat.masks.time = 'h:MM:ss';
 dateformat.i18n = {
     dayNames: [
         'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',
@@ -22,6 +24,12 @@ dateformat.i18n = {
         'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
     ]
 };
+Date.prototype.withoutTime = function () {
+    var d = new Date(this);
+    d.setHours(0, 0, 0, 0);
+    return d;
+}
+
 
 const app = express();
 
@@ -86,8 +94,8 @@ app.locals.dateformat = dateformat;
 // include routes
 app.use('/user', require('./app/routes/user.routes'));
 app.use('/post', require('./app/routes/post.routes'));
-app.use('/country', require('./app/routes/country.routes'));
 app.use('/vote', require('./app/routes/vote.routes'));
+app.use('/search', require('./app/routes/search.routes'));
 
 // home page
 app.get('/', (req, res) => {
@@ -98,6 +106,12 @@ app.get('/', (req, res) => {
 
 app.post('/back', (req, res) => {
     return res.redirect('back');
+});
+
+app.get('/cc', (req, res) => {
+    require('./app/models/country.model').create({ name: 'russia', img: 'imgs/countries/russia.jpg' }, (err, countries) => {
+        return res.render('index', { countries: countries });
+    });
 });
 
 // print all errors to console

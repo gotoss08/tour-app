@@ -1,30 +1,21 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-        <a class="navbar-brand" href="/"><%= __('navbar.brand') %></a>
+        <a class="navbar-brand" href="/">
+            <img width="100%" height="100%" src="/imgs/logo.png">
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <div class="mr-auto">
-
-            </div>
-            <!--<ul class="navbar-nav mr-auto">-->
-                <!--<li class="nav-item active">-->
-                    <!--<a class="nav-link text-muted" href="/post/all"><small class="text-muted"><%= __('navbar.posts') %></small>-->
-                    <!--</a>-->
-                <!--</li>-->
-            <!--</ul>-->
+            <div class="mr-auto"></div>
 
             <% if(session.userId) { %>
-            <div class="d-block mt-2">
-                <button type="submit" class="btn btn-sm btn-dark mb-1 navbar-font-size text-muted" data-toggle="modal" data-target="#writePostModal"><i class="fa fa-pencil mr-2" aria-hidden="true"></i><%= __('navbar.new.post') %></button>
-                <form class="form d-inline" action="/user/" method="get">
-                    <button type="submit" class="btn btn-sm btn-dark mb-1 navbar-font-size text-muted"><i class="fa fa-user mr-2" aria-hidden="true"></i><%= __('navbar.profile') %></button>
-                </form>
-                <form class="form d-inline" action="/user/logout/" method="post">
-                    <button type="submit" class="btn btn-sm btn-dark mb-1 navbar-font-size text-muted"><i class="fa fa-sign-out mr-1" aria-hidden="true"></i><%= __('navbar.logout') %></button>
-                </form>
+            <div class="navbar-font-size mt-1">
+                <a class="mr-1" data-toggle="modal" data-target="#writePostModal" href="" style="color: white"><i class="fa fa-pencil mr-2 brand-color" aria-hidden="true"></i><%= __('navbar.new.post') %></a>
+                <a class="mr-1" href="/user/" style="color: white"><i class="fa fa-user mr-2 brand-color" aria-hidden="true"></i><%= __('navbar.profile') %></a>
+                <a class="mr-1" href="#" onclick="$('#header-logout-form').submit()" style="color: white"><i class="fa fa-sign-out mr-1 brand-color" aria-hidden="true"></i><%= __('navbar.logout') %></a>
+                <form id="header-logout-form" action="/user/logout/" method="post"></form>
             </div>
             <% } else { %>
             <div class="d-block mt-2">
@@ -45,11 +36,11 @@
 
 
         <!-- Write new post modal modal-dialog-centered -->
-        <div class="modal fade" id="writePostModal" tabindex="-1" role="dialog" aria-labelledby="writePostModalLabel" aria-hidden="true">
+        <div class="modal fade" id="writePostModal" tabindex="-1" role="dialog" aria-labelledby="writePostModalLabel" aria-hidden="true" style="font-family: Open Sans;">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="writePostModalLabel">Write post</h5>
+                <h5 class="modal-title" id="writePostModalLabel"><%= __('navbar.new.post') %></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>

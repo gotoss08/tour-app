@@ -40,6 +40,8 @@ mongoose.connection.on('error', () => {
     process.exit();
 });
 mongoose.connection.once('open', () => { console.log('Successfully connected to database'); });
+// setup bluebird as default mongoose promise lib
+mongoose.Promise = require('bluebird');
 
 // middleware for easy file uploading
 app.use(fileUpload());
@@ -79,17 +81,24 @@ app.set('view engine', 'ejs');
 // set uniqid generator available from everywhere
 app.locals.uniqid = require('uniqid');
 
-const striptags = require('striptags');
-// limit post card description text
-app.locals.cropText = (text) => {
-    text = striptags(text, '<strong><em><strike><a><img>');
-    var length = 255;
+// limit chars count in text
+app.locals.limitText = (text, length=255) => {
     if(text.length > length) return text.substring(0, length) + '...';
     else return text;
+}
+
+const striptags = require('striptags');
+// limit post card description text
+app.locals.cropText = (text, length=255) => {
+    text = striptags(text, '<strong><em><strike><a><img>');
+    return app.locals.limitText(text, length);
 };
 
 // date format
 app.locals.dateformat = dateformat;
+
+// url slug for creating readable urls for posts
+app.locals.urlSlug = require('url-slug');
 
 // include routes
 app.use('/user', require('./app/routes/user.routes'));
@@ -100,16 +109,6 @@ app.use('/search', require('./app/routes/search.routes'));
 // home page
 app.get('/', (req, res) => {
     require('./app/models/country.model').find({}, (err, countries) => {
-        return res.render('index', { countries: countries });
-    });
-});
-
-app.post('/back', (req, res) => {
-    return res.redirect('back');
-});
-
-app.get('/cc', (req, res) => {
-    require('./app/models/country.model').create({ name: 'russia', img: 'imgs/countries/russia.jpg' }, (err, countries) => {
         return res.render('index', { countries: countries });
     });
 });

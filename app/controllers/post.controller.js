@@ -9,6 +9,7 @@ const { Vote } = require('../models/vote.model');
 const { Option } = require('../models/vote.model');
 
 const querystring = require('querystring');
+const striptags = require('striptags');
 
 module.exports.allGet = (req, res, next) => {
     if(req.query.country) {
@@ -90,6 +91,8 @@ module.exports.newPostGet = (req, res, next) => {
                 Topic.find({ custom: false }, (err, topics) => {
                     if (err) return next(err);
 
+                    console.log(topics);
+
                     return res.render('post/advanced', { countries: countries, topics: topics });
                 });
             }
@@ -102,13 +105,16 @@ module.exports.newPostGet = (req, res, next) => {
 
 module.exports.newPostPost = (req, res, next) => {
     if(req.body.title && req.body.body && req.session.userId && req.body.country) {
+
+        const postData = {
+            title: striptags(req.body.title),
+            body: req.body.body,
+            userId: req.session.userId,
+            countryId: req.body.country
+        };
+
         if (!req.params.editorType || req.params.editorType === 'simple') {
-            const postData = {
-                title: req.body.title,
-                body: req.body.body,
-                userId: req.session.userId,
-                countryId: req.body.country
-            };
+            postData.editorType = 'simple';
 
             Post.create(postData, (err, post) => {
                 if(err) {
@@ -118,58 +124,69 @@ module.exports.newPostPost = (req, res, next) => {
                 res.redirect('/post/' + post._id);
             });
         } else if (req.params.editorType === 'advanced') {
+            console.log('creating post using advanced editor');
+
+            postData.editorType = 'advanced';
+
             /* post creation */
             let createPost = (postData) => {
                 Post.create(postData, (err, post) => {
                     if (err) return next(err);
 
-                    console.log('advanced post: ' + post);
+                    console.log('generated advanced post: ' + post);
 
                     res.redirect('/post/' +  post._id);
                 });
             };
             
-            /* vote creation */
+            /* topics creation */
             Topic.find({}, (err, topics) => {
                 if(err) return next(err);
 
+                console.log('looking for topics...');
+
                 /* custom topics creation */
-                let filledTopics = [];
+                postData.topics = [];
                 for (var i = 0; i < topics.length; i++) {
                     let topic = topics[i];
                     if (req.body[topic._id]) {
-                        filledTopics.push({ topicId: topic._id, body: req.body[topic._id] });
+                        postData.topics.push({ topicId: topic._id, body: req.body[topic._id] });
                     }
                 }
 
-                console.log('filled topics: ' + filledTopics);
+                console.log('filled topics: ' + JSON.stringify(postData.topics));
 
+                /* vote creation */
                 Option.find({}, (err, options) => {
+                    console.log('creating vote if needed');
                     if(err) return next(err);
 
-                    /* vote creation */
                     console.log('vote theme name: ' + req.body.voteThemeName);
 
+                    console.log('filled vote options: ');
                     let filledVoteOptions = [];
                     for(var i = 0; i < options.length; i++) {
                         let option = options[i];
                         if(req.body[option._id]) {
                             filledVoteOptions.push({ name: req.body[option._id], votes: 0 });
-                            console.log('vote option: ' + req.body[option._id]);
+                            console.log(' - added ' + req.body[option._id]);
+
+                            Option.findByIdAndRemove(option._id, (err) => {
+                                if(err) return next(err);
+                            });
                         }
                     }
 
-                    const postData = {
-                        title: req.body.title,
-                        body: req.body.body,
-                        userId: req.session.userId,
-                        countryId: req.body.country,
-                        editorType: 'advanced'
-                    };
+                    console.log('generated post data: ' + JSON.stringify(postData));
 
                     if(filledVoteOptions.length) {
+
+                        console.log('vote creation...');
+
                         Vote.create({ title: req.body.voteThemeName, options: filledVoteOptions }, (err, vote) => {
                             if(err) return next(err);
+
+                            console.log('created vote: ' + vote);
 
                             postData.voteId = vote._id;
                             createPost(postData);
@@ -193,7 +210,11 @@ module.exports.editPostGet = (req, res, next) => {
             Country.find({}, (err, countries) => {
                 if (err) return next(err);
 
-                return res.render('post/new', { countries: countries });
+                if(post.editorType === 'simple') {
+                    return res.render('post/simple', { countries: countries });
+                } else if(post.editorType === 'advanced') {
+                    return  res.redirect('/user');
+                }
             });
         });
     } else {
@@ -202,56 +223,140 @@ module.exports.editPostGet = (req, res, next) => {
     }
 };
 
-module.exports.removePostGet = (req, res, next) => {
-    Post.findByIdAndRemove(req.params.postId, (err) => {
+module.exports.updatePostPost = (req, res, next) => {
+    if(req.session.userId && req.params.postId) {
+        Post.findById(req.params.postId, (err, post) => {
+            if (err) return next(err);
+
+            if(post.editorType === 'simple') {
+                post.title = req.body.title ? req.body.title : post.title;
+                post.body = req.body.body ? req.body.body : post.body;
+                post.country = req.body.country ? req.body.country : post.country;
+                post.save();
+                return res.redirect('/user');
+            } else if(post.editorType === 'advanced') {
+                console.log('todo add advanced editor post editing');
+                return res.redirect('/user');
+            }
+        });
+    } else {
+        res.cookie('return-page', '/post/new');
+        return res.redirect('/user/login');
+    }
+};
+
+module.exports.removePostPost = (req, res, next) => {
+    Post.findById(req.params.postId, (err, post) => {
         if (err) return next(err);
-        console.log('post removed');
-        return res.redirect('back');
+
+        for(let i = 0; i < post.topics.length; i++) {
+            let postTopic = post.topics[i];
+
+            Topic.findById(postTopic.topicId, (err, topic) => {
+                if(err) return next(err);
+
+                if(topic.custom) {
+                    topic.remove((err) => {
+                        if(err) return next(err);
+                    });
+                }
+            });
+        }
+
+        Vote.findByIdAndRemove(post.voteId, (err) => {
+            if(err) return next(err);
+        });
+
+        post.remove((err) => {
+            if(err) return next(err);
+
+            return res.status(200).send();
+        });
     });
 };
 
 module.exports.viewPostGet = (req, res, next) => {
+
+    console.log('looking for post...');
+
     Post.findById(req.params.postId, (err, post) => {
         if (err) {
-            console.log('some goes wrong');
+            console.log('something went wrong');
             return next(err);
         }
 
-        User.findById(post.userId).exec((err, user) => {
+        console.log(` - found [${post.editorType}] post: ${post.title}`);
+
+        User.findById(post.userId, (err, user) => {
             if (err) return next(err);
-            console.log(user);
 
-            Country.findById(post.countryId).exec((err, country) => {
+            console.log(' - found user: ' + user.username);
+
+            Country.findById(post.countryId, (err, country) => {
                 if (err) return next(err);
-                console.log(country);
 
-                console.log('editor type:' + post.editorType);
+                console.log(' - found country: ' + country.name);
 
                 if (post.editorType === 'advanced') {
+
+                    console.log(' - looking for topics...');
+
                     Topic.find({}, (err, topics) => {
                         if (err) return next(err);
 
+                        console.log(` - found ${topics.length} topics in db`);
+                        console.log(` - found ${post.topics.length} topics attached to post`);
+
                         let preparedTopics = [];
-                        for(var i = 0; i < topics.length; i++) {
-                            var topic = topics[i];
-                            preparedTopics[topic._id] = topic.name;
+                        for(let i = 0; i < post.topics.length; i++) {
+                            let postTopic = post.topics[i];
+
+                            for(let j = 0; j < topics.length; j++) {
+                                let topic = topics[j];
+
+                                if(postTopic.topicId == topic._id) {
+                                    preparedTopics.push({ _id: topic._id, title: topic.name, body: postTopic.body });
+                                    break;
+                                }
+                            }
                         }
 
+                        console.log(` - prepared ${preparedTopics.length} topics to render in post`);
+
                         renderPost = (props) => {
+                            console.log(' + rendering post');
                             return res.render('post/post', props);
                         };
 
                         let props = { post: post, user: user, country: country, topics: preparedTopics };
 
                         if(post.voteId) {
+                            console.log('detected vote added to the post, performing search in db');
+
                             Vote.findById(post.voteId, (err, vote) => {
+                                if(err) return next(err);
+
+                                console.log(' - found vote ' + vote.title);
+
+                                // check if current user already voted in this vote
+                                let voted = false;
+                                for(let i = 0; i < vote.votedUsers.length; i++) {
+                                    let votedUser = vote.votedUsers[i];
+                                    voted = votedUser === req.session.userId;
+                                }
+                                console.log(`user[${req.session.userId}] voted: ${voted}`);
+
                                 props.vote = vote;
+                                props.voted = voted;
+                                props.voteId = post.voteId;
+
                                 renderPost(props);
                             });
                         } else renderPost(props);
-                    });  
+                    });
                 } else {
-                    return res.render('post/post', { post: post, user: user, country: country });
+                    console.log(JSON.stringify(post.topics));
+                    return res.render('post/post', { post: post, user: user, country: country, topics: post.topics });
                 }
             });
         });
@@ -332,7 +437,7 @@ module.exports.topicCreatePost = (req, res, next) => {
 
 module.exports.topicCreateCustomPost = (req, res, next) => {
     if (req.body.name) {
-        Topic.create({ name: req.body.name, custom: true }, (err, topic) => {
+        Topic.create({ name: striptags(req.body.name), custom: true }, (err, topic) => {
             if (err) return next(err);
 
             return res.send(topic);
@@ -346,10 +451,8 @@ module.exports.topicUpdatePost = (req, res, next) => {
         Topic.findById(req.params.topicId, (err, topic) => {
             if (err) return next(err);
 
-            console.log('custom: ' + req.body.isCustom);
-
             topic.name = req.body.name;
-            topic.custom = req.body.isCustom;
+            topic.custom = req.body.isCustom ? true : false;
 
             topic.save();
 

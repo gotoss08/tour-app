@@ -6,16 +6,16 @@
 
 <div class="container mt-5">
     <div id="errors"></div>
-    <form id="post-form" action="/post/new/simple" method="post">
+    <form id="post-form" action="<%= locals.post ? '/post/update/' + post._id : '/post/new/simple' %>" method="post">
         <div class="row">
             <div class="col-12">
                 <div class="form-group mb-3">
-                    <input id="post-title-main" type="text" class="form-control post-title border-0" name="title" placeholder="* <%= __('post.title.placeholder') %>" required autofocus autocomplete="off" value="<%= locals.post ? post.title : ''%>">
+                    <input id="post-title-main" type="text" class="form-control post-title border-0" name="title" placeholder="* <%= __('post.title.placeholder') %>" required autofocus autocomplete="off" value="<%= locals.post ? post.title : '' %>">
                     <small id="post-title-main-error" class="form-text text-danger"></small>
                 </div>
                 <hr>
                 <div class="form-group">
-                    <input id="body-input" type="hidden" name="body">
+                    <input id="body-input" type="hidden" name="body" value="<%= locals.post ? post.body : '' %>">
                     <trix-editor id="post-body-main" class="form-control post-body border-0" input="body-input" placeholder="* <%= __('post.body.placeholder') %>"></trix-editor>
                     <small id="post-body-main-error" class="form-text text-danger"></small>
                     <p><small class="text-muted"><%= __('post.body.editor.help') %></small></p>
@@ -30,10 +30,10 @@
                         <option value="" disabled selected hidden>* <%= __('post.country.select') %></option>
                         <% for(var i = 0; i < countries.length; i++) { %>
                             <% var country = countries[i]; %>
-                            <option value="<%= country._id %>"><%= __(country.name) %></option>
+                            <option value="<%= country._id %>" <%= locals.post && country._id == post.countryId ? 'selected="selected"' : '' %>><%= __(country.name) %></option>
                         <% } %>
                     </select>
-                    <button type="button" class="btn btn-outline-success" onclick="$('#post-form').submit()"><%= __('post.submit') %></button>
+                    <button type="button" class="btn btn-outline-success" onclick="$('#post-form').submit()"><%= locals.post ? __('post.save') : __('post.submit') %></button>
                 </div>
             </div>
         </div>

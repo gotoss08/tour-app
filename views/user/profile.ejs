@@ -1,5 +1,7 @@
 <% include ../partials/header_start.ejs %>
 <link rel="stylesheet" href="/css/profile.css">
+<link rel="stylesheet" href="/css/animate.min.css">
+<script src="/js/noty.min.js"></script>
 <% include ../partials/header_end.ejs %>
 
 <div class="container mt-5">
@@ -19,10 +21,12 @@
             <% for(var i = 0; i < posts.length; i++) { %>
             <% var post = posts[i]; %>
                 <% if(String(session.userId) === String(user._id) ) { %>
-                    <div class="list-group-item">
-                        <a class="align-middle" href="/post/<%= post._id %>"><%= post.title %></a>
-                        <a role="button" href="/post/remove/<%= post._id %>" class="btn btn-outline-danger float-right"><%= __('user.profile.posts.remove') %></a>
-                        <a role="button" href="/post/edit/<%= post._id %>" class="btn btn-outline-primary float-right mr-1"><%= __('user.profile.posts.edit') %></a>
+                    <div class="list-group-item" id="post-<%= post._id %>">
+                        <a class="align-middle" href="/post/<%= post._id %>" title="<%= post.title %>"><%= limitText(post.title, 70) %></a>
+                        <div class="button-group d-sm-inline-flex d-md-block d-xl-inline">
+                            <button class="btn btn-outline-danger float-right" onclick="removePost('<%= post._id %>')"><i class="fas fa-trash-alt mr-1"></i><%= __('user.profile.posts.remove') %></button>
+                            <a role="button" href="/post/edit/<%= post._id %>" class="btn btn-outline-primary float-right mr-1"><i class="fas fa-edit mr-1"></i><%= __('user.profile.posts.edit') %></a>
+                        </div>
                     </div>
                 <% } else { %>
                     <a href="/post/<%= post._id %>" class="list-group-item"><%= post.title %></a>
@@ -32,5 +36,16 @@
     </div>
 </div>
 
+<script>
+    $(() => {
+        removePost = (postId) => {
+            $.ajax({
+                url: '/post/remove/' + postId,
+                method: 'POST',
+                success: (data) => $('#post-' + postId).animateCss('fadeOutLeft', () => $('#post-' + postId).remove())
+            });
+        }
+    });
+</script>
 
 <% include ../partials/footer.ejs %>

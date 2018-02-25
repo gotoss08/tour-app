@@ -1,0 +1,9 @@
+.form-control {
+    border: none;
+    font-family: 'PT Serif', Georgia, serif;
+}
+
+#passwordHelpBlock {
+    font-family: 'PT Sabb', Georgia, serif;
+
+}

@@ -13,3 +13,8 @@ img {
 .attachment__caption {
     text-align: center;
 }
+
+.noty_body {
+	font-family: PT Sans, sans;
+	font-size: 11pt;
+}

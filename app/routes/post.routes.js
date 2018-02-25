@@ -9,8 +9,9 @@ router.get('/new/:editorType', postController.newPostGet);
 router.post('/new/:editorType', postController.newPostPost);
 
 router.get('/edit/:postId', postController.editPostGet);
+router.post('/update/:postId', postController.updatePostPost);
 
-router.get('/remove/:postId', postController.removePostGet);
+router.post('/remove/:postId', postController.removePostPost);
 
 router.get('/:postId', postController.viewPostGet);
 

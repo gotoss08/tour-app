@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="/css/post-editor.css">
 <link rel="stylesheet" href="/css/trix.css">
 <script src="/js/trix.js"></script>
+<script src="/js/striptags.js"></script>
 <% include ../partials/header_end.ejs %>
 
 <div class="container mt-5 mb-5">
@@ -106,10 +107,10 @@
 
     <% for(var i = 0; i < topics.length; i++) { %>
         <% var topic = topics[i]; %>
-        topics.push({ name: '<%= topic._id %>' , title: '<%= topic.name %>' });
+        topics.push({ name: '<%= topic._id %>' , title: '<%- topic.name %>' });
     <% } %>
 
-    topics.forEach(topic => addAccordionCard(topic.title, getDefaultTextarea(topic.name, topic.title + '...', false, topic.name)));
+    topics.forEach(topic => addAccordionCard(topic.title, getDefaultTextarea(topic.name, striptags(topic.title) + '...', false, topic.name)));
 
     // accordion.append('<div id="custom-topics"></div>');
 
@@ -120,18 +121,16 @@
                 <button type="button" class="btn btn-outline-secondary" id="newTopicButton"><%= __('post.new.topic.button') %></button>
             </div>
         </div>
-
         <div id="accordion">
-              <div id="custom-topics"></div>      
+            <div id="custom-topics"></div>
         </div>
-
     `, accordion, true, 'bg-success text-white');
 
     $('#newTopicButton').click(() => {
         const newTopicInput = $('#newTopicInput');
 
         if(newTopicInput.val()) {
-            let newTopicName = newTopicInput.val();
+            let newTopicName = striptags(newTopicInput.val());
 
             $.post('/post/topic/create_custom', { name: newTopicName }).done((topic) => {
                 addAccordionCard(newTopicName, getDefaultTextarea(topic._id, newTopicName + '...', false, topic._id), $('#custom-topics'));
@@ -145,7 +144,6 @@
     });
 
     /* votes */
-
     addAccordionCard('<%= __('post.vote.new') %>', `
         <div class="input-group">
             <input type="text" class="form-control" id="voteThemeInput" name="voteThemeName" placeholder="<%= __('post.vote.theme.input.placeholder') %>">
@@ -211,7 +209,7 @@
 
     $('#addVoteOptionButton').click(() => {
         if (addVoteOptionInput.val()) {
-            createVoteOption(addVoteOptionInput.val());
+            createVoteOption(striptags(addVoteOptionInput.val()));
 
             addVoteOptionInput.val('');
 

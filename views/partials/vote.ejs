@@ -1,14 +1,136 @@
-<form>
+<link rel="stylesheet" href="/css/noty.css">
+<link rel="stylesheet" href="/css/themes/semanticui.css">
+<link rel="stylesheet" href="/css/animate.min.css">
+<script src="/js/noty.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
 
-	<% for(let i = 0; i < vote.options.length; i++) { %>
-		<% let option = vote.options[i]; %>
+<h5 id="vote-header"></h5>
 
-		<div class="radio">
-			<label><input type="radio" name="<%= option._id %>">0 - <%= option.name %></label>
-		</div>
+<div class="vote-results">
+	<canvas id="vote-chart" width="200" height="50"></canvas>
+</div>
+<div class="vote-voting">
+	<form id="vote-form" action="/vote" method="post"></form>
+	<button class="btn btn-primary mt-2" onclick="$('#vote-form').submit()"><%= __('post.vote') %></button>
 
-	<% } %>
+	<script src="https://cdn.jsdelivr.net/gh/jquery-form/form@4.2.2/dist/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
+	<script>
+		$(() => {
+			// noty for notifications
+			Noty.overrideDefaults({
+				layout: 'topLeft',
+				theme: 'semanticui',
+				timeout: '3000',
+				progressBar: true,
+			    animation: {
+			        open: 'animated bounceInLeft', // Animate.css class names
+			        close: 'animated bounceOutLeft' // Animate.css class names
+			    }
+			});
 
-</form>
+			// create chart
+			var ctx = document.getElementById("vote-chart").getContext('2d');
+			var voteChart = new Chart(ctx, {
+			    type: 'doughnut',
+			    data: {
+					labels: [],
+					datasets: [{
+			            data: [],
+			            backgroundColor: [
+			                'rgba(255, 99, 132, 0.2)',
+			                'rgba(54, 162, 235, 0.2)',
+			                'rgba(255, 206, 86, 0.2)',
+			                'rgba(75, 192, 192, 0.2)',
+			                'rgba(153, 102, 255, 0.2)',
+			                'rgba(255, 159, 64, 0.2)'
+			            ],
+			            borderColor: [
+			                'rgba(255,99,132,1)',
+			                'rgba(54, 162, 235, 1)',
+			                'rgba(255, 206, 86, 1)',
+			                'rgba(75, 192, 192, 1)',
+			                'rgba(153, 102, 255, 1)',
+			                'rgba(255, 159, 64, 1)'
+			            ],
+			            borderWidth: 1
+			        }]
+			    }
+			});
 
-<script src="/js/vote.js"></script>
+			// make ajax request to server and fetch vote data
+			fetchVoteData = (labels, data) => {
+				$.ajax({
+					url: '/vote/<%= voteId %>',
+					method: 'POST',
+					success: (data) => {
+						console.log('vote fetch success: ' + JSON.stringify(data));
+
+						vote = data.vote;
+
+						postVoteFetch(vote);
+
+						console.log(data.userVoted);
+
+						if(data.userVoted) $('.vote-voting').hide();
+					}
+				});
+			}
+
+			// after fetching data update fields and chart
+			postVoteFetch = (vote) => {
+				// update header
+				$('#vote-header').html('<%= __('post.vote.singular'); %>: ' + vote.title);
+
+				// clear local data and replace with data from server
+				voteChart.data.labels = [];
+				voteChart.data.datasets[0].data = [];
+				$('#vote-form').empty();
+
+				vote.options.forEach((option) => {
+					// update vote options
+					$('#vote-form').prepend(`
+						<div class="form-check">
+						    <input class="form-check-input" type="radio" name="optionId" id="radio-${option._id}" value="${option._id}">
+						    <label class="form-check-label" for="radio-${option._id}">${option.name}</label>
+						</div>
+					`);
+
+					// update vote chart data
+					voteChart.data.labels.push(option.name);
+					voteChart.data.datasets[0].data.push(option.votes);
+				});
+
+				voteChart.update();
+			}
+
+			fetchVoteData();
+
+			// handle form submit
+			$('#vote-form').ajaxForm({
+				beforeSubmit: function(data) {
+					data.push({ name: 'voteId', value: '<%= vote._id %>' });
+					data.push({ name: 'userId', value: '<%= session.userId %>' });
+				},
+				complete: (data, textStatus) => {
+					console.log('data: ' + JSON.stringify(data));
+					console.log('status: ' + textStatus);
+
+					if(data.responseText === 'voted') {
+						new Noty({
+							type: 'success',
+							text: '<%= __("post.vote.voted") %>'
+						}).show();
+
+						fetchVoteData();
+					}
+					if(data.responseText === 'already-voted') {
+						new Noty({
+							type: 'warning',
+							text: '<%= __("post.vote.already.voted") %>'
+						}).show();
+					}
+				}
+			});
+		});
+	</script>
+</div>

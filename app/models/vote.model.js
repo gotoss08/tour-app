@@ -14,7 +14,10 @@ const VoteSchema = new mongoose.Schema({
 	options: [{
 		name: String,
 		votes: Number
-	}]
+	}],
+	votedUsers: [String]
+}, {
+	usePushEach: true
 });
 
 module.exports.Vote = mongoose.model('Vote', VoteSchema);

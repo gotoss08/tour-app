@@ -1,6 +1,6 @@
 .post-title {
     color: black;
-    font-family: 'PT Serif', Georgia, serif;
+    font-family: 'Merriweather', Georgia, serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-weight: bold;
@@ -13,10 +13,10 @@
 
 .post-body {
     color: #333;
-    font-family: 'PT Serif', Georgia, serif;
+    font-family: 'Montserrat', Georgia, serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 16pt;
+    font-size: 12pt;
 }
 
 #new-post-footer {
@@ -25,4 +25,8 @@
     height: 50px;
     background-color: white;
     font-family: 'PT Serif', Georgia, serif;
+}
+
+.card-header h5 {
+    font-family: 'Roboto';
 }

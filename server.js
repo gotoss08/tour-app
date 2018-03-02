@@ -1,3 +1,4 @@
+//@flow
 const express = require('express');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
@@ -10,7 +11,7 @@ const fileUpload = require('express-fileupload');
 const __y18n = require('y18n')({ locale: 'ru_RU' }).__;
 const dateformat = require('dateformat');
 dateformat.masks.date = 'd.mm.yyyy';
-dateformat.masks.time = 'h:MM:ss';
+dateformat.masks.time = 'HH:MM:ss';
 dateformat.i18n = {
     dayNames: [
         'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',
@@ -29,7 +30,6 @@ Date.prototype.withoutTime = function () {
     d.setHours(0, 0, 0, 0);
     return d;
 }
-
 
 const app = express();
 

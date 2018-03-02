@@ -1,0 +1,67 @@
+#map {
+	margin-top: 50px;
+	height: 75vh;
+}
+
+#menu-toggle {
+
+}
+
+#waypoint-cards {
+
+}
+
+.waypoint-card {
+	width: 100%;
+    font-family: 'Roboto', sans-serif;
+}
+
+/*.waypoint-card-chain {
+	padding: 0;
+	margin: 0;
+	margin-left: 10px;
+	width: 3px;
+	height: 10px;
+	background-color: black;
+}*/
+
+.waypoint-card-chain {
+	padding: 0;
+	margin: 0;
+	margin-left: 25px;
+	margin-right: 10px;
+	margin-bottom: 12px;
+	height: 25px;
+	font-size: 20pt;
+	/*border-left: 3px dotted black;*/
+	/*border-right: 3px dotted black;*/
+}
+
+.waypoint-card-header {
+	padding: 15px;
+	margin: 0;
+	font-weight: bold;
+	/*font-family: 'Merriweather', serif;*/
+	background-color: rgba(1,1,1,0.2);
+}
+
+.waypoint-card-body {
+	padding: 15px;
+	margin: 0;
+	background-color: rgba(1,1,1,0.05);
+}
+
+.waypoint-card-body .medium-editor-element {
+}
+
+.waypoint-card-body .medium-editor-element h1, h2, h3, h4, h5, h6 {
+}
+
+.waypoint-card-body .medium-editor-element p {
+	margin-top: 7px;
+	margin-bottom: 7px;
+}
+
+.medium-editor-toolbar {
+	transition:all 0.25s ease;
+}

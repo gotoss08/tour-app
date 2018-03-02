@@ -28,5 +28,4 @@ router.post('/topic/create_custom', postController.topicCreateCustomPost);
 router.post('/topic/update/:topicId', postController.topicUpdatePost);
 router.post('/topic/remove/:topicId', postController.topicRemovePost);
 
-
 module.exports = router;

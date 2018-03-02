@@ -1,13 +1,17 @@
 <% include ../partials/header_start.ejs %>
 <link rel="stylesheet" href="/css/post-editor.css">
-<!--<link rel="stylesheet" href="/css/trix.css">
-<script src="/js/trix.js"></script>-->
+<link rel="stylesheet" href="/css/proto.css">
+<!-- medium editor -->
 <script src="/js/medium-editor.min.js"></script>
 <link rel="stylesheet" href="/css/medium-editor.min.css">
 <link rel="stylesheet" href="/css/medium-editor.theme.default.min.css">
 <% include ../partials/header_end.ejs %>
 
-<div class="container mt-5">
+<div class="fluid-container">
+	<div id="map"></div>
+</div>
+
+<div class="container mt-3 mt-md-5">
     <div id="errors"></div>
     <form id="post-form" action="<%= locals.post ? '/post/update/' + post._id : '/post/new/simple' %>" method="post">
         <div class="row">
@@ -25,6 +29,19 @@
             </div>
         </div>
         <hr>
+		<div class="waypoint-cards mt-2 mb-3">
+			<% for(let i = 0; i < 3; i++) { %>
+				<div id="uniqid" class="waypoint-card twinPeaks rounded">
+					<h5 class="waypoint-card-header">Улица Каныша Сатпаева 23, Караганда 100000, Казахстан</h1>
+					<div class="waypoint-card-body">
+						<textarea class="form-control border-0" name="body" id="body-input"></textarea>
+						<small id="post-body-main-error" class="form-text text-danger"></small>
+						<small class="text-muted"><%= __('post.body.editor.help') %></small>
+					</div>
+				</div>
+				<div class="waypoint-card-chain"><i class="fas fa-arrow-down"></i></div>
+			<% } %>
+		</div>
         <div class="row mb-2">
             <div id="new-post-footer" class="position-sticky position-fixed fixed-bottom">
                 <div class="col-12 col-md-6 form-group d-flex flex-row float-right">
@@ -41,15 +58,55 @@
         </div>
     </form>
 </div>
-
+<!-- init medium editor -->
 <script type="text/javascript">
     $(() => {
-        let editor = new MediumEditor('#body-input');
+    	rangy.init();
 
-        window.addEventListener('editableDrag', () => {
-            console.log('drag');
+    	let H2TagButton = MediumEditor.Extension.extend({
+    		name: 'h2tag',
+
+    		init: () => {
+    			this.classApplier = rangy.createClassApplier('h2', {
+    				elementTagName: 'mark',
+    				normalize: true
+    			});
+
+    			this.button = this.document.createElement('button');
+    			this.button.classList.add('medium-editor-action');
+    			this.button.innerHTML = '<i class="fas fa-heading"></i><sup><b>2</b></sup>';
+    			this.button.title = '2 level of heading';
+
+    			this.on(this.button, 'click', this.handleClick.bind(this));
+    		},
+
+    		getButton: () => {
+    			return this.button;
+    		},
+
+    		handleClick: (event) => {
+    			this.classApplier.toggleSelection();
+    			this.base.checkContentChanged();
+    		}
+    	});
+
+        let editor = new MediumEditor('#body-input', {
+        	autoLink: true,
+        	buttonLabels: 'fontawesome',
+        	toolbar: {
+        		buttons: ['bold', 'italic', 'underline', 'anchor', 'h2tag', 'h3', 'quote']
+        	},
+        	extensions: {
+        		'h2tag': new H2TagButton()
+        	}
         });
+
+        // editor.subscribe('hideToolbar', () => {
+        // 	console.log('show toolbar');
+        // 	$('.medium-editor-toolbar').addClass('animated flipOutX');
+        // });
     });
 </script>
-
+<script src="/js/proto.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjb3frwKoNDFK5GTYJgQw3QPCSlpEjoM8&language=ru&region=RU&libraries=places&callback=initMap" async defer></script>
 <% include ../partials/footer.ejs %>

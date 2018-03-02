@@ -5,57 +5,45 @@
 
 <link href="https://fonts.googleapis.com/css?family=Lora:400,400i&amp;subset=cyrillic" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,800&amp;subset=cyrillic" rel="stylesheet">
-<link href="/css/clean-blog.css" rel="stylesheet">
+
 <link href="/css/post.css" rel="stylesheet">
 
-<% include ../partials/header_end_nonav.ejs %>
-<header class="masthead" >
-    <div class="overlay" style="background-image: url(<%= country.img %>);"></div>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-md-10 mx-auto">
-                <div class="post-heading">
-                    <h1><%- post.title %></h1>
-                    <h2 class="subheading">
-                        <a class="text-white" href="/post/all?country=<%= country.name %>"><%= __(country.name) %></a>
-                    </h2>
-                    <span class="meta">
-                        Опубликовано
-                        <a href="/post/all?country=<%= country.name %>&sort=date&date=<%= post.createdAt.toISOString() %>"><%= dateformat(post.createdAt, "date") %></a>
-                        в
-                        <%= dateformat(post.createdAt, "time") %>
-                        пользователем
-                        <a href="/user/<%= user.username %>"><%= user.username %></a>
-                    </span>
-                    <hr>
-                    <% for(var i = 0; i < topics.length; i++) { %>
-                        <% var topic = topics[i]; %>
-                        <a class="text-white" href="#<%= urlSlug(topic.title) %>"><%- topic.title %></a>
-                        <% if(i < topics.length-1) { %>,<% } %>
-                    <% } %>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-<% include ../partials/navbar.ejs %>
+<% include ../partials/header_end.ejs %>
 
 <!-- Post Content -->
 <article>
     <div class="container mb-5">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto post-body">
-                <h1 id="<%= urlSlug(post.title) %>"><a href="#<%= urlSlug(post.title) %>"><%- post.title %></a></h1>
-                <%- post.body %>
-                <% for(var i = 0; i < topics.length; i++) { %>
-                    <% var topic = topics[i]; %>
-                    <h1 id="<%= urlSlug(topic.title) %>"><a href="#<%= urlSlug(topic.title) %>"><%- topic.title %></a></h1>
-                    <%- topic.body %>
-                <% } %>
-                <% if(post.voteId) { %>
+                <h1 class="mt-4 mb-2" id="<%= urlSlug(post.title) %>"><a href="#<%= urlSlug(post.title) %>"><%- post.title %></a></h1>
+                <small class="text-muted">
+                    <span class=""><a href="/post/all?country=<%= country.name %>&sort=date&date=<%= post.createdAt.toISOString() %>"><%= dateformat(post.createdAt, "date") %></a> в
+                    <span style="color: black;"><%= dateformat(post.createdAt, "time") %></span></span>
+                    <span class="float-right"><a href="/user/<%= user.username %>"><%= user.username %></a></span>
+                </small>
+                <% if(topics.length) { %>
                     <hr>
-                    <% include ../partials/vote.ejs %>
+                    <div class="tags d-block ">
+                        <% for(var i = 0; i < topics.length; i++) { %>
+                            <% var topic = topics[i]; %>
+                            <a href="#<%= urlSlug(topic.title) %>"><i class="fas fa-tag"></i> <%- topic.title %></a>
+                            <% if(i < topics.length-1) { %>,<% } %>
+                        <% } %>
+                    </div>
+                    <hr>
                 <% } %>
+                <div class="mt-3">
+                    <%- post.body %>
+                    <% for(var i = 0; i < topics.length; i++) { %>
+                        <% var topic = topics[i]; %>
+                        <h1 id="<%= urlSlug(topic.title) %>"><a href="#<%= urlSlug(topic.title) %>"><%- topic.title %></a></h1>
+                        <%- topic.body %>
+                    <% } %>
+                    <% if(post.voteId) { %>
+                        <hr>
+                        <% include ../partials/vote.ejs %>
+                    <% } %>
+                </div>
             </div>
         </div>
     </div>

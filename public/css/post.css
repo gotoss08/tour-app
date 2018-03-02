@@ -1,9 +1,9 @@
-nav.navbar {
+/*nav.navbar {
 	position: absolute;
 	width: 100%;
 	top: 0;
 	left: 0;
-}
+}*/
 
 img {
     width: 100%;
@@ -17,4 +17,31 @@ img {
 .noty_body {
 	font-family: PT Sans, sans;
 	font-size: 11pt;
+}
+
+article {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 12pt;
+}
+
+article a {
+	color: black;
+}
+
+article h1, h2, h3, h4, h5, h6 {
+	font-family: 'Merriweather', serif;
+	margin-top: 25px;
+	margin-bottom: 25px;
+}
+
+article h1 {
+	font-size: 30pt;
+}
+
+article h5 {
+	font-size: 15pt;
+}
+
+.tags a {
+	font-family: 'Merriweather', serif;
 }

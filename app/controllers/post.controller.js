@@ -1,3 +1,4 @@
+//@flow
 const { Post } = require('../models/post.model');
 const { Topic } = require('../models/post.model');
 const Comment = require('../models/post.model').Comment;
@@ -19,7 +20,7 @@ module.exports.allGet = (req, res, next) => {
             User.find({}, (err, users) => {
                 if(err) return next(err);
 
-                renderPosts = (posts, sort=false, sortType='none', sortDate=null) => {
+                let renderPosts = (posts, sort=false, sortType='none', sortDate=null) => {
                     for(let i = 0; i < posts.length; i++) {
                         console.log('i: ' + i);
                         let post = posts[i];
@@ -67,7 +68,7 @@ module.exports.allGet = (req, res, next) => {
 
                         renderPosts(posts);
                     });
-                } 
+                }
             });
         });
     }
@@ -86,7 +87,7 @@ module.exports.newPostGet = (req, res, next) => {
             }
 
             if (!req.params.editorType || req.params.editorType === 'simple') {
-                return res.render('post/simple', { countries: countries });
+                return res.render('post/proto', { countries: countries });
             } else if (req.params.editorType === 'advanced') {
                 Topic.find({ custom: false }, (err, topics) => {
                     if (err) return next(err);
@@ -144,6 +145,8 @@ module.exports.newPostPost = (req, res, next) => {
                 if(err) return next(err);
 
                 console.log('looking for topics...');
+
+                console.log(JSON.stringify(req.body));
 
                 /* custom topics creation */
                 postData.topics = [];
@@ -323,7 +326,7 @@ module.exports.viewPostGet = (req, res, next) => {
 
                         console.log(` - prepared ${preparedTopics.length} topics to render in post`);
 
-                        renderPost = (props) => {
+                        let renderPost = (props) => {
                             console.log(' + rendering post');
                             return res.render('post/post', props);
                         };
@@ -332,27 +335,9 @@ module.exports.viewPostGet = (req, res, next) => {
 
                         if(post.voteId) {
                             console.log('detected vote added to the post, performing search in db');
-
-                            Vote.findById(post.voteId, (err, vote) => {
-                                if(err) return next(err);
-
-                                console.log(' - found vote ' + vote.title);
-
-                                // check if current user already voted in this vote
-                                let voted = false;
-                                for(let i = 0; i < vote.votedUsers.length; i++) {
-                                    let votedUser = vote.votedUsers[i];
-                                    voted = votedUser === req.session.userId;
-                                }
-                                console.log(`user[${req.session.userId}] voted: ${voted}`);
-
-                                props.vote = vote;
-                                props.voted = voted;
-                                props.voteId = post.voteId;
-
-                                renderPost(props);
-                            });
-                        } else renderPost(props);
+                            props.voteId = post.voteId;
+                        }
+                        renderPost(props);
                     });
                 } else {
                     console.log(JSON.stringify(post.topics));
@@ -363,21 +348,29 @@ module.exports.viewPostGet = (req, res, next) => {
     });
 };
 
+/* post image upload */
 const path = require('path');
 const mkdirp = require('mkdirp');
+const uniqid = require('uniqid');
 
 module.exports.uploadPost = (req, res, next) => {
-    if (!req.files) {
-        next(new Error('No files were uploaded'));
-        return res.status(400).send('No files were uploaded');
-    }
-    if (!req.body.dir || !req.body.filename) {
-        next(new Error('Missing directory path or filename'));
-        return res.status(400).send('Missing directory path or filename');
+    console.log('upload started');
+
+    if(!req.files) {
+        return res.status(400).send('No files uploaded!');
     }
 
-    let file = req.files.file;
-    let filepath = path.join(__dirname, '..', '..', 'public', req.body.dir, req.body.filename);
+    if(!req.body.dir || !req.body.filename) {
+        return res.status(400).send('Invalid dir or filename!');
+    }
+
+    let file = req.files.file,
+        dir = req.body.dir,
+        filename = req.body.filename
+
+    console.log('file', file, 'dir', dir, 'filename', filename);
+
+    let filepath = path.join(__dirname, '..', '..', 'public', dir, filename);
     let dirname = path.dirname(filepath);
 
     mkdirp(dirname, function (err) {
@@ -394,14 +387,14 @@ module.exports.uploadPost = (req, res, next) => {
 
 module.exports.keyPost = (req, res, next) => {
     if (req.body.filename) {
-        let date, day, time;
-        date = new Date();
-        day = date.toISOString().slice(0, 10);
-        time = date.getTime();
+        let date = new Date(),
+            day = date.toISOString().slice(0, 10),
+            time = date.getTime(),
+            filename = uniqid() + '-' + time + '-' + req.body.filename;
 
-        return res.status(200).send({ dir: 'post_files/' + day + '/', filename: time + '-' + req.body.filename });
+        return res.status(200).send({ dir: 'post_files/' + day + '/', filename: filename });
     } else {
-        return res.status(400).send({ error: 'invalid filename' });
+        return res.status(400).send('invalid filename');
     }
 };
 
@@ -452,11 +445,10 @@ module.exports.topicUpdatePost = (req, res, next) => {
             if (err) return next(err);
 
             topic.name = req.body.name;
-            topic.custom = req.body.isCustom ? true : false;
-
+            topic.custom = req.body.isCustom ? req.body.isCustom : topic.custom;
             topic.save();
 
-            return res.redirect('/post/topic/all');
+            return res.status(200).send(topic);
         });
     }
 };

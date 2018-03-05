@@ -6,7 +6,7 @@
 
         <% if(session.userId) { %>
             <li>
-                <a data-toggle="modal" data-target="#writePostModal" href style="color: white"><i class="fas fa-pencil-alt mr-2 brand-color"></i><%= __('navbar.new.post') %></a>
+                <a href="/post/new" style="color: white"><i class="fas fa-pencil-alt mr-2 brand-color"></i><%= __('navbar.new.post') %></a>
             </li>
             <li>
                 <a href="/user/" style="color: white"><i class="fas fa-user mr-2 brand-color"></i><%= __('navbar.profile') %></a>

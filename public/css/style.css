@@ -7,7 +7,7 @@
 /* styles */
 html, body {
     font-family: 'PT Sans', sans-serif;
-    
+
 }
 
 .brand-color {
@@ -108,5 +108,16 @@ html, body {
 #menu-toggle {
     z-index: 1;
     position: fixed;
-    top: 20px;
+    top: 0px;
+    background-color: rgba(255,255,255,0.9);
 }
+
+#hamburger-box, #hamburger-inner {
+    color: white;
+    background-color: white;
+}
+
+#menu-toggle button:focus {
+    outline: none;
+}
+

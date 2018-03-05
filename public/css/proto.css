@@ -1,19 +1,18 @@
-#map {
-	margin-top: 50px;
-	height: 75vh;
+/* map style */
+#map
+{
+    height: 75vh;
+    margin-top: 50px;
 }
 
-#menu-toggle {
+/* wayopoint card style */
 
-}
 
-#waypoint-cards {
-
-}
-
-.waypoint-card {
-	width: 100%;
+.waypoint-card
+{
     font-family: 'Roboto', sans-serif;
+
+    width: 100%;
 }
 
 /*.waypoint-card-chain {
@@ -25,43 +24,141 @@
 	background-color: black;
 }*/
 
-.waypoint-card-chain {
-	padding: 0;
-	margin: 0;
-	margin-left: 25px;
-	margin-right: 10px;
-	margin-bottom: 12px;
-	height: 25px;
-	font-size: 20pt;
-	/*border-left: 3px dotted black;*/
-	/*border-right: 3px dotted black;*/
+.waypoint-card-chain
+{
+    font-size: 20pt;
+
+    height: 25px;
+    margin: 0;
+    margin-right: 10px;
+    margin-bottom: 12px;
+    margin-left: 25px;
+    padding: 0;
+    /*border-left: 3px dotted black;*/
+    /*border-right: 3px dotted black;*/
 }
 
-.waypoint-card-header {
-	padding: 15px;
-	margin: 0;
-	font-weight: bold;
-	/*font-family: 'Merriweather', serif;*/
-	background-color: rgba(1,1,1,0.2);
+.waypoint-card-header
+{
+    margin: 0;
+    padding: 15px;
+
+    letter-spacing: -.015em;
+
+    background-color: rgba(1,1,1,.2);
 }
 
-.waypoint-card-body {
-	padding: 15px;
-	margin: 0;
-	background-color: rgba(1,1,1,0.05);
+.waypoint-card-header-input
+{
+    font-family: Roboto;
+    font-size: 22px;
+    font-weight: 800;
+
+    width: 100%;
+
+    color: rgba(0,0,0,.84);
+    border: none;
+    background-color: transparent;
 }
 
-.waypoint-card-body .medium-editor-element {
+.waypoint-card-header-input::placeholder
+{
+    color: rgba(0,0,0,.84);
 }
 
-.waypoint-card-body .medium-editor-element h1, h2, h3, h4, h5, h6 {
+.waypoint-card-header-input:focus::placeholder
+{
+    color: rgba(0,0,0,0);
 }
 
-.waypoint-card-body .medium-editor-element p {
-	margin-top: 7px;
-	margin-bottom: 7px;
+.waypoint-card-header-input:focus,
+.waypoint-card-body-editor:focus,
+.waypoint-card-header button:focus
+{
+    color: rgba(0,0,0,.84);
+    border-color: inherit;
+    outline: none;
+    background-color: transparent;
+    -webkit-box-shadow: none;
+            box-shadow: none;
 }
 
-.medium-editor-toolbar {
-	transition:all 0.25s ease;
+.waypoint-card-header button,
+.waypoint-card-header button:focus
+{
+    font-weight: 900;
+
+    transition: color .2s;
+
+    color: rgba(0,0,0,.84);
+    border: none;
+    background-color: transparent;
+}
+
+.waypoint-card-header button:hover
+{
+    color: rgba(0,0,0,.54);
+}
+
+.waypoint-card-header button:active
+{
+    color: rgba(0,0,0,1);
+}
+
+
+
+.waypoint-card-body
+{
+    margin: 0;
+    padding: 15px;
+
+    color: rgba(0,0,0,.84);
+    background-color: rgba(1,1,1,.05);
+}
+
+.waypoint-card-body-editor
+{
+    height: auto;
+    margin: 0;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    padding: 0;
+
+    transition: height 2s;
+
+    color: rgba(0,0,0,.84);
+    border: none;
+    background-color: transparent;
+}
+
+.medium-editor-placeholder
+{
+    margin-top: 3px;
+    margin-bottom: 9px;
+}
+
+.medium-editor-placeholder:after
+{
+    font-weight: normal;
+    font-style: normal;
+
+    color: rgba(0,0,0,.84);
+}
+
+
+
+.waypoint-card-body-editor p
+{
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+.waypoint-card-body-editor-help
+{
+    color: rgba(0,0,0,.3);
+}
+
+.medium-editor-toolbar
+{
+    transition: all .25s ease;
 }

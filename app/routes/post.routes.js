@@ -7,6 +7,7 @@ router.post('/all', postController.allPost);
 
 router.get('/new/:editorType', postController.newPostGet);
 router.post('/new/:editorType', postController.newPostPost);
+router.get('/new', postController.newPostGet);
 
 router.get('/edit/:postId', postController.editPostGet);
 router.post('/update/:postId', postController.updatePostPost);

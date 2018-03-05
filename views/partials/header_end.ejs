@@ -2,34 +2,11 @@
 <body>
 	<div id="wrapper">
 		<% include sidebar.ejs %>
+		<div id="menu-toggle">
+			<button class="hamburger hamburger--3dy" type="button">
+				<span class="hamburger-box">
+					<span class="hamburger-inner"></span>
+				</span>
+			</button>
+		</div>
 		<div id="page-content-wrapper">
-			<!-- Write new post modal modal-dialog-centered -->
-	        <div class="modal fade" id="writePostModal" tabindex="-1" role="dialog" aria-labelledby="writePostModalLabel" aria-hidden="true" style="font-family: PT Sans, sans">
-	            <div class="modal-dialog" role="document">
-	                <div class="modal-content">
-	                    <div class="modal-header">
-	                        <h5 class="modal-title" id="writePostModalLabel"><%= __('navbar.new.post') %></h5>
-	                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	                    </div>
-	                    <div class="modal-body">
-	                        <div class="container-fluid">
-	                            <div class="row">
-	                                <div class="col-12 d-flex flex-column p-2">
-	                                    <a href="/post/new/simple" role="button" class="btn btn-secondary btn-lg align-middle"><i class="fas fa-cog mr-1"></i><%= __('navbar.new.post.simple') %></a>
-	                                </div>
-	                            </div>
-	                            <div class="row">
-	                                <div class="col-12 d-flex flex-column p-2">
-	                                    <a href="/post/new/advanced" role="button" class="btn btn-light btn-lg align-middle"><i class="fas fa-cogs mr-1"></i><%= __('navbar.new.post.advanced') %></a>
-	                                </div>
-	                            </div>
-	                        </div>
-	                    </div>
-	                    <div class="modal-footer">
-	                        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fas fa-window-close mr-1"></i><%= __('navbar.new.post.close') %></button>
-	                    </div>
-	                </div>
-	            </div>
-	        </div>
-	        
-			<a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle"><i class="fas fa-bars"></i></a>

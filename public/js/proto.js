@@ -80,8 +80,6 @@ let geocodeAddress = async (marker, callback=undefined) => {
                     if (result.types.indexOf('country') > -1) marker.country = result.formatted_address;
                 });
 
-                $.notify('marker country: ' + marker.country);
-
                 locationName = results[0].formatted_address;
 
                 placesService.nearbySearch({
@@ -94,9 +92,8 @@ let geocodeAddress = async (marker, callback=undefined) => {
                                 locationName = result.name + '(' + result.vicinity + ')';
                             }
                         });
-
-                        resolve();
                     }
+                    resolve();
                 });
             }
         });
@@ -104,8 +101,6 @@ let geocodeAddress = async (marker, callback=undefined) => {
         if(marker.cardName == marker.locationName) updateCardName(marker, locationName);
 
         marker.locationName = locationName;
-
-        $.notify('new marker location name: ' + locationName);
 
         if(callback) callback();
     });
@@ -277,6 +272,7 @@ let createWaypointCard = async (marker) => {
 
         initEditorAndTooltips();
 
+        // card`s header input any change detected -> update card name
         let headerElement = $(`#${marker.cardId} .waypoint-card-header-input`);
         headerElement.change(() => {
             if (headerElement.val()) {
@@ -284,7 +280,7 @@ let createWaypointCard = async (marker) => {
             }
         });
 
-        // update card`s focus on marker button
+        // button for focusing on marker
         $(`#${marker.cardId} .show-on-map-button`).click(() => {
             $(window).scrollTop(0);
             map.setZoom(18);
@@ -292,8 +288,13 @@ let createWaypointCard = async (marker) => {
             showInfoWindow(marker);
         });
 
-        // reset card name to default location name
+        // button for reseting card`s name to geolocated one
         $(`#${marker.cardId} .reset-location-button`).click(() => {
+
+            if (!marker.locationName) {
+                geocodeAddress(marker);
+            }
+
             updateCardName(marker, marker.locationName);
         });
 
@@ -305,11 +306,10 @@ let updateCardName = (marker, cardName) => {
     // update marker location name
     marker.cardName = cardName;
 
-    $.notify('new marker name: ' + marker.cardName);
-
     // update address info window content
     markerInfoWindow.setOptions({content: marker.cardName});
 
+    // update card header`s input
     let headerInputElement = $(`#${marker.cardId} .waypoint-card-header-input`);
     headerInputElement.val(marker.cardName);
 };
@@ -391,6 +391,7 @@ var loadData = (data) => {
 
     data.markers.forEach(marker => {
         let position = new google.maps.LatLng(Number(marker['position']['lat']), Number(marker['position']['lng']));
+        let positionIndex = marker.positionIndex;
         let cardId = marker.cardId;
         let header = marker.header;
         let body = marker.body;
@@ -403,16 +404,20 @@ var loadData = (data) => {
         });
 
         initMarker(marker, {
-            cardId: cardId,
-            locationName: header
+            cardId: cardId
         });
 
         addEventListeners(marker);
 
         createWaypointCard(marker);
 
+        marker.cardName = header;
+        updateCardName(marker, header);
+
+        console.log('asdfasfd');
+
         geocodeAddress(marker, () => {
-            updateCardName(marker, header);
+            console.log(positionIndex + ' geocoded');
         });
 
         if(body) {

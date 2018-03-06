@@ -139,7 +139,7 @@ module.exports.newPostPost = (req, res, next) => {
                     res.redirect('/post/' +  post._id);
                 });
             };
-            
+
             /* topics creation */
             Topic.find({}, (err, topics) => {
                 if(err) return next(err);
@@ -462,5 +462,14 @@ module.exports.topicRemovePost = (req, res, next) => {
 
             return res.redirect('/post/topic/all');
         });
+    }
+};
+
+module.exports.testNewPost = (req, res, next) => {
+    if (req.body.markers) {
+        req.body.markers.forEach((marker) => {
+            console.log(JSON.stringify(marker));
+        });
+        return res.status(200).send({markers: req.body.markers});
     }
 };

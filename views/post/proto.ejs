@@ -6,45 +6,40 @@
 <link rel="stylesheet" href="/css/post-editor.css">
 <link rel="stylesheet" href="/css/proto.css">
 <% include ../partials/header_end.ejs %>
-
 <div class="fluid-container">
 	<div id="map"></div>
 </div>
-
-<div class="container mt-3 mt-md-5">
-    <div id="errors"></div>
-    <form id="post-form" action="<%= locals.post ? '/post/update/' + post._id : '/post/new/simple' %>" method="post">
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group mb-3">
-                    <input id="post-title-main" type="text" class="form-control post-title border-0" name="title" placeholder="* <%= __('post.title.placeholder') %>" required autofocus autocomplete="off" value="<%= locals.post ? post.title : '' %>">
-                    <small id="post-title-main-error" class="form-text text-danger"></small>
-                </div>
+<div class="container mt-3 mt-md-4">
+    <div class="waypoint-card twinPeaks rounded">
+        <h3 class="waypoint-card-header d-flex align-items-center">
+            <input class="waypoint-card-header-input" type="text" placeholder="Название вашей заметки...">
+        </h3>
+        <div class="waypoint-card-body">
+            <textarea class="form-control waypoint-card-body-editor" name="body"></textarea>
+            <div class="d-flex align-items-center justify-content-end">
+                <span class="waypoint-card-body-editor-help" title="<ul style='text-align: left; padding: 0; margin: 0; margin-left: 16px;'><li>При выделении текста, появляется меню редактора, в котором можно применить разные стили к выделенному фрагменту текста.</li><li>После публикации, заголовки так же будут обработаны и добавлены в виде тэгов.</li><li>Чтобы загрузить фотографию, просто перетащите её на текст в том месте, где вы хотите что бы она оказалась.</li></ul>">Помощь по редактированию <i class="fas fa-question-circle"></i></span>
             </div>
+            <small id="post-body-main-error" class="form-text text-danger"></small>
         </div>
-        <hr>
-		<div class="waypoint-cards mt-2 mb-3">
-		</div>
-        <div class="row mb-2">
-            <div id="new-post-footer" class="position-sticky position-fixed fixed-bottom">
-                <div class="col-12 col-md-6 form-group d-flex flex-row float-right">
-                    <select id="country-select" class="custom-select mr-1" name="country" required >
-                        <option value="" disabled selected hidden>* <%= __('post.country.select') %></option>
-                        <% for(var i = 0; i < countries.length; i++) { %>
-                            <% var country = countries[i]; %>
-                            <option value="<%= country._id %>" <%= locals.post && country._id == post.countryId ? 'selected="selected"' : '' %>><%= __(country.name) %></option>
-                        <% } %>
-                    </select>
-                    <button type="button" class="btn btn-outline-success" onclick="$('#post-form').submit()"><%= locals.post ? __('post.save') : __('post.submit') %></button>
-                </div>
-            </div>
-        </div>
-    </form>
+    </div>
+    <div class="waypoint-cards mt-2 mb-3"></div>
 </div>
 <!-- medium editor js -->
 <script src="/js/medium-editor.min.js"></script>
-<!-- tipp tooltip -->
-<script src="https://unpkg.com/tippy.js@2.2.3/dist/tippy.all.min.js"></script>
+<script>
+    let editor = new MediumEditor('.waypoint-card-body-editor', {
+        autoLink: true,
+        buttonLabels: 'fontawesome',
+        placeholder: {
+            text: 'Начните печатать...',
+        },
+        toolbar: {
+            buttons: ['bold', 'italic', 'underline', 'anchor', 'h2', 'h3'],
+        },
+    });
+
+    tippy('[title]');
+</script>
 <!-- init maps and other new post page controls -->
 <script src="/js/proto.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjb3frwKoNDFK5GTYJgQw3QPCSlpEjoM8&language=ru&region=RU&libraries=places&callback=initMap" async defer></script>

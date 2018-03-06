@@ -1,4 +1,4 @@
-	</div>
+    </div>
 </div>
 <!-- footer and global scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -6,24 +6,25 @@
 <!-- make menu button stick at the top -->
 <script src="/js/headroom.min.js"></script>
 <script>
-	$(document).ready(() => {
-		$("#menu-toggle").click(function(e) {
-			e.preventDefault();
-			$("#wrapper").toggleClass("toggled");
-			$("#menu-toggle .hamburger").toggleClass("is-active");
-		});
+    $(document).ready(() => {
+        // toggle side bar button
+        $('#menu-toggle').click(function(e) {
+            e.preventDefault();
+            $('#wrapper').toggleClass('toggled');
+            $('#menu-toggle .hamburger').toggleClass('is-active');
+        });
 
-		var myElement = document.querySelector("#menu-toggle");
-		console.log();
-		var headroom = new Headroom(myElement, {
-			"classes": {
-				"initial": "animated",
-				"pinned": "slideInDown",
-				"unpinned": "slideOutUp"
-			}
-		});
-		headroom.init();
-	});
+        // hide and show toggle sidebar button on scrolling
+        let myElement = document.querySelector('#menu-toggle');
+        let headroom = new Headroom(myElement, {
+            'classes': {
+                'initial': 'animated',
+                'pinned': 'slideInDown',
+                'unpinned': 'slideOutUp',
+            },
+        });
+        headroom.init();
+    });
 </script>
 </body>
 </html>

@@ -4,6 +4,13 @@
     src: url('/fonts/MontExtraLight.ttf') format('truetype');
 }
 
+/* brand font */
+@font-face {
+    font-family: Cambria;
+    src: url('/fonts/Cambria.ttf') format('truetype');
+}
+
+
 /* styles */
 html, body {
     font-family: 'PT Sans', sans-serif;

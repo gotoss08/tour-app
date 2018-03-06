@@ -134,7 +134,6 @@ let initMarker = (marker, options={}) => {
         marker.locationName = options.locationName;
         marker.locationNames = [options.locationName];
     }
-    if (options.country) marker.country = options.country;
 
     marker.waypoint = {location: marker.getPosition()};
     marker.cardId = options.cardId;
@@ -175,13 +174,13 @@ let createMarker = async (latLng, options={}) => {
 
     initMarker(marker, options);
 
+    addEventListeners(marker);
+
     createWaypointCard(marker);
 
     console.log('started geocoding');
     await geocodeAddress(marker);
     console.log('finished geocoding');
-
-    addEventListeners(marker);
 
     await calcRoute(marker.waypoint);
 };
@@ -248,7 +247,7 @@ let generateWaypointCardHTML = (marker) => {
         <div id="${marker.cardId}-chain" class="waypoint-card-chain"><i class="fas fa-arrow-down"></i></div>
         <div id="${marker.cardId}" class="waypoint-card twinPeaks rounded">
             <h3 class="waypoint-card-header d-flex align-items-center">
-                <input class="waypoint-card-header-input" type="text" placeholder="Название точки маршрута..." value="${marker.locationName}">
+                <input class="waypoint-card-header-input" type="text" placeholder="Название точки маршрута...">
                 <button class="show-on-map-button" type="button"  title="Сфокусировать карту на этом маркере.">
                     <i class="fas fa-map-marker-alt"></i>
                 </button>
@@ -351,15 +350,11 @@ var sendToServer = () => {
         let cardId = marker.cardId;
         dataMarker.cardId = cardId;
 
-        let headerInputValue = $(`#${cardId} .waypoint-card-header-input`).val();
+        let headerInputValue = $(`#${cardId} .waypoint-card-header-input`).val().trim();
         dataMarker.header = headerInputValue;
 
         let bodyEditorContent = $(`#${cardId} .waypoint-card-body-editor`).html().trim();
         dataMarker.body = bodyEditorContent;
-
-        // cardId-header
-        // cardId-body
-        // asfasdfa-header=SomeHeaderInfo&asfasdfa-body=<p>hello</p>
 
         data.markers.push(dataMarker);
     }
@@ -396,10 +391,7 @@ var loadData = (data) => {
 
     data.markers.forEach(marker => {
         let position = new google.maps.LatLng(Number(marker['position']['lat']), Number(marker['position']['lng']));
-        let country = marker.country;
-
         let cardId = marker.cardId;
-
         let header = marker.header;
         let body = marker.body;
 
@@ -410,22 +402,18 @@ var loadData = (data) => {
             position: position,
         });
 
-        marker.country = country;
-        marker.cardName = header;
-
         initMarker(marker, {
             cardId: cardId,
-            locationName: header,
-            country: country,
+            locationName: header
         });
+
         addEventListeners(marker);
+
         createWaypointCard(marker);
 
         geocodeAddress(marker, () => {
-            updateMarkerLocationName(marker, header);
+            updateCardName(marker, header);
         });
-
-        console.log('header: ' + header);
 
         if(body) {
             $(`#${cardId} .waypoint-card-body-editor`).removeClass('medium-editor-placeholder').html(body);

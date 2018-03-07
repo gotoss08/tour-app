@@ -1,9 +1,11 @@
-const mongoose = require('mongoose');
+'use strict';
 
-const schema = new mongoose.Schema({
+var mongoose = require('mongoose');
+
+var schema = new mongoose.Schema({
     posted: {
         type: Boolean,
-        default: false,
+        default: false
     },
     title: String,
     description: String,
@@ -12,20 +14,20 @@ const schema = new mongoose.Schema({
         position: String,
         cardId: String,
         header: String,
-        body: String,
+        body: String
     }],
-    userId: String,
+    userId: String
 }, {
-    timestamps: true,
+    timestamps: true
 });
 
 schema.index({
     'title': 'text',
     'description': 'text',
     'markers.header': 'text',
-    'markers.body': 'text',
+    'markers.body': 'text'
 });
 
-const Post = mongoose.model('Post', schema);
+var Post = mongoose.model('Post', schema);
 
 module.exports.Post = Post;

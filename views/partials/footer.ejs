@@ -11,11 +11,11 @@
         $('#menu-toggle').click(function(e) {
             e.preventDefault();
             $('#wrapper').toggleClass('toggled');
-            $('#menu-toggle .hamburger').toggleClass('is-active');
+            $('#menu-toggle').toggleClass('is-active');
         });
 
         // hide and show toggle sidebar button on scrolling
-        let myElement = document.querySelector('#menu-toggle');
+        let myElement = document.querySelector('#header');
         let headroom = new Headroom(myElement, {
             'classes': {
                 'initial': 'animated',

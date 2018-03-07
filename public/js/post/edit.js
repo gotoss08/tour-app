@@ -3,6 +3,55 @@ $(document).ready(() => {
         globalPosition: 'bottom left',
         className: 'info',
     });
+
+    $('#post-publish-button').click(function() {
+        let data = prepareData();
+        if (data.markers.length < 1) return;
+
+        let self = this;
+        let prevHTML = $(self).html();
+
+        let buttonSending = () => {
+            $.notify('Button click');
+            $(self).html('<i class="fas fa-spinner"></i> Sending...');
+            $(self).children('i').addClass('spinner-rotation');
+            $(self).attr('disabled', true);
+            $('#post-status').html('Sending...');
+        };
+
+        let buttonReceived = () => {
+            $(self).html(prevHTML);
+            $(self).attr('disabled', false);
+            $('#post-status').html('');
+        };
+
+        let request = $.ajax({
+            url: `/p/${receivedPostData.postId}/update`,
+            method: 'post',
+            data: data
+        });
+
+        buttonSending();
+
+        removeAllMarkers();
+
+        request.done((data, status) => {
+            $.notify('send to server was ' + status, 'success')
+            $(self).attr('disabled', false);
+            $.notify('button ' + $(self).prop('disabled'));
+            loadData(data);
+        });
+
+        request.fail((xhr, status) => {
+            $.notify('send to server was ' + status, 'danger')
+        });
+
+        request.always(() => {
+            buttonReceived();
+        });
+    });
+
+    loadData(receivedPostData);
 });
 
 let map;
@@ -117,8 +166,21 @@ let removeMarker = async (marker) => {
     } else {
         await calcRoute();
     }
+};
 
-    console.log('marker removed');
+let removeAllMarkers = () => {
+    markers.forEach((marker) => {
+        marker.setMap(null);
+        removeWaypointCard(marker);
+        marker = null;
+    });
+
+    markers.length = 0;
+    waypoints.length = 0;
+
+    directionsDisplay.setMap(null);
+
+    $.notify('All markers removed');
 };
 
 let initMarker = (marker, options={}) => {
@@ -222,7 +284,7 @@ let convertHeadersToTagLinks = () => {
     $('.medium-editor-element h1, h2, h3, h4, h5, h6').addClass('adf');
 };
 
-let initEditorAndTooltips = () => {
+let initEditorAndTooltips = (marker) => {
     let editor = new MediumEditor('.waypoint-card-body-editor', {
         autoLink: true,
         buttonLabels: 'fontawesome',
@@ -233,6 +295,8 @@ let initEditorAndTooltips = () => {
             buttons: ['bold', 'italic', 'underline', 'anchor', 'h2', 'h3'],
         },
     });
+
+    marker.editor = editor;
 
     tippy('[title]');
 };
@@ -270,7 +334,7 @@ let createWaypointCard = async (marker) => {
 
         $('.waypoint-cards').append(cardDOMElement);
 
-        initEditorAndTooltips();
+        initEditorAndTooltips(marker);
 
         // card`s header input any change detected -> update card name
         let headerElement = $(`#${marker.cardId} .waypoint-card-header-input`);
@@ -331,7 +395,7 @@ let getTotalCountryList = () => {
     return countries;
 };
 
-var sendToServer = () => {
+var prepareData = () => {
     let countries = getTotalCountryList();
 
     let data = {};
@@ -344,7 +408,7 @@ var sendToServer = () => {
 
         dataMarker.positionIndex = i;
 
-        let markerPosition = marker.getPosition().toJSON();
+        let markerPosition = marker.getPosition().toString();
         dataMarker.position = markerPosition;
 
         let cardId = marker.cardId;
@@ -359,29 +423,7 @@ var sendToServer = () => {
         data.markers.push(dataMarker);
     }
 
-    /* new remove marker function */
-    markers.forEach((marker) => {
-        marker.setMap(null);
-        removeWaypointCard(marker);
-        marker = null;
-    });
-
-    markers.length = 0;
-    waypoints.length = 0;
-
-    directionsDisplay.setMap(null);
-    console.log('all markers removed');
-
-    let request = $.ajax({
-        url: '/post/test/new',
-        method: 'post',
-        data: data
-    }).done((data, status) => {
-        $.notify('send to server: ' + status, 'success')
-        loadData(data);
-    }).fail((xhr, status) => {
-        $.notify('send to server: ' + status, 'danger')
-    });
+    return data;
 };
 
 var loadData = (data) => {
@@ -390,7 +432,12 @@ var loadData = (data) => {
     });
 
     data.markers.forEach(marker => {
-        let position = new google.maps.LatLng(Number(marker['position']['lat']), Number(marker['position']['lng']));
+        // prepare position
+        let unpreparedPosition = marker['position'];
+        unpreparedPosition = marker['position'].slice(1, marker['position'].length-1);
+        let splittedPosition = unpreparedPosition.split(',');
+        let position = new google.maps.LatLng(Number(splittedPosition[0]), Number(splittedPosition[1]));
+
         let positionIndex = marker.positionIndex;
         let cardId = marker.cardId;
         let header = marker.header;
@@ -414,14 +461,10 @@ var loadData = (data) => {
         marker.cardName = header;
         updateCardName(marker, header);
 
-        console.log('asdfasfd');
-
-        geocodeAddress(marker, () => {
-            console.log(positionIndex + ' geocoded');
-        });
+        geocodeAddress(marker, () => {});
 
         if(body) {
-            $(`#${cardId} .waypoint-card-body-editor`).removeClass('medium-editor-placeholder').html(body);
+            $(`#${cardId} .waypoint-card-body-editor`).removeClass('medium-editor-placeholder').html(he.decode(body));
         }
     });
 

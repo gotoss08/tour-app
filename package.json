@@ -27,7 +27,7 @@
     "mongoose": "^4.13.9",
     "mongoose-text-search": "0.0.2",
     "request": "^2.83.0",
-    "striptags": "^3.1.1",
+    "sanitize-html": "^1.18.2",
     "uniqid": "^4.1.1",
     "url-slug": "^2.0.0",
     "y18n": "^4.0.0"

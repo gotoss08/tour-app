@@ -1,5 +1,7 @@
-const router = require('express').Router();
-const api = require('../controllers/post.controller.js');
+'use strict';
+
+var router = require('express').Router();
+var api = require('../controllers/post.controller.js');
 
 /* GET */
 

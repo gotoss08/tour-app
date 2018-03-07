@@ -1,0 +1,21 @@
+<% include partials/header_start.ejs %>
+<link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<% include partials/header_end.ejs %>
+
+<div class="container" style="display: flex; justify-content: center; align-items: center;">
+	<div class="row mt-5 mb-5">
+		<div class="col-12">
+			<h1 class="text-center"><%= __('error.header') %></h1>
+			<p class="text-center"><pre><code class="js"><%= error %></code></pre></p>
+			<form action="/back" method="post">
+				<button class="btn btn-primary"><%= __('error.back') %></button>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>hljs.initHighlightingOnLoad();</script>
+
+<% include partials/footer.ejs %>

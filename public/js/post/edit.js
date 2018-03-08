@@ -285,7 +285,7 @@ let convertHeadersToTagLinks = () => {
 };
 
 let initEditorAndTooltips = (marker) => {
-    let editor = new MediumEditor('.waypoint-card-body-editor', {
+    let editor = new MediumEditor(`#${marker.cardId} .waypoint-card-body-editor`, {
         autoLink: true,
         buttonLabels: 'fontawesome',
         placeholder: {
@@ -296,24 +296,21 @@ let initEditorAndTooltips = (marker) => {
         },
     });
 
-    marker.editor = editor;
-
     tippy('[title]');
 };
 
 let generateWaypointCardHTML = (marker) => {
     return `
-        <div id="${marker.cardId}-chain" class="waypoint-card-chain"><i class="fas fa-arrow-down"></i></div>
-        <div id="${marker.cardId}" class="waypoint-card twinPeaks rounded">
-            <h3 class="waypoint-card-header d-flex align-items-center">
+        <div id="${marker.cardId}" class="waypoint-card rounded">
+            <div class="waypoint-card-header d-flex align-items-center">
                 <input class="waypoint-card-header-input" type="text" placeholder="Название точки маршрута...">
-                <button class="show-on-map-button" type="button"  title="Сфокусировать карту на этом маркере.">
+                <button class="waypoint-card-header-icon show-on-map-button" type="button"  title="Сфокусировать карту на этом маркере.">
                     <i class="fas fa-map-marker-alt"></i>
                 </button>
-                <button class="reset-location-button" type="button" title="Сбросить текущее название точки маршрута, и установить исходя из геолокации.">
+                <button class="waypoint-card-header-icon reset-location-button" type="button" title="Сбросить текущее название точки маршрута, и установить исходя из геолокации.">
                     <i class="fas fa-redo-alt"></i>
                 </button>
-            </h3>
+            </div>
             <div class="waypoint-card-body">
                 <textarea class="form-control waypoint-card-body-editor" name="body"></textarea>
                 <div class="d-flex align-items-center justify-content-end">
@@ -379,8 +376,7 @@ let updateCardName = (marker, cardName) => {
 };
 
 let removeWaypointCard = (marker) => {
-    console.log('removing waypoint card ' + marker.cardId);
-    $(`#${marker.cardId}, #${marker.cardId}-chain`).remove();
+    $(`#${marker.cardId}`).remove();
 };
 
 let getTotalCountryList = () => {
@@ -399,6 +395,10 @@ var prepareData = () => {
     let countries = getTotalCountryList();
 
     let data = {};
+
+    data.title = $('#post-title-input').val().trim();
+    data.description = $('#post-description-editor').val().trim();
+
     data.markers = [];
 
     for(let i = 0; i < markers.length; i++) {
@@ -417,8 +417,11 @@ var prepareData = () => {
         let headerInputValue = $(`#${cardId} .waypoint-card-header-input`).val().trim();
         dataMarker.header = headerInputValue;
 
-        let bodyEditorContent = $(`#${cardId} .waypoint-card-body-editor`).html().trim();
-        dataMarker.body = bodyEditorContent;
+        // let bodyEditorContent = $(`#${cardId} .waypoint-card-body-editor`).html().trim();
+        // dataMarker.body = bodyEditorContent;
+
+        let editor = MediumEditor.getEditorFromElement($(`#${cardId} .waypoint-card-body-editor`).get(0));
+        dataMarker.body = editor.getContent();
 
         data.markers.push(dataMarker);
     }

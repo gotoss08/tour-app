@@ -1,18 +1,32 @@
 /* map style */
 #map
 {
-    height: 75vh;
-    margin-top: 50px;
+    position: absolute;
+    top: 65px;
+    right: 0;
+    width: 60%;
+    height: 90vh;
+    margin-top: 10px;
+    margin-bottom: 8px;
 }
 
 /* wayopoint card style */
 
+.waypoint-cards {
+    width: 38%;
+    margin-top: 23px;
+    margin-bottom: -15px;
+    margin-right: 25px;
+}
 
 .waypoint-card
 {
     font-family: 'Roboto', sans-serif;
+    margin-bottom: 25px;
 
-    width: 100%;
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 /*.waypoint-card-chain {
@@ -24,39 +38,34 @@
 	background-color: black;
 }*/
 
-.waypoint-card-chain
-{
-    font-size: 20pt;
-
-    height: 25px;
-    margin: 0;
-    margin-right: 10px;
-    margin-bottom: 12px;
-    margin-left: 25px;
-    padding: 0;
-    /*border-left: 3px dotted black;*/
-    /*border-right: 3px dotted black;*/
-}
-
 .waypoint-card-header
 {
     margin: 0;
     padding: 15px;
 
     letter-spacing: -.015em;
-
-    background-color: rgba(1,1,1,.2);
+    background-color: rgba(0,0,0,0.03);
 }
 
 .waypoint-card-header-input
 {
     font-family: Roboto Slab;
-    font-size: 22px;
+    font-size: 1.1em;
     font-weight: 800;
+
     width: 100%;
+
     color: rgba(0,0,0,.84);
     border: none;
     background-color: transparent;
+}
+
+.waypoint-card-header-icon {
+    font-size: 22px;
+}
+
+.show-on-map-button .fas {
+
 }
 
 .waypoint-card-header-input::placeholder
@@ -111,7 +120,6 @@
     padding: 15px;
 
     color: rgba(0,0,0,.84);
-    background-color: rgba(1,1,1,.05);
 }
 
 .waypoint-card-body-editor
@@ -144,7 +152,6 @@
 }
 
 
-
 .waypoint-card-body-editor p
 {
     margin-top: 6px;
@@ -156,7 +163,7 @@
     letter-spacing: .01rem;
     font-weight: 400;
     font-style: normal;
-    font-size: 17px;
+    font-size: 1em;
     line-height: 1.58;
     letter-spacing: -.025em;
 
@@ -177,6 +184,7 @@
 {
     color: rgba(0,0,0,.3);
 }
+
 
 .medium-editor-toolbar
 {

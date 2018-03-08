@@ -20,15 +20,12 @@ module.exports.edit = (req, res, next) => {
     defaultCheck(req, res, next);
 
     Post.findById(req.params.postId).exec().then((post, err) => {
+        console.log(JSON.stringify(post));
         if (post && post.userId == req.session.userId) return res.render('post/edit', {post: post});
         else return next(new Error('Такого черновика либо не существует, либо у вас нет прав для его просмотра.'));
     }).catch((err) => {
         return next(err);
     });
-};
-
-
-module.exports.invalid = (req, res) => {
 };
 
 
@@ -51,11 +48,14 @@ module.exports.update = (req, res, next) => {
         return sanitizeHtml(text, {
             allowedTags: ['h2', 'h3', 'blockquote', 'p', 'a', 'img', 'b', 'i', 'strong', 'em', 'strike', 'br', 'u'],
             allowedAttributes: {
-              a: ['href', 'name', 'target'],
-              img: ['src'],
+                a: ['href', 'name', 'target'],
+                img: ['src'],
             },
         });
     };
+
+    postData.title = sanitizeHtml(postData.title);
+    postData.description = sanitizeHtml(postData.description);
 
     for (let i = 0; i < postData.markers.length; i++) {
         let marker = postData.markers[i];

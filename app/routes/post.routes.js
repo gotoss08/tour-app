@@ -6,8 +6,6 @@ const api = require('../controllers/post.controller.js');
 router.get('/new', api.new);
 router.get('/:postId/edit', api.edit);
 
-router.get('/invalid', api.invalid);
-
 /* POST [CRUD] */
 
 router.post('/:postId', api.create);

@@ -5,31 +5,17 @@
 <!-- page styles -->
 <link rel="stylesheet" href="/css/post/edit.css">
 <% include ../partials/header_end.ejs %>
-<div class="fluid-container">
-    <div id="map"></div>
-</div>
-<div class="container mt-3 mt-md-4">
-    <div class="waypoint-card twinPeaks rounded">
-        <h3 class="waypoint-card-header d-flex align-items-center">
-            <input class="waypoint-card-header-input" type="text" placeholder="Название вашей заметки...">
-        </h3>
-        <div class="waypoint-card-body">
-            <textarea class="form-control waypoint-card-body-editor" name="body"></textarea>
-            <div class="d-flex align-items-center justify-content-end">
-                <span class="waypoint-card-body-editor-help" title="<ul style='text-align: left; padding: 0; margin: 0; margin-left: 16px;'><li>При выделении текста, появляется меню редактора, в котором можно применить разные стили к выделенному фрагменту текста.</li><li>После публикации, заголовки так же будут обработаны и добавлены в виде тэгов.</li><li>Чтобы загрузить фотографию, просто перетащите её на текст в том месте, где вы хотите что бы она оказалась.</li></ul>">Помощь по редактированию <i class="fas fa-question-circle"></i></span>
-            </div>
-            <small id="post-body-main-error" class="form-text text-danger"></small>
-        </div>
-    </div>
-    <div class="waypoint-cards mt-2 mb-3"></div>
+<div class="container d-flex flex-row justify-content-center mt-3 mt-md-4">
+    <div class="waypoint-cards"></div>
+    <div class="position-sticky" id="map"></div>
 </div>
 <!-- strip tags lib -->
-<script src="/js/libs/striptags.js"></script>
+<script src="/js/libs/jquery.fittext.js"></script>
 <script src="/js/libs/he.js"></script>
 <!-- medium editor js -->
 <script src="/js/post/libs/medium-editor.min.js"></script>
 <script>
-    let editor = new MediumEditor('.waypoint-card-body-editor', {
+    let editor = new MediumEditor('#post-description-editor', {
         autoLink: true,
         buttonLabels: 'fontawesome',
         placeholder: {

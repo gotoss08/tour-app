@@ -7,16 +7,20 @@
     width: 60%;
     height: 90vh;
     margin-top: 10px;
-    margin-bottom: 8px;
+    margin-bottom: -1.95%;
 }
 
 /* wayopoint card style */
 
-.waypoint-cards {
+#cards {
     width: 38%;
     margin-top: 23px;
     margin-bottom: -15px;
     margin-right: 25px;
+}
+
+.waypoint-cards {
+    width: 100%;
 }
 
 .waypoint-card
@@ -61,7 +65,7 @@
 }
 
 .waypoint-card-header-icon {
-    font-size: 22px;
+    font-size: 18px;
 }
 
 .show-on-map-button .fas {
@@ -163,7 +167,7 @@
     letter-spacing: .01rem;
     font-weight: 400;
     font-style: normal;
-    font-size: 1em;
+    font-size: 12pt;
     line-height: 1.58;
     letter-spacing: -.025em;
 
@@ -185,8 +189,77 @@
     color: rgba(0,0,0,.3);
 }
 
-
 .medium-editor-toolbar
 {
     transition: all .25s ease;
+}
+
+.meta-card input {
+    width: 100%;
+}
+
+.meta-title {
+    font-size: 1.25em;
+}
+
+.meta-subtitle {
+    padding: 0;
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: normal;
+    color: rgba(0,0,0,.84);
+}
+
+.meta-subtitle:active, .meta-subtitle:focus, .meta-subtitle::placeholder {
+    color: rgba(0,0,0,.64);
+}
+
+.vote-card-header-input {
+    font-family: Roboto Slab;
+    font-size: 1.1em;
+    font-weight: 800;
+
+    width: 100%;
+
+    color: rgba(0,0,0,.84);
+    border: none;
+    background-color: transparent;
+}
+
+.vote-card-header-input::placeholder {
+    color: rgba(0,0,0,.64);
+}
+
+.vote-card-header-input:active, .vote-card-header-input:focus {
+    outline: none;
+    color: rgba(0,0,0,.84);
+}
+
+.vote-card-header-input:focus::placeholder {
+    color: rgba(0,0,0,0);
+}
+
+.vote-card-body-input {
+    font-family: Roboto Slab;
+    font-size: 1em;
+    font-weight: 800;
+
+    width: 100%;
+
+    color: rgba(0,0,0,.84);
+    border: none;
+    background-color: transparent;
+}
+
+.vote-card-body-input::placeholder {
+    color: rgba(0,0,0,.64);
+}
+
+.vote-card-body-input:active, .vote-card-body-input:focus {
+    outline: none;
+    color: rgba(0,0,0,.84);
+}
+
+.vote-card-body-input:focus::placeholder {
+    color: rgba(0,0,0,0);
 }

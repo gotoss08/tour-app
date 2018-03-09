@@ -5,13 +5,18 @@
 <!-- page styles -->
 <link rel="stylesheet" href="/css/post/edit.css">
 <% include ../partials/header_end.ejs %>
-<div class="container d-flex flex-row justify-content-center mt-3 mt-md-4">
-    <div class="waypoint-cards"></div>
-    <div class="position-sticky" id="map"></div>
+<div class="container mt-3 mt-md-4">
+    <div class="d-flex flex-row justify-content-center">
+        <div id="cards">
+            <div class="waypoint-cards"></div>
+        </div>
+        <div class="position-sticky" id="map"></div>
+    </div>
 </div>
-<!-- strip tags lib -->
-<script src="/js/libs/jquery.fittext.js"></script>
+<!-- util libs -->
 <script src="/js/libs/he.js"></script>
+<script src="/js/libs/autosize.min.js"></script>
+<script src="/js/libs/jquery.waypoints.min.js"></script>
 <!-- medium editor js -->
 <script src="/js/post/libs/medium-editor.min.js"></script>
 <script>
@@ -29,9 +34,10 @@
     tippy('[title]');
 
     const receivedPostData = {
-        posted: <%= post.posted %>,
+        posted: Boolean('<%= post.posted %>'),
         title: '<%= post.title %>',
-        description: '<%= post.description %>',
+        subtitle: '<%= post.subtitle %>',
+        body: '<%= post.body %>',
         markers: [
             <% for(let i = 0; i < post.markers.length; i++) { %>
                 <% let marker = post.markers[i]; %>

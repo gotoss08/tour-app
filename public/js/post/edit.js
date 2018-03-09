@@ -5,8 +5,9 @@ $(document).ready(() => {
     });
 
     $('#post-publish-button').click(function() {
+        validateData();
+
         let data = prepareData();
-        if (data.markers.length < 1) return;
 
         let self = this;
         let prevHTML = $(self).html();
@@ -50,6 +51,10 @@ $(document).ready(() => {
             buttonReceived();
         });
     });
+
+    createAddVoteCard();
+
+    generateMetaCard();
 
     loadData(receivedPostData);
 });
@@ -96,6 +101,12 @@ var initMap = () => {
             await createMarker(e.latLng);
         })();
     });
+};
+
+let focusMap = (marker) => {
+    map.setZoom(18);
+    map.panTo(marker.getPosition());
+    showInfoWindow(marker);
 };
 
 // info window for showing marker address
@@ -161,6 +172,7 @@ let removeMarker = async (marker) => {
     marker.setMap(null);
     removeWaypointCard(marker);
     marker = null;
+    recreateMapFocusWaypoints();
     if (waypoints.length < 2) {
         directionsDisplay.setMap(null);
     } else {
@@ -235,6 +247,8 @@ let createMarker = async (latLng, options={}) => {
 
     createWaypointCard(marker);
 
+    recreateMapFocusWaypoints();
+
     console.log('started geocoding');
     await geocodeAddress(marker);
     console.log('finished geocoding');
@@ -280,8 +294,13 @@ let calcRoute = async () => {
     }
 };
 
-let convertHeadersToTagLinks = () => {
-    $('.medium-editor-element h1, h2, h3, h4, h5, h6').addClass('adf');
+var convertHeadersToTagLinks = () => {
+    let headersDOM = $('.medium-editor-element > h2, h3');
+    for(let i = 0; i < headersDOM.length; i++) {
+        let header = $(headersDOM[i]);
+        let headerText = header.html();
+        header.html($('<a></a>').attr('href', 'www.google.ru').text(headerText));
+    }
 };
 
 let initEditorAndTooltips = (marker) => {
@@ -304,15 +323,18 @@ let generateWaypointCardHTML = (marker) => {
         <div id="${marker.cardId}" class="waypoint-card rounded">
             <div class="waypoint-card-header d-flex align-items-center">
                 <input class="waypoint-card-header-input" type="text" placeholder="Название точки маршрута...">
-                <button class="waypoint-card-header-icon show-on-map-button" type="button"  title="Сфокусировать карту на этом маркере.">
+                <button class="waypoint-card-header-icon show-on-map-button" type="button" title="Сфокусировать карту на этом маркере.">
                     <i class="fas fa-map-marker-alt"></i>
                 </button>
                 <button class="waypoint-card-header-icon reset-location-button" type="button" title="Сбросить текущее название точки маршрута, и установить исходя из геолокации.">
                     <i class="fas fa-redo-alt"></i>
                 </button>
+                <button class="waypoint-card-header-icon remove-marker-button" type="button" title="Удалить маркер и карточку.">
+                    <i class="far fa-trash-alt mr-1" style="color: red;"></i>
+                </button>
             </div>
             <div class="waypoint-card-body">
-                <textarea class="form-control waypoint-card-body-editor" name="body"></textarea>
+                <textarea class="form-control waypoint-card-body-editor"></textarea>
                 <div class="d-flex align-items-center justify-content-end">
                     <span class="waypoint-card-body-editor-help" title="<ul style='text-align: left; padding: 0; margin: 0; margin-left: 16px;'><li>При выделении текста, появляется меню редактора, в котором можно применить разные стили к выделенному фрагменту текста.</li><li>После публикации, заголовки так же будут обработаны и добавлены в виде тэгов.</li><li>Чтобы загрузить фотографию, просто перетащите её на текст в том месте, где вы хотите что бы она оказалась.</li></ul>">Помощь по редактированию <i class="fas fa-question-circle"></i></span>
                 </div>
@@ -324,8 +346,6 @@ let generateWaypointCardHTML = (marker) => {
 
 let createWaypointCard = async (marker) => {
     await new Promise(resolve => {
-        console.log('creating waypoint card ' + marker.cardId);
-
         let cardHtml = generateWaypointCardHTML(marker);
         let cardDOMElement = $($.parseHTML(cardHtml));
 
@@ -343,10 +363,7 @@ let createWaypointCard = async (marker) => {
 
         // button for focusing on marker
         $(`#${marker.cardId} .show-on-map-button`).click(() => {
-            $(window).scrollTop(0);
-            map.setZoom(18);
-            map.panTo(marker.getPosition());
-            showInfoWindow(marker);
+            focusMap(marker);
         });
 
         // button for reseting card`s name to geolocated one
@@ -357,6 +374,11 @@ let createWaypointCard = async (marker) => {
             }
 
             updateCardName(marker, marker.locationName);
+        });
+
+        // button for reseting card`s name to geolocated one
+        $(`#${marker.cardId} .remove-marker-button`).click(() => {
+            removeMarker(marker);
         });
 
         resolve();
@@ -379,26 +401,54 @@ let removeWaypointCard = (marker) => {
     $(`#${marker.cardId}`).remove();
 };
 
-let getTotalCountryList = () => {
-    const countries = [];
+let generateMetaCard = () => {
+    let metaCardHTML = `
+        <div class="waypoint-card meta-card rounded">
+            <div class="waypoint-card-header d-flex flex-column">
+                <input class="waypoint-card-header-input meta-title" type="text" placeholder="Title...">
+                <textarea class="waypoint-card-header-input meta-subtitle" placeholder="Subtitle..."></textarea>
+            </div>
+            <div class="waypoint-card-body">
+                <textarea class="form-control waypoint-card-body-editor meta-body"></textarea>
+                <div class="d-flex align-items-center justify-content-end">
+                    <span class="waypoint-card-body-editor-help" title="<ul style='text-align: left; padding: 0; margin: 0; margin-left: 16px;'><li>При выделении текста, появляется меню редактора, в котором можно применить разные стили к выделенному фрагменту текста.</li><li>После публикации, заголовки так же будут обработаны и добавлены в виде тэгов.</li><li>Чтобы загрузить фотографию, просто перетащите её на текст в том месте, где вы хотите что бы она оказалась.</li></ul>">Помощь по редактированию <i class="fas fa-question-circle"></i></span>
+                </div>
+                <small id="post-body-main-error" class="form-text text-danger"></small>
+            </div>
+        </div>
+    `;
+    let metaCardDOMElement = $($.parseHTML(metaCardHTML));
+    $('.waypoint-cards').append(metaCardDOMElement);
 
-    markers.forEach((marker) => {
-        if (countries.indexOf(marker.country) == -1) countries.push(marker.country);
+    autosize($('.meta-subtitle'));
+
+    let editor = new MediumEditor(`.meta-card .waypoint-card-body-editor`, {
+        autoLink: true,
+        buttonLabels: 'fontawesome',
+        placeholder: {
+            text: 'Общие впечатления, описание поездки...',
+        },
+        toolbar: {
+            buttons: ['bold', 'italic', 'underline', 'anchor', 'h2', 'h3'],
+        },
     });
 
-    $.notify(JSON.stringify(countries));
-
-    return countries;
+    tippy('[title]');
 };
 
 var prepareData = () => {
-    let countries = getTotalCountryList();
-
     let data = {};
 
-    data.title = $('#post-title-input').val().trim();
-    data.description = $('#post-description-editor').val().trim();
+    /* base data */
+    data.title = $('.meta-title').val();
+    if (data.title) data.title = data.title.trim();
 
+    data.subtitle = $('.meta-subtitle').val();
+    if (data.subtitle) data.subtitle = data.subtitle.trim();
+
+    data.body = MediumEditor.getEditorFromElement($('.meta-body').get(0)).getContent();
+
+    /* markers */
     data.markers = [];
 
     for(let i = 0; i < markers.length; i++) {
@@ -414,22 +464,54 @@ var prepareData = () => {
         let cardId = marker.cardId;
         dataMarker.cardId = cardId;
 
-        let headerInputValue = $(`#${cardId} .waypoint-card-header-input`).val().trim();
+        let headerInputValue = $(`#${cardId} .waypoint-card-header-input`).val();
+        if (headerInputValue) headerInputValue = headerInputValue.trim();
         dataMarker.header = headerInputValue;
 
-        // let bodyEditorContent = $(`#${cardId} .waypoint-card-body-editor`).html().trim();
-        // dataMarker.body = bodyEditorContent;
-
-        let editor = MediumEditor.getEditorFromElement($(`#${cardId} .waypoint-card-body-editor`).get(0));
-        dataMarker.body = editor.getContent();
+        dataMarker.body = MediumEditor
+                            .getEditorFromElement($(`#${cardId} .waypoint-card-body-editor`).get(0))
+                            .getContent();
 
         data.markers.push(dataMarker);
+    }
+
+    /* vote */
+    if ($('.vote-card-active').length) {
+        data.vote = {};
+
+        let voteTitle = $('.vote-card-active .vote-card-header-input').val();
+        if(voteTitle) {
+            voteTitle = voteTitle.trim();
+            data.vote.title = voteTitle;
+        }
+
+        let voteOptionsDOMElement = $('.vote-card-active .waypoint-card-body').find('.vote-card-body-input');
+        if (voteOptionsDOMElement.length) {
+            data.vote.options = [];
+            voteOptionsDOMElement.each((index, element) => {
+                let optionName = $(element).val();
+                if(optionName && optionName.trim()) {
+                    optionName = optionName.trim();
+                    console.log('+++++++++++child ' + optionName);
+                    data.vote.options.push({
+                        name: optionName
+                    });
+                }
+            });
+        }
     }
 
     return data;
 };
 
 var loadData = (data) => {
+
+    $('.meta-title').val(data.title);
+    $('.meta-subtitle').val(data.subtitle);
+    MediumEditor
+        .getEditorFromElement($('.meta-body').get(0))
+        .setContent(he.decode(data.body));
+
     data.markers.sort((a, b) => {
         return a.positionIndex - b.positionIndex;
     });
@@ -467,15 +549,121 @@ var loadData = (data) => {
         geocodeAddress(marker, () => {});
 
         if(body) {
-            $(`#${cardId} .waypoint-card-body-editor`).removeClass('medium-editor-placeholder').html(he.decode(body));
+            MediumEditor
+                .getEditorFromElement($(`#${cardId} .waypoint-card-body-editor`).get(0))
+                .setContent(he.decode(body));
         }
     });
+
+    recreateMapFocusWaypoints();
 
     calcRoute();
 };
 
+var getTotalCountryList = () => {
+    const countries = [];
+
+    markers.forEach((marker) => {
+        if (countries.indexOf(marker.country) == -1) countries.push(marker.country);
+    });
+
+    $.notify(JSON.stringify(countries));
+
+    return countries;
+};
+
 var validateData = () => {
-    $('.waypoint-cards').each((index, element) => {
-        console.log(element.html());
+    // if (data.markers.length < 1) return;
+    $('.waypoint-card').each((index, element) => {
+        // console.dir(element);
+    });
+};
+
+var recreateMapFocusWaypoints = () => {
+    markers.forEach((marker, index) => {
+        let cardDOMElement = $(`#${marker.cardId}`);
+
+        let addWaypoint = (offset) => {
+            cardDOMElement.waypoint({
+                handler: function(direction) {
+                    focusMap(marker);
+                },
+                offset: offset,
+            });
+        };
+
+        let toTop = cardDOMElement.offset().top;
+        let viewportHeight = $(window).outerHeight();
+        let containerHeight = $('.waypoint-cards').innerHeight();
+
+        console.log('to top: ' + toTop);
+        console.log('countainer height: ' + containerHeight);
+
+        if (toTop + viewportHeight >= containerHeight) addWaypoint('85%');
+        else addWaypoint(135);
+    });
+};
+
+let createAddVoteCard = () => {
+    $('.vote-card').remove();
+    let html = `
+        <div class="waypoint-card vote-card rounded">
+            <div class="waypoint-card-header d-flex flex-row">
+                <button class="btn w-100" onclick="createVoteCard();" title="<span style='text-align: center;'>Нажмите на эту кнопку, если хотите провести голосование среди ваших читателей. Голосование будет добавлено в самый конец.</span>">Добавить голосование</button>
+            </div>
+        </div>
+    `;
+    $('#cards').append(html);
+};
+
+var createVoteCard = () => {
+    $('.vote-card').remove();
+    let html = `
+        <div class="waypoint-card vote-card vote-card-active rounded">
+            <div class="waypoint-card-header d-flex flex-row align-items-center">
+                <input class="vote-card-header-input" type="text" placeholder="Тема голосования...">
+                <i class="waypoint-card-header-icon fas fa-exclamation-circle mr-1" title="Внимание! После публикации вы не сможете изменить тему или варианты голосования без сброса количества голосов!"></i>
+                <button class="waypoint-card-header-icon" type="button" onclick="createAddVoteCard();" title="Убрать голосование">
+                    <i class="far fa-trash-alt mr-1" style="color: red;"></i>
+                </button>
+            </div>
+            <div class="waypoint-card-body">
+                <div class="d-flex flex-row align-items-center">
+                    <i class="far fa-square mr-1"></i>
+                    <input class="vote-card-body-input" type="text" placeholder="Вариант голосования...">
+                </div>
+                <div class="d-flex flex-row align-items-center">
+                    <i class="far fa-square mr-1"></i>
+                    <input class="vote-card-body-input" type="text" placeholder="Вариант голосования...">
+                </div>
+                <div class="d-flex flex-row align-items-center">
+                    <i class="far fa-square mr-1"></i>
+                    <input class="vote-card-body-input" type="text" placeholder="Вариант голосования...">
+                </div>
+            </div>
+        </div>
+    `;
+    $('#cards').append(html);
+    tippy('.vote-card .waypoint-card-header .waypoint-card-header-icon');
+
+    let createVoteOption = () => {
+        let html = `
+            <div class="d-flex flex-row align-items-center">
+                <i class="far fa-square mr-1"></i>
+                <input class="vote-card-body-input" type="text" placeholder="Вариант голосования...">
+            </div>
+        `;
+
+        $('.vote-card > .waypoint-card-body').children().last().off();
+
+        $('.vote-card > .waypoint-card-body').append(html);
+
+        $('.vote-card > .waypoint-card-body').children().last().change(function() {
+            createVoteOption();
+        });
+    };
+
+    $('.vote-card > .waypoint-card-body').children().last().change(function() {
+        createVoteOption();
     });
 };

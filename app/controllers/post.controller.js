@@ -55,13 +55,24 @@ module.exports.update = (req, res, next) => {
     };
 
     postData.title = sanitizeHtml(postData.title);
-    postData.description = sanitizeHtml(postData.description);
+    postData.subtitle = sanitizeHtml(postData.subtitle);
+    postData.body = sanitizeHtml(postData.body);
 
-    for (let i = 0; i < postData.markers.length; i++) {
-        let marker = postData.markers[i];
+    console.log(JSON.stringify(postData.vote));
+    if (postData.vote && postData.vote.title && postData.vote.options && postData.vote.options.length) {
+        postData.vote.options.forEach((option) => {
+            option.vote = 0;
+            console.dir(option);
+        });
+    }
 
-        marker.header = sanitizeHtmlWithOptions(marker.header);
-        marker.body = sanitizeHtmlWithOptions(marker.body);
+    if (postData.markers) {
+        for (let i = 0; i < postData.markers.length; i++) {
+            let marker = postData.markers[i];
+
+            marker.header = sanitizeHtmlWithOptions(marker.header);
+            marker.body = sanitizeHtmlWithOptions(marker.body);
+        }
     }
 
     Post.findByIdAndUpdate(req.params.postId, postData).exec().then((post) => {

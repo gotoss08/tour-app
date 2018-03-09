@@ -6,7 +6,8 @@ const schema = new mongoose.Schema({
         default: false,
     },
     title: String,
-    description: String,
+    subtitle: String,
+    body: String,
     markers: [{
         positionIndex: Number,
         position: String,
@@ -15,6 +16,13 @@ const schema = new mongoose.Schema({
         body: String,
     }],
     userId: String,
+    vote: {
+        title: String,
+        options: [{
+            name: String,
+            count: Number,
+        }],
+    },
 }, {
     timestamps: true,
 });

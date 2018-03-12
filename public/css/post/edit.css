@@ -4,19 +4,16 @@
     position: absolute;
     top: 65px;
     right: 0;
-    width: 60%;
     height: 90vh;
-    margin-top: 10px;
+    margin-top: 41px;
     margin-bottom: -1.95%;
 }
 
 /* wayopoint card style */
 
 #cards {
-    width: 38%;
-    margin-top: 23px;
+    margin-top: 41px;
     margin-bottom: -15px;
-    margin-right: 25px;
 }
 
 .waypoint-cards {
@@ -208,6 +205,7 @@
     font-size: 1.1em;
     font-weight: normal;
     color: rgba(0,0,0,.84);
+    height: 15px;
 }
 
 .meta-subtitle:active, .meta-subtitle:focus, .meta-subtitle::placeholder {
@@ -263,3 +261,4 @@
 .vote-card-body-input:focus::placeholder {
     color: rgba(0,0,0,0);
 }
+

@@ -1,0 +1,8 @@
+.waypoint-card-body
+{
+    margin: 0;
+    padding: 15px;
+    padding-top: 5px;
+
+    color: rgba(0,0,0,.84);
+}

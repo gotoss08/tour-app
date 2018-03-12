@@ -1,5 +1,3 @@
-    </div>
-</div>
 <!-- footer and global scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -7,14 +5,54 @@
 <script src="/js/headroom.min.js"></script>
 <script>
     $(document).ready(() => {
-        // toggle side bar button
-        $('#menu-toggle').click(function(e) {
-            e.preventDefault();
-            $('#wrapper').toggleClass('toggled');
-            $('#menu-toggle').toggleClass('is-active');
+        let searchInput = $('.header-search input');
+        let searchButton = $('.header-search button');
+
+        let performSearch = () => {
+            if (searchInput.val()) {
+                console.log('searching for: ' + searchInput.val().trim());
+            }
+        };
+
+        searchInput.on('keyup', (e) => {
+            if (e.keyCode == 13) {
+                performSearch();
+            }
         });
 
+        let showSearchInput = () => {
+            searchInput
+                .focus()
+                .animate({
+                    width: 200,
+                }, 150, 'easeInSine');
 
+            searchButton.off().click(() => {
+                performSearch();
+            });
+        };
+
+        let hideSearchInput = () => {
+            searchInput.animate({
+                width: 0,
+            }, 100, 'easeOutSine');
+
+            searchButton.off().click(() => {
+                showSearchInput();
+            });
+        };
+
+        searchInput.width(0);
+
+        searchButton.click(() => {
+            showSearchInput();
+        });
+
+        searchInput.focusout(() => {
+            if (!searchInput.val()) {
+                hideSearchInput();
+            }
+        });
     });
 </script>
 </body>

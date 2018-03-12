@@ -17,13 +17,11 @@ $(document).ready(() => {
             $(self).html('<i class="fas fa-spinner"></i> Sending...');
             $(self).children('i').addClass('spinner-rotation');
             $(self).attr('disabled', true);
-            $('#post-status').html('Sending...');
         };
 
         let buttonReceived = () => {
             $(self).html(prevHTML);
             $(self).attr('disabled', false);
-            $('#post-status').html('');
         };
 
         let request = $.ajax({
@@ -69,31 +67,24 @@ let markerInfoWindow;
 const waypoints = [];
 const markers = [];
 
+
+
 var initMap = () => {
-    // init map
-    map = new google.maps.Map($('#map').get(0), {
-        center: {lat: 49.82081217632622, lng: 73.08635614723323},
-        zoom: 20,
-        gestureHandling: 'greedy',
-    });
+    // create map
+    map = createMap();
 
-    // init geocoding service
-    geocoder = new google.maps.Geocoder();
+    // create geocoding service
+    geocoder = createGeocoderService();
 
-    // places service
-    placesService = new google.maps.places.PlacesService(map);
+    // create places service
+    placesService = createPlacesService();
 
     // init routing service
-    directionsService = new google.maps.DirectionsService();
-    directionsDisplay = new google.maps.DirectionsRenderer({
-        draggable: false,
-        suppressMarkers: true,
-        preserveViewport: true,
-    });
-    directionsDisplay.setMap(map);
+    directionsService = createDirectionsService();
+    directionsDisplay = createDirectionsDisplay();
 
     // create basic info window
-    markerInfoWindow = new google.maps.InfoWindow();
+    markerInfoWindow = createMarkerWindow();
 
     // handle left click event
     map.addListener('click', (e) => {
@@ -101,12 +92,6 @@ var initMap = () => {
             await createMarker(e.latLng);
         })();
     });
-};
-
-let focusMap = (marker) => {
-    map.setZoom(18);
-    map.panTo(marker.getPosition());
-    showInfoWindow(marker);
 };
 
 // info window for showing marker address
@@ -195,22 +180,6 @@ let removeAllMarkers = () => {
     $.notify('All markers removed');
 };
 
-let initMarker = (marker, options={}) => {
-    marker.locationNames = [];
-
-    if (!options.cardId) options.cardId = '_' + Math.random().toString(36).substr(2, 9);
-    if (options.locationName) {
-        marker.locationName = options.locationName;
-        marker.locationNames = [options.locationName];
-    }
-
-    marker.waypoint = {location: marker.getPosition()};
-    marker.cardId = options.cardId;
-    markers.push(marker);
-
-    waypoints.push(marker.waypoint);
-};
-
 let addEventListeners = (marker) => {
     // show tooltip with location name
     marker.addListener('click', () => {
@@ -231,76 +200,6 @@ let addEventListeners = (marker) => {
         calcRoute();
         geocodeAddress(marker);
     });
-};
-
-let createMarker = async (latLng, options={}) => {
-    let marker = new google.maps.Marker({
-        map: map,
-        draggable: true,
-        animation: google.maps.Animation.DROP,
-        position: latLng,
-    });
-
-    initMarker(marker, options);
-
-    addEventListeners(marker);
-
-    createWaypointCard(marker);
-
-    recreateMapFocusWaypoints();
-
-    console.log('started geocoding');
-    await geocodeAddress(marker);
-    console.log('finished geocoding');
-
-    await calcRoute(marker.waypoint);
-};
-
-// method for calculating path between all waypoints
-let calcRoute = async () => {
-    if (waypoints.length >= 2) {
-        let start = waypoints[0];
-        waypoints.splice(0, 1);
-        let finish = waypoints[waypoints.length-1];
-        waypoints.splice(waypoints.length-1, 1);
-
-        let request = {
-            origin: start,
-            destination: finish,
-            waypoints: waypoints,
-            travelMode: 'DRIVING',
-            unitSystem: google.maps.UnitSystem.METRIC,
-        };
-
-        console.log('path start');
-
-        await new Promise((resolve) => {
-            directionsService.route(request, (result, status) => {
-                console.log('path progress');
-
-                if (status == 'OK') {
-                    directionsDisplay.setMap(map);
-                    directionsDisplay.setDirections(result);
-                }
-
-                waypoints.splice(0, 0, start);
-                waypoints.splice(waypoints.length, 0, finish);
-
-                console.log('path end');
-
-                resolve();
-            });
-        });
-    }
-};
-
-var convertHeadersToTagLinks = () => {
-    let headersDOM = $('.medium-editor-element > h2, h3');
-    for(let i = 0; i < headersDOM.length; i++) {
-        let header = $(headersDOM[i]);
-        let headerText = header.html();
-        header.html($('<a></a>').attr('href', 'www.google.ru').text(headerText));
-    }
 };
 
 let initEditorAndTooltips = (marker) => {
@@ -360,6 +259,11 @@ let createWaypointCard = async (marker) => {
                 updateCardName(marker, headerElement.val().trim());
             }
         });
+
+        // body editor input changed -> recreate map focus waypoints
+        let bodyEditorElement = $(`#${marker.cardId} .waypoint-card-body-editor`);
+        console.dir(bodyEditorElement);
+        bodyEditorElement.change(() => recreateMapFocusWaypoints());
 
         // button for focusing on marker
         $(`#${marker.cardId} .show-on-map-button`).click(() => {
@@ -468,9 +372,7 @@ var prepareData = () => {
         if (headerInputValue) headerInputValue = headerInputValue.trim();
         dataMarker.header = headerInputValue;
 
-        dataMarker.body = MediumEditor
-                            .getEditorFromElement($(`#${cardId} .waypoint-card-body-editor`).get(0))
-                            .getContent();
+        dataMarker.body = $(`#${cardId} .waypoint-card-body-editor`).html();
 
         data.markers.push(dataMarker);
     }
@@ -576,31 +478,6 @@ var validateData = () => {
     // if (data.markers.length < 1) return;
     $('.waypoint-card').each((index, element) => {
         // console.dir(element);
-    });
-};
-
-var recreateMapFocusWaypoints = () => {
-    markers.forEach((marker, index) => {
-        let cardDOMElement = $(`#${marker.cardId}`);
-
-        let addWaypoint = (offset) => {
-            cardDOMElement.waypoint({
-                handler: function(direction) {
-                    focusMap(marker);
-                },
-                offset: offset,
-            });
-        };
-
-        let toTop = cardDOMElement.offset().top;
-        let viewportHeight = $(window).outerHeight();
-        let containerHeight = $('.waypoint-cards').innerHeight();
-
-        console.log('to top: ' + toTop);
-        console.log('countainer height: ' + containerHeight);
-
-        if (toTop + viewportHeight >= containerHeight) addWaypoint('85%');
-        else addWaypoint(135);
     });
 };
 

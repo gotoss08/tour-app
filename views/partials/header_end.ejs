@@ -1,12 +1,53 @@
 </head>
 <body>
-	<div id="wrapper">
-		<% include sidebar.ejs %>
-		<div id="header" class="d-flex align-items-center">
-			<button id="menu-toggle" class="hamburger hamburger--3dy" type="button">
-				<span class="hamburger-box">
-					<span class="hamburger-inner"></span>
-				</span>
-			</button>
-		</div>
-		<div id="page-content-wrapper">
+    <div id="header" class="d-flex align-items-center">
+        <div class="container d-flex flex-row align-items-center">
+            <img src="/imgs/logo.png" alt="">
+            <div class="header-page-control-section d-flex flex-row justify-content-start align-items-center mr-auto" style="margin-top: 3px"></div>
+            <div class="header-global-controls-section d-flex flex-row justify-content-end align-items-center">
+                <div class="header-search">
+                    <button><i class="fas fa-search"></i></button>
+                    <input type="text">
+                </div>
+                <div class="header-user dropdown show">
+                    <a href="#" id="user-dropdown-menu-link" data-toggle="dropdown">
+                        <div id="user-avatar" class="rounded-circle">
+                            <!-- <i id="user-icon" class="fas fa-user align-middle"></i> -->
+                        </div>
+                    </a>
+                    <div class="dropdown-menu">
+                        <% if(session.userId) { %>
+                            <div class="dropdown-item">
+                                <a href="/p/new">Новая заметка</a>
+                            </div>
+                            <div class="dropdown-item">
+                                <a href="#">Продолжить</a>
+                            </div>
+                            <div class="dropdown-item">
+                                <a href="#">Заметки</a>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-item">
+                                <a href="/user/">Профиль</a>
+                            </div>
+                            <div class="dropdown-item">
+                                <a href="#">Настройки</a>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-item">
+                                <a href="#" onclick="$('#header-logout-form').submit()">Выход</a>
+                                <form id="header-logout-form" action="/user/logout/" method="post"></form>
+                            </div>
+                        <% } else { %>
+                            <div class="dropdown-item">
+                                <a href="/user/login"><i class="fas fa-user mr-1"></i>Регистрация</a>
+                            </div>
+                            <div class="dropdown-item">
+                                <a href="/user/register"><i class="fas fa-user mr-1"></i>Вход</a>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,13 +1,8 @@
 $(document).ready(() => {
     let headerHTML = `
-    <div class="container">
-        <span id="post-status" class="post-info"></span>
-        <span id="post-country-list" class="post-info"></span>
-        <button id="post-publish-button" class="btn-link float-right">Publish</button>
-    </div>
+        <button id="post-publish-button" class="header-button float-right">Publish</button>
     `;
 
-    $('#header').append($.parseHTML(headerHTML));
-
+    $('#header .header-page-control-section').append($.parseHTML(headerHTML));
     $('#header button').animateCss('bounceIn');
 });

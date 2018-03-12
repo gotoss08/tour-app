@@ -10,11 +10,9 @@
     src: url('/fonts/Cambria.ttf') format('truetype');
 }
 
-
 /* styles */
 html, body {
-    font-family: 'PT Sans', sans-serif;
-
+    font-family: Roboto, sans-serif;
 }
 
 .brand-color {
@@ -110,64 +108,4 @@ html, body {
 .post-preview .post-subtitle {
     font-family: 'PT Sans', sans-serif;
     font-size: 15pt;
-}
-
-#header
-{
-    font-family: Roboto;
-    font-size: 17px;
-    font-weight: 400;
-
-    position: fixed;
-    z-index: 1;
-    top: 0;
-
-    width: 100%;
-
-    color: rgba(0,0,0,.54);
-    background-color: rgba(255,255,255,.9);
-}
-
-
-#header button:focus {
-    outline: none;
-    text-decoration: none;
-}
-
-#hamburger-box, #hamburger-inner {
-    color: white;
-    background-color: white;
-}
-
-.btn-link {
-    background-color: transparent;
-    outline: none;
-    border: none;
-    text-decoration: none;
-
-    color: rgba(0,0,0,.54);
-    transition: color .15s;
-}
-
-.btn-link:hover {
-    text-decoration: none;
-    color: rgba(0,0,0,0.94);
-}
-
-.post-info {
-    margin-right: 5px;
-}
-
-.spinner-rotation {
-    animation: rotation 0.75s infinite;
-    animation-timing-function: ease;
-}
-
-@keyframes rotation {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(359deg);
-    }
 }

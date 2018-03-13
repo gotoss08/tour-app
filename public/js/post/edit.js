@@ -4,9 +4,7 @@ $(document).ready(() => {
         className: 'info',
     });
 
-    $('#post-publish-button').click(function() {
-        validateData();
-
+    $('#post-save-button').click(function() {
         let data = prepareData();
 
         let self = this;
@@ -14,7 +12,55 @@ $(document).ready(() => {
 
         let buttonSending = () => {
             $.notify('Button click');
-            $(self).html('<i class="fas fa-spinner"></i> Sending...');
+            $(self).html('<i class="fas fa-spinner"></i>');
+            $(self).children('i').addClass('spinner-rotation');
+            $(self).attr('disabled', true);
+        };
+
+        let buttonReceived = () => {
+            $(self).html(prevHTML);
+            $(self).attr('disabled', false);
+        };
+
+        let request = $.ajax({
+            url: `/p/${receivedPostData.post.postId}/update`,
+            method: 'post',
+            data: data
+        });
+
+        buttonSending();
+
+        removeAllMarkers();
+
+        request.done((data, status) => {
+            $.notify('send to server was ' + status, 'success')
+            $(self).attr('disabled', false);
+            $.notify('button ' + $(self).prop('disabled'));
+            loadData(data);
+        });
+
+        request.fail((xhr, status) => {
+            $.notify('send to server was ' + status, 'danger')
+        });
+
+        request.always(() => {
+            buttonReceived();
+        });
+    });
+
+    $('#post-publish-button').click(function() {
+        validateData();
+
+        let data = prepareData();
+
+        data.posted = true;
+
+        let self = this;
+        let prevHTML = $(self).html();
+
+        let buttonSending = () => {
+            $.notify('Button click');
+            $(self).html('<i class="fas fa-spinner"></i>');
             $(self).children('i').addClass('spinner-rotation');
             $(self).attr('disabled', true);
         };
@@ -371,9 +417,11 @@ var prepareData = () => {
 
         let markerHeader = $(`#${cardId} .waypoint-card-header-input`).val();
         if (markerHeader && markerHeader.trim()) dataMarker.header = markerHeader.trim();
+        else dataMarker.header = '';
 
         let markerBody = MediumEditor.getEditorFromElement($(`#${cardId} .waypoint-card-body-editor`).get(0)).getContent();
         if (markerBody) dataMarker.body = markerBody;
+        else dataMarker.body = '';
 
         data.markers.push(dataMarker);
     }

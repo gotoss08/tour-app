@@ -29,7 +29,7 @@ module.exports.edit = (req, res, next) => {
                 let data = {post: post, voteAttached: false};
                 return data;
             } else {
-                return next(new Error('Такого черновика либо не существует, либо у вас нет прав для его просмотра.'));
+                throw new Error('Такого черновика либо не существует, либо у вас нет прав для его просмотра.');
             }
         })
         .then((data) => {
@@ -56,8 +56,34 @@ module.exports.create = () => {
 
 };
 
-module.exports.read = () => {
+module.exports.read = (req, res, next) => {
+    checkPostIdParams(req, res, next);
 
+    Post.findById(req.params.postId).exec()
+        .then((post) => {
+            console.log(JSON.stringify(post));
+            if (post && post.posted) {
+                let data = {post: post, voteAttached: false};
+                return data;
+            } else {
+                throw new Error('Такого поста либо не существует, либо у вас нет прав для его просмотра.');
+            }
+        })
+        .then((data) => {
+            return Vote.findById(data.post.voteId).exec().then((vote) => {
+                if (vote) {
+                    data.vote = vote;
+                    data.voteAttached = true;
+                }
+                return data;
+            });
+        })
+        .then((data) => {
+            return res.render('post/index', data);
+        })
+        .catch((err) => {
+            return next(err);
+        });
 };
 
 module.exports.update = (req, res, next) => {
@@ -79,9 +105,19 @@ module.exports.update = (req, res, next) => {
 
     Post.findById(req.params.postId).exec()
         .then((post) => {
-            post.title = sanitizeHtml(postData.title);
-            post.subtitle = sanitizeHtml(postData.subtitle);
-            post.body = sanitizeHtml(postData.body);
+            post.posted = false;
+            if (postData.posted) post.posted = postData.posted;
+
+            post.title = '';
+            if (postData.title) post.title = sanitizeHtml(postData.title);
+
+            post.subtitle = '';
+            if (postData.subtitle) post.subtitle = sanitizeHtml(postData.subtitle);
+
+            post.body = '';
+            if (postData.body) post.body = sanitizeHtml(postData.body);
+
+            post.markers = [];
 
             if (postData.markers) {
                 for (let i = 0; i < postData.markers.length; i++) {
@@ -90,9 +126,9 @@ module.exports.update = (req, res, next) => {
                     marker.header = sanitizeHtmlWithOptions(marker.header);
                     marker.body = sanitizeHtmlWithOptions(marker.body);
                 }
-            }
 
-            post.markers = postData.markers;
+                post.markers = postData.markers;
+            }
 
             let data = {post: post};
             data.vote = postData.vote;
@@ -123,14 +159,12 @@ module.exports.update = (req, res, next) => {
         .then((data) => {
             if (data.vote) {
                 data.post.voteId = data.vote._id;
-                return data.post.save().then(() => {
-                    console.log(JSON.stringify(data, null, 2));
-                    return res.status(200).send(data);
-                });
-            } else {
+            }
+
+            return data.post.save().then(() => {
                 console.log(JSON.stringify(data, null, 2));
                 return res.status(200).send(data);
-            }
+            });
         })
         .catch((err) => {
             return next(err);

@@ -71,7 +71,8 @@
 
 .waypoint-card-header-input::placeholder
 {
-    color: rgba(0,0,0,.84);
+    font-size: 0.8em;
+    color: rgba(0,0,0,.54);
 }
 
 .waypoint-card-header-input:focus::placeholder

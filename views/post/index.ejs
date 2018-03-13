@@ -9,6 +9,7 @@
 <script src="/js/libs/he.js"></script>
 <script src="/js/libs/autosize.min.js"></script>
 <script src="/js/libs/jquery.waypoints.min.js"></script>
+<!-- load post data -->
 <script>
     <% console.log('vote attached: ' + voteAttached); %>
 
@@ -51,6 +52,10 @@
 
     console.dir(receivedPostData);
 </script>
+<% if (session.userId && session.userId == post.userId) { %>
+<!-- create additional buttons in header -->
+<script src="/js/post/index-header.js"></script>
+<% } %>
 <!-- load post util lib -->
 <script src="/js/post/util.js"></script>
 <!-- init maps and other new post page controls -->

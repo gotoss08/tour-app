@@ -102,7 +102,7 @@ app.locals.urlSlug = require('url-slug');
 app.use('/p', require('./app/routes/post.routes'));
 app.use('/user', require('./app/routes/user.routes'));
 app.use('/post', require('./app/routes/post1.routes'));
-app.use('/vote', require('./app/routes/vote.routes'));
+app.use('/v', require('./app/routes/vote.routes'));
 app.use('/search', require('./app/routes/search.routes'));
 
 // home page

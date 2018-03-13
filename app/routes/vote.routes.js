@@ -1,16 +1,14 @@
 const router = require('express').Router();
-const api = require('../controllers/vote.controller');
+const api = require('../controllers/vote.controller.js');
 
-router.post('/', api.vote);
+router.post('/create', api.create);
+router.post('/:voteId/read', api.read);
+router.post('/:voteId/update', api.update);
+router.post('/:voteId/delete', api.delete);
 
-router.get('/removeAll', api.removeAll);
-router.get('/printAll', api.printAll);
-
-router.post('/create/', api.create);
-router.post('/option/create/', api.optionCreate);
-router.post('/option/remove/', api.optionRemove);
-router.post('/option/update/', api.optionUpdate);
-
-router.post('/:voteId', api.fetchVote);
+router.post('/option/create', api.optionCreate);
+router.post('/option/:postId/read', api.optionRead);
+router.post('/option/:postId/update', api.optionUpdate);
+router.post('/option/:postId/delete', api.optionDelete);
 
 module.exports = router;

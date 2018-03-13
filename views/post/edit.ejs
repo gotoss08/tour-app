@@ -4,19 +4,10 @@
 <link rel="stylesheet" href="/css/post/libs/medium-editor.theme.default.min.css">
 <!-- page styles -->
 <link rel="stylesheet" href="/css/post/edit.css">
-<link rel="stylesheet" href="/css/post/index.css">
+<!-- <link rel="stylesheet" href="/css/post/index.css"> -->
 <% include ../partials/header_end.ejs %>
 <div class="container mt-3 mt-md-4">
-    <div class="row d-flex flex-row justify-content-center">
-        <div class="col-sm-12 col-lg-4">
-            <div id="cards">
-                <div class="waypoint-cards"></div>
-            </div>
-        </div>
-        <div class="col-sm-12 col-lg-8">
-            <div class="position-sticky" id="map"></div>
-        </div>
-    </div>
+    <% include ../partials/post/cards_and_map.ejs %>
 </div>
 <!-- util libs -->
 <script src="/js/libs/he.js"></script>
@@ -38,25 +29,43 @@
 
     tippy('[title]');
 
+    <% console.log('vote attached: ' + voteAttached); %>
+
     const receivedPostData = {
-        posted: Boolean('<%= post.posted %>'),
-        title: '<%= post.title %>',
-        subtitle: '<%= post.subtitle %>',
-        body: '<%= post.body %>',
-        markers: [
-            <% for(let i = 0; i < post.markers.length; i++) { %>
-                <% let marker = post.markers[i]; %>
-                {
-                    positionIndex: <%= marker.positionIndex %>,
-                    position: '<%= marker.position %>',
-                    cardId: '<%= marker.cardId %>',
-                    header: '<%= marker.header %>',
-                    body: '<%= marker.body %>',
-                },
-            <% } %>
-        ],
-        userId: '<%= post.userId %>',
-        postId: '<%= post._id %>'
+        post: {
+            posted: Boolean('<%= post.posted %>'),
+            title: '<%= post.title %>',
+            subtitle: '<%= post.subtitle %>',
+            body: '<%= post.body %>',
+            markers: [
+                <% for(let i = 0; i < post.markers.length; i++) { %>
+                    <% let marker = post.markers[i]; %>
+                    {
+                        positionIndex: <%= marker.positionIndex %>,
+                        position: '<%= marker.position %>',
+                        cardId: '<%= marker.cardId %>',
+                        header: '<%= marker.header %>',
+                        body: '<%= marker.body %>',
+                    },
+                <% } %>
+            ],
+            userId: '<%= post.userId %>',
+            postId: '<%= post._id %>',
+        },
+        voteAttached: Boolean(<%= voteAttached %>),
+        <% if (voteAttached) { %>
+            vote: {
+                title: '<%= vote.title %>',
+                options: [
+                    <% for(let i = 0; i < vote.options.length; i++) { %>
+                        <% let option = vote.options[i]; %>
+                        {
+                            title: '<%= option.title %>',
+                        },
+                    <% } %>
+                ],
+            },
+        <% } %>
     };
 
     console.dir(receivedPostData);
@@ -66,6 +75,7 @@
 <!-- load post util lib -->
 <script src="/js/post/util.js"></script>
 <!-- init maps and other new post page controls -->
-<script src="/js/post/index.js"></script>
+<script src="/js/post/edit.js"></script>
+<!-- <script src="/js/post/index.js"></script> -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjb3frwKoNDFK5GTYJgQw3QPCSlpEjoM8&language=ru&region=RU&libraries=places&callback=initMap" async defer></script>
 <% include ../partials/footer.ejs %>

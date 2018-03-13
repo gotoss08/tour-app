@@ -1,23 +1,34 @@
 const mongoose = require('mongoose');
 
-const OptionSchema = new mongoose.Schema({
-	_id: String,
-	name: String
-}, {
-	_id: false
+
+const optionSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true,
+    },
+    voteCount: {
+        type: Number,
+        default: 0,
+    },
 });
 
-module.exports.Option = mongoose.model('Option', OptionSchema);
+const Option = module.exports.Option = mongoose.model('Option', optionSchema);
 
-const VoteSchema = new mongoose.Schema({
-	title: String,
-	options: [{
-		name: String,
-		votes: Number
-	}],
-	votedUsers: [String]
-}, {
-	usePushEach: true
+
+const voteSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true,
+    },
+    votedUsers: [{
+        userId: String,
+        optionId: String,
+    }],
+    options: [optionSchema],
+    userId: {
+        type: String,
+        required: true,
+    },
 });
 
-module.exports.Vote = mongoose.model('Vote', VoteSchema);
+const Vote = module.exports.Vote = mongoose.model('Vote', voteSchema);

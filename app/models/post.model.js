@@ -16,13 +16,7 @@ const schema = new mongoose.Schema({
         body: String,
     }],
     userId: String,
-    vote: {
-        title: String,
-        options: [{
-            name: String,
-            count: Number,
-        }],
-    },
+    voteId: String,
 }, {
     timestamps: true,
 });

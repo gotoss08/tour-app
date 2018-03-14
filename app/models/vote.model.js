@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const optionSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -13,7 +12,6 @@ const optionSchema = new mongoose.Schema({
 });
 
 const Option = module.exports.Option = mongoose.model('Option', optionSchema);
-
 
 const voteSchema = new mongoose.Schema({
     title: {
@@ -29,6 +27,8 @@ const voteSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+}, {
+    usePushEach: true,
 });
 
 const Vote = module.exports.Vote = mongoose.model('Vote', voteSchema);

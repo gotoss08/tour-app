@@ -577,7 +577,7 @@ var createVoteCard = ( ) => {
         <div class="waypoint-card vote-card vote-card-active rounded">
             <div class="waypoint-card-header d-flex flex-row align-items-center">
                 <input class="vote-card-header-input" type="text" placeholder="Тема голосования...">
-                <i class="waypoint-card-header-icon fas fa-exclamation-circle mr-1" title="Внимание! После публикации вы не сможете изменить тему или варианты голосования без сброса количества голосов!"></i>
+                <span title="Внимание! После публикации вы не сможете изменить тему или варианты голосования без сброса количества голосов!"><i class="waypoint-card-header-icon fas fa-exclamation-circle mr-1"></i></span>
                 <button class="waypoint-card-header-icon" type="button" onclick="createAddVoteCard();" title="Убрать голосование">
                     <i class="far fa-trash-alt mr-1" style="color: red;"></i>
                 </button>
@@ -601,7 +601,7 @@ var createVoteCard = ( ) => {
 
     $('#cards').append(html);
 
-    tippy('.vote-card .waypoint-card-header .waypoint-card-header-icon');
+    tippy('[title]');
 
     $('.vote-card > .waypoint-card-body').children().last().change(function() {
         createVoteOption();

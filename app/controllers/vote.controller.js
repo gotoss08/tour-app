@@ -1,72 +1,70 @@
 const util = require('../util/util.js');
 
-const Option = require('../models/vote.model.js').Option;
 const Vote = require('../models/vote.model.js').Vote;
 
-/* vote */
+module.exports.vote = (req, res, next) => {
+    if (!req.session || !req.session.userId) {
+        return res.status(401).send('Для участия в голосовании вы должны зарегестрироваться.');
+    }
 
-module.exports.create = (req, res, next) => {
-    util.checkUserLogin(req, res);
+    checkVoteIdParams(req, res, next);
+    checkOptionIdParams(req, res, next);
 
-};
+    Vote.findById(req.params.voteId, (err, vote) => {
+        if (err) return next(err);
 
-module.exports.read = (req, res, next) => {
-    defaultVoteCheck(req, res, next);
+        if (!vote) return next(new Error('Голосование с таким ID не найдено.'));
 
-};
+        let userVoted = false;
 
-module.exports.update = (req, res, next) => {
-    defaultVoteCheck(req, res, next);
+        for (let i = 0; i < vote.votedUsers.length; i++) {
+            let user = vote.votedUsers[i];
 
-};
+            if (user._id == req.session.userId) {
+                userVoted = true;
+                break;
+            }
+        }
 
-module.exports.delete = (req, res, next) => {
-    defaultVoteCheck(req, res, next);
+        if (userVoted) {
+            console.log('user already voted');
+            return res.status(403).send('Вы уже проголосовали.');
+        }
 
-};
+        console.log(JSON.stringify(vote, null, 2));
 
-/* option */
+        if (vote.options.length) {
+            for (let i = 0; i < vote.options.length; i++) {
+                let option = vote.options[i];
+                if (option._id == req.params.optionId) {
+                    option.voteCount += 1;
+                    // add current user as voted user
+                    vote.votedUsers.push(req.session.userId);
+                    userJustVoted = true;
 
-module.exports.optionCreate = (req, res, next) => {
-    util.checkUserLogin(req, res);
+                    vote.save((err) => {
+                        if (err) return next(err);
+                        console.log('user voted');
+                        return res.status(200).send({vote: vote});
+                    });
 
-};
-
-module.exports.optionRead = (req, res, next) => {
-    defaultOptionCheck(req, res, next);
-
-};
-
-module.exports.optionUpdate = (req, res, next) => {
-    defaultOptionCheck(req, res, next);
-
-};
-
-module.exports.optionDelete = (req, res, next) => {
-    defaultOptionCheck(req, res, next);
-
+                    break;
+                }
+            }
+        }
+    });
 };
 
 /* helpers */
 
 let checkVoteIdParams = (req, res, next) => {
     if (!req.params.voteId || !req.params.voteId.match(/^[0-9a-fA-F]{24}$/)) {
-        return next(new Error('Неверный формат идентификатора голосования.'));
+        next(new Error('Неверный формат идентификатора голосования.'));
     }
 };
 
 let checkOptionIdParams = (req, res, next) => {
     if (!req.params.optionId || !req.params.optionId.match(/^[0-9a-fA-F]{24}$/)) {
-        return next(new Error('Неверный формат идентификатора варианта голосования.'));
+        next(new Error('Неверный формат идентификатора варианта голосования.'));
     }
-};
-
-let defaultVoteCheck = (req, res, next) => {
-    util.checkUserLogin(req, res);
-    checkVoteIdParams(req, res, next);
-};
-
-let defaultOptionCheck = (req, res, next) => {
-    util.checkUserLogin(req, res);
-    checkOptionIdParams(req, res, next);
 };

@@ -9,13 +9,17 @@
 <script src="/js/libs/he.js"></script>
 <script src="/js/libs/autosize.min.js"></script>
 <script src="/js/libs/jquery.waypoints.min.js"></script>
+<% if (voteAttached) { %>
+<script src="/js/libs/chart.min.js"></script>
+<% } %>
 <!-- load post data -->
 <script>
     <% console.log('vote attached: ' + voteAttached); %>
 
     const receivedPostData = {
         post: {
-            posted: Boolean('<%= post.posted %>'),
+            postId: '<%= post._id %>',
+            posted: Boolean(<%= post.posted %>),
             title: '<%= post.title %>',
             subtitle: '<%= post.subtitle %>',
             body: '<%= post.body %>',
@@ -32,7 +36,7 @@
                 <% } %>
             ],
             userId: '<%= post.userId %>',
-            postId: '<%= post._id %>',
+            voteId: '<%= post.voteId %>',
         },
         voteAttached: Boolean(<%= voteAttached %>),
         <% if (voteAttached) { %>
@@ -42,15 +46,34 @@
                     <% for(let i = 0; i < vote.options.length; i++) { %>
                         <% let option = vote.options[i]; %>
                         {
+                            id: '<%= option._id %>',
                             title: '<%= option.title %>',
+                            voteCount: Number('<%= option.voteCount %>')
                         },
                     <% } %>
-                ],
+                ]
             },
+            <% let currentUserVoted = false; %>
+            <%
+                console.log('voted users ' + JSON.stringify(vote.votedUsers, null, 2));
+                console.log('current user id ' + session.userId);
+            %>
+            <% for(let i = 0; i < vote.votedUsers.length; i++) { %>
+                <%  let user = vote.votedUsers[i]; %>
+                <% if (user._id == session.userId) { %>
+                    <%
+                        currentUserVoted = true;
+                        console.log('current user voted');
+                        break;
+                    %>
+                <% } %>
+            <% } %>
+            currentUserVoted: Boolean(<%= currentUserVoted %>),
+            <% let userLoggedIn = false; %>
+            <% if (session && session.userId) userLoggedIn = true; %>
+            userLoggedIn: Boolean(<%= userLoggedIn %>),
         <% } %>
     };
-
-    console.dir(receivedPostData);
 </script>
 <% if (session.userId && session.userId == post.userId) { %>
 <!-- create additional buttons in header -->

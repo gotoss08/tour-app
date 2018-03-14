@@ -8,7 +8,7 @@ const {Vote} = require('../models/vote.model.js');
 /* GET */
 
 module.exports.new = (req, res, next) => {
-    util.checkUserLogin(req, res, next);
+    util.checkUserLoginWithRedirect(req, res, next);
 
     Post.create({
         userId: req.session.userId,
@@ -20,7 +20,8 @@ module.exports.new = (req, res, next) => {
 };
 
 module.exports.edit = (req, res, next) => {
-    defaultCheck(req, res, next);
+    util.checkUserLoginWithRedirect(req, res, next);
+    checkPostIdParams(req, res, next);
 
     Post.findById(req.params.postId).exec()
         .then((post) => {
@@ -33,6 +34,10 @@ module.exports.edit = (req, res, next) => {
             }
         })
         .then((data) => {
+            if (!data.post.voteId) {
+                data.post.voteId = '';
+                return data;
+            }
             return Vote.findById(data.post.voteId).exec().then((vote) => {
                 if (vote) {
                     data.vote = vote;
@@ -61,7 +66,7 @@ module.exports.read = (req, res, next) => {
 
     Post.findById(req.params.postId).exec()
         .then((post) => {
-            console.log(JSON.stringify(post));
+            console.log(JSON.stringify(post, null, 2));
             if (post && post.posted) {
                 let data = {post: post, voteAttached: false};
                 return data;
@@ -70,6 +75,10 @@ module.exports.read = (req, res, next) => {
             }
         })
         .then((data) => {
+            if (!data.post.voteId) {
+                data.post.voteId = '';
+                return data;
+            }
             return Vote.findById(data.post.voteId).exec().then((vote) => {
                 if (vote) {
                     data.vote = vote;
@@ -87,7 +96,11 @@ module.exports.read = (req, res, next) => {
 };
 
 module.exports.update = (req, res, next) => {
-    defaultCheck(req, res, next);
+    if (!util.checkUserLogin(req, res, next)) {
+        res.status(401).send();
+        return next(new Error('Для этого действия необходим вход в аккаунт.'));
+    }
+    checkPostIdParams(req, res, next);
 
     let postData = req.body;
 
@@ -135,7 +148,6 @@ module.exports.update = (req, res, next) => {
 
             if (post.voteId) {
                 return Vote.findByIdAndRemove(post.voteId).then(() => {
-                    console.log('>>>>>>>>> found by id and removed');
                     return data;
                 });
             } else return data;
@@ -181,9 +193,4 @@ let checkPostIdParams = (req, res, next) => {
     if (!req.params.postId || !req.params.postId.match(/^[0-9a-fA-F]{24}$/)) {
         return next(new Error('Неверный формат идентификатора поста.'));
     }
-};
-
-let defaultCheck = (req, res, next) => {
-    util.checkUserLogin(req, res);
-    checkPostIdParams(req, res, next);
 };

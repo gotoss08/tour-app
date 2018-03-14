@@ -69,13 +69,13 @@
 
 }
 
-.waypoint-card-header-input::placeholder
+.waypoint-card-header-input:placeholder
 {
     font-size: 0.8em;
     color: rgba(0,0,0,.54);
 }
 
-.waypoint-card-header-input:focus::placeholder
+.waypoint-card-header-input:focus:placeholder
 {
     color: rgba(0,0,0,0);
 }
@@ -209,7 +209,7 @@
     height: 15px;
 }
 
-.meta-subtitle:active, .meta-subtitle:focus, .meta-subtitle::placeholder {
+.meta-subtitle:active, .meta-subtitle:focus, .meta-subtitle:placeholder {
     color: rgba(0,0,0,.64);
 }
 
@@ -225,7 +225,7 @@
     background-color: transparent;
 }
 
-.vote-card-header-input::placeholder {
+.vote-card-header-input:placeholder {
     color: rgba(0,0,0,.64);
 }
 
@@ -234,7 +234,7 @@
     color: rgba(0,0,0,.84);
 }
 
-.vote-card-header-input:focus::placeholder {
+.vote-card-header-input:focus:placeholder {
     color: rgba(0,0,0,0);
 }
 
@@ -250,7 +250,7 @@
     background-color: transparent;
 }
 
-.vote-card-body-input::placeholder {
+.vote-card-body-input:placeholder {
     color: rgba(0,0,0,.64);
 }
 
@@ -259,7 +259,7 @@
     color: rgba(0,0,0,.84);
 }
 
-.vote-card-body-input:focus::placeholder {
+.vote-card-body-input:focus:placeholder {
     color: rgba(0,0,0,0);
 }
 

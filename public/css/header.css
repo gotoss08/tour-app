@@ -83,20 +83,23 @@
     outline: none;
 }
 
-#user-avatar {
+.avatar-placeholder {
     width: 32px;
     height: 32px;
     text-align: center;
     background-color: rgba(0,0,0,.64);
-    background-image: url('https://www.washingtonpost.com/pbox.php?url=http://www.washingtonpost.com/news/speaking-of-science/wp-content/uploads/sites/36/2014/09/fortyfaces250.gif&w=1484&op=resize&opt=1&filter=antialias&t=20170517');
+
     -webkit-background-size: contain;
     background-size: contain;
 }
 
-#user-icon {
-    color: rgba(0,0,0,0.64);
-    margin-bottom: -1.5px;
-    margin-left: 1px;
+.user-avatar {
+    background-image: url('https://www.washingtonpost.com/pbox.php?url=http://www.washingtonpost.com/news/speaking-of-science/wp-content/uploads/sites/36/2014/09/fortyfaces250.gif&w=1484&op=resize&opt=1&filter=antialias&t=20170517');
+}
+
+.user-no-avatar-icon {
+    margin-bottom: -4px;
+    margin-left: 0px;
     color: white;
 }
 

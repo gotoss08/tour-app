@@ -18,6 +18,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    avatarPath: {
+        type: String,
+        default: '',
+    },
 }, {
     timestamps: true,
 });

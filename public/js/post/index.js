@@ -37,12 +37,13 @@ var initMap = () => {
 var generateWaypointCardHTML = (marker) => {
     return `
         <div id="${marker.cardId}" class="waypoint-card rounded">
-            <div class="waypoint-card-header d-flex align-items-center">
+            <div class="waypoint-card-header d-flex flex-row align-items-center">
                 <div class="waypoint-card-header-input"></div>
                 <button class="waypoint-card-header-icon show-on-map-button" type="button" title="Сфокусировать карту на этом маркере.">
                     <i class="fas fa-map-marker-alt"></i>
                 </button>
             </div>
+            <hr class="card-divider">
             <div class="waypoint-card-body">
                 <div class="waypoint-card-body-editor"></div>
             </div>
@@ -68,7 +69,13 @@ var createWaypointCard = async (marker) => {
 
 // info window for showing marker address
 let showInfoWindow = (marker) => {
-    let content = `<div class="d-flex align-items-center">${marker.cardName}</div>`;
+    // let content = `<div class="d-flex align-items-center">${marker.cardName}</div>`;
+    let content = `
+        <div class="d-flex align-items-center">
+            <button id="${marker.cardId}-go-to-card-button" class="" type="button" onclick="$(window).scrollTop($('#${marker.cardId}').offset().top-5); $('#${marker.cardId}').animateCss('flash', () => {})" style="background-color: transparent; border: none;" title="Переместиться к карточке."><i class="fas fa-search"></i></button>
+            ${marker.cardName}
+        </div>
+    `;
 
     markerInfoWindow.close();
     markerInfoWindow.setOptions({content: content});
@@ -84,13 +91,39 @@ let addEventListeners = (marker) => {
 
 var generateMetaCard = () => {
     let metaCardHTML = `
-        <div class="waypoint-card meta-card rounded">
-            <div class="waypoint-card-header d-flex flex-column">
-                <div class="waypoint-card-header-input meta-title"></div>
-                <div class="waypoint-card-header-input meta-subtitle"></div>
+        <div class="waypoint-card meta-card rounded w-100">
+            <div class="waypoint-card-header card-bg-hover d-flex flex-column">
+                <div class="waypoint-card-header-input meta-title">Meta title</div>
+                <div class="waypoint-card-header-input meta-subtitle">Meta subtitle</div>
             </div>
+            <hr class="card-divider">
             <div class="waypoint-card-body">
-                <div class="form-control waypoint-card-body-editor meta-body"></div>
+                <div class="form-control waypoint-card-body-editor meta-body">
+                    Таким образом начало повседневной работы по формированию позиции требуют определения и уточнения системы обучения кадров, соответствует насущным потребностям. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий позволяет выполнять важные задания по разработке форм развития. С другой стороны укрепление и развитие структуры влечет за собой процесс внедрения и модернизации существенных финансовых и административных условий.
+                </div>
+            </div>
+            <hr class="card-divider">
+            <div class="meta-card-footer d-flex flex-column">
+                <div class="card-bg-hover d-flex flex-row align-items-center p-2">
+                    <button class="default-button meta-card-footer-like-button mr-1"><i class="far fa-heart"></i></button><span id="like-counter">0</span>
+                    <i class="fas fa-eye ml-2 mr-1"></i><span id="views-counter">0</span>
+                </div>
+                <hr class="card-divider">
+                <div class="d-flex flex-row align-items-center align-items-stretch">
+                    <a id="author-profile-link" class="meta-card-footer-item card-bg-hover meta-user mr-auto d-flex flex-row align-items-center">
+                        <div id="author-avatar-placeholder" class="rounded-circle avatar-placeholder mr-2"></div>
+                    </a>
+                    <div class="meta-card-footer-item card-bg-hover d-flex flex-column">
+                        <div class="d-flex flex-row align-items-center mb-3">
+                            <div class="meta-date mr-2">15.03.2018</div>
+                            <div class="meta-time">18:32</div>
+                        </div>
+                        <div class="meta-country mr-2">
+                            <a href="#">Russia</a>,
+                            <a href="#">Kazakhstan</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     `;
@@ -110,6 +143,22 @@ var loadData = (data) => {
     $('.meta-title').html(data.post.title);
     $('.meta-subtitle').html(data.post.subtitle);
     $('.meta-body').html(he.decode(data.post.body));
+
+    /* counters */
+    $('#views-counter').html(data.post.uniqIpsVisited);
+    $('#like-counter').html(data.post.likes);
+
+    /* post author */
+    let authorProfileLink = $('#author-profile-link');
+    authorProfileLink.append(data.username);
+    authorProfileLink.attr('href', '/user/' + data.username);
+
+    let authorAvatar = $('#author-avatar-placeholder');
+    if (data.userAvatarPath) {
+        authorAvatar.css('background-image', `url(${data.userAvatarPath})`);
+    } else {
+        authorAvatar.append('<i class="user-no-avatar-icon fas fa-user align-middle"></i>');
+    }
 
     data.post.markers.sort((a, b) => {
         return a.positionIndex - b.positionIndex;
@@ -185,6 +234,7 @@ var createVoteCard = () => {
             <div class="waypoint-card-header d-flex flex-row align-items-center">
                 <div class="vote-card-header-input"></div>
             </div>
+            <hr class="card-divider">
             <div class="waypoint-card-body"></div>
         </div>
     `;

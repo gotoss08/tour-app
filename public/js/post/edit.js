@@ -271,6 +271,7 @@ let generateWaypointCardHTML = (marker) => {
                     <i class="far fa-trash-alt mr-1" style="color: red;"></i>
                 </button>
             </div>
+            <hr class="card-divider">
             <div class="waypoint-card-body">
                 <textarea class="form-control waypoint-card-body-editor"></textarea>
                 <div class="d-flex align-items-center justify-content-end">
@@ -351,6 +352,7 @@ let generateMetaCard = () => {
                 <input class="waypoint-card-header-input meta-title" type="text" placeholder="Title...">
                 <textarea class="waypoint-card-header-input meta-subtitle" placeholder="Subtitle..."></textarea>
             </div>
+            <hr class="card-divider">
             <div class="waypoint-card-body">
                 <textarea class="form-control waypoint-card-body-editor meta-body"></textarea>
                 <div class="d-flex align-items-center justify-content-end">
@@ -577,6 +579,7 @@ var createVoteCard = ( ) => {
                     <i class="far fa-trash-alt mr-1" style="color: red;"></i>
                 </button>
             </div>
+            <hr class="card-divider">
             <div class="waypoint-card-body">
                 <div class="d-flex flex-row align-items-center">
                     <i class="far fa-square mr-1"></i>

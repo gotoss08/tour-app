@@ -68,6 +68,10 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+// get request user ip
+const requestIp = require('request-ip');
+app.use(requestIp.mw());
+
 // use non standard request methods
 app.use(methodOverride('_method'));
 
@@ -77,6 +81,25 @@ app.use(express.static('public'));
 // set ejs as default template engine
 app.locals.__ = __y18n;
 app.set('view engine', 'ejs');
+
+/* access to username and usericon */
+const User = require('./app/models/user.model.js');
+app.use(function(req, res, next) {
+    if (!req.session || !req.session.userId) return next();
+
+    User.findById(req.session.userId).exec().then((user) => {
+        if (user) {
+
+            req.username = user.username;
+            req.userAvatarPath = user.avatarPath;
+
+            app.locals.username = user.username;
+            app.locals.userAvatarPath = user.avatarPath;
+
+            next();
+        } else next();
+    });
+});
 
 // set uniqid generator available from everywhere
 app.locals.uniqid = require('uniqid');

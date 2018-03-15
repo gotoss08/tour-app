@@ -17,13 +17,31 @@ const schema = new mongoose.Schema({
     }],
     userId: String,
     voteId: String,
+    uniqIpsVisited: {
+        type: [String],
+        default: [],
+    },
+    totalVisitCount: {
+        type: Number,
+        default: 0,
+    },
+    likes: {
+        type: [String],
+        default: [],
+    },
+    countries: {
+        type: [String],
+        default: [],
+    },
 }, {
     timestamps: true,
+    usePushEach: true,
 });
 
 schema.index({
     'title': 'text',
-    'description': 'text',
+    'subtitle': 'text',
+    'body': 'text',
     'markers.header': 'text',
     'markers.body': 'text',
 });

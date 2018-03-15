@@ -5,6 +5,7 @@
 <script src="/js/headroom.min.js"></script>
 <script>
     $(document).ready(() => {
+        /* search */
         let searchInput = $('.header-search input');
         let searchButton = $('.header-search button');
 
@@ -53,6 +54,15 @@
                 hideSearchInput();
             }
         });
+
+        /* avatar */
+        let userAvatar = $('#user-avatar-placeholder');
+        let userAvatarPath = '<%= userAvatarPath %>';
+        if (userAvatarPath) {
+            userAvatar.css('background-image', `url(${userAvatarPath})`);
+        } else {
+            userAvatar.append('<i class="user-no-avatar-icon fas fa-user align-middle"></i>');
+        }
     });
 </script>
 </body>

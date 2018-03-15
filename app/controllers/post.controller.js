@@ -4,6 +4,7 @@ const util = require('../util/util.js');
 
 const {Post} = require('../models/post.model.js');
 const {Vote} = require('../models/vote.model.js');
+const User = require('../models/user.model');
 
 /* GET */
 
@@ -64,10 +65,26 @@ module.exports.create = () => {
 module.exports.read = (req, res, next) => {
     checkPostIdParams(req, res, next);
 
+    let clientIp = req.clientIp;
+
     Post.findById(req.params.postId).exec()
         .then((post) => {
-            console.log(JSON.stringify(post, null, 2));
             if (post && post.posted) {
+                /* update counters */
+                let notFoundCurrentIp = true;
+                for(let i = 0; i < post.uniqIpsVisited.length; i++) {
+                    let ip = post.uniqIpsVisited[i];
+                    if (ip == clientIp) {
+                        notFoundCurrentIp = false;
+                        break;
+                    }
+                }
+                if (notFoundCurrentIp) post.uniqIpsVisited.push(clientIp);
+                post.totalVisitCount+=1;
+                post.save();
+
+                console.log(JSON.stringify(post, null, 2));
+
                 let data = {post: post, voteAttached: false};
                 return data;
             } else {
@@ -84,6 +101,13 @@ module.exports.read = (req, res, next) => {
                     data.vote = vote;
                     data.voteAttached = true;
                 }
+                return data;
+            });
+        })
+        .then((data) => {
+            return User.findById(data.post.userId).exec().then((user) => {
+                data.username = user.username;
+                data.userAvatarPath = user.avatarPath;
                 return data;
             });
         })
@@ -113,8 +137,6 @@ module.exports.update = (req, res, next) => {
             },
         });
     };
-
-    console.log('vote: ' + (postData.vote ? 'is' : 'none'));
 
     Post.findById(req.params.postId).exec()
         .then((post) => {
@@ -147,13 +169,22 @@ module.exports.update = (req, res, next) => {
             data.vote = postData.vote;
 
             if (post.voteId) {
-                return Vote.findByIdAndRemove(post.voteId).then(() => {
+                return Vote.findById(post.voteId).exec().then((vote) => {
+                    data.postVote = vote;
                     return data;
                 });
             } else return data;
         })
         .then((data) => {
-            if (data.vote) {
+            console.log('vote stage');
+            if (!data.vote && data.postVote && data.post.voteId) {
+                console.log('if (!data.vote && data.postVote && data.post.voteId)');
+                return Vote.findByIdAndRemove(data.post.voteId).then(() => {
+                    data.post.voteId = '';
+                    return data;
+                });
+            } else if (data.vote && !data.postVote) {
+                console.log('else if (data.vote && !data.postVote)');
                 data.vote.options.forEach((option) => {
                     console.dir(option);
                 });
@@ -166,6 +197,42 @@ module.exports.update = (req, res, next) => {
                     data.vote = vote;
                     return data;
                 });
+            } else if (data.vote && data.postVote) {
+                console.log(JSON.stringify(data, null, 2));
+                console.log('else if (data.vote && data.postVote)');
+                let difference = false;
+
+                if (!data.vote.title || !data.postVote.title || data.vote.title != data.postVote.title) difference = true;
+                console.log('if (!data.vote.title || !data.postVote.title || data.vote.title != data.postVote.title)');
+
+                if (data.vote.options && data.postVote.options && data.vote.options.length == data.postVote.options.length) {
+                    console.log('if (data.vote.options && data.postVote.options && data.vote.options.length == data.postVote.options.length)');
+                    for(let i = 0; i < data.vote.options.length; i++) {
+                        let voteOption = data.vote.options[i];
+                        let postVoteOption = data.postVote.options[i];
+
+                        if (voteOption.title != postVoteOption.title) difference = true;
+                    }
+                    console.log('for(let i = 0; i < data.vote.options.length; i++)');
+                } else difference = true;
+
+                console.log('difference: ' + difference);
+
+                if (difference) {
+                    console.log('if (difference)');
+                    return Vote.create({
+                        title: data.vote.title,
+                        options: data.vote.options,
+                        userId: req.session.userId,
+                    }).then((vote) => {
+                        console.log('.then((vote) =>');
+                        data.vote = vote;
+                        return data;
+                    });
+                } else {
+                    data.vote = data.postVote;
+                    return data;
+                }
             } else return data;
         })
         .then((data) => {

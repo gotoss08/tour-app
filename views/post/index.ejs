@@ -37,6 +37,15 @@
             ],
             userId: '<%= post.userId %>',
             voteId: '<%= post.voteId %>',
+            uniqIpsVisited: <%= post.uniqIpsVisited.length %>,
+            totalVisitCount: <%= post.totalVisitCount %>,
+            likes: <%= post.likes.length %>,
+            countries: [
+                <% for(let i = 0; i < post.countries.length; i++) { %>
+                    <% let country = post.countries[i]; %>
+                    '<%= country %>',
+                <% } %>
+            ],
         },
         voteAttached: Boolean(<%= voteAttached %>),
         <% if (voteAttached) { %>
@@ -73,6 +82,8 @@
             <% if (session && session.userId) userLoggedIn = true; %>
             userLoggedIn: Boolean(<%= userLoggedIn %>),
         <% } %>
+        username: '<%= username %>',
+        userAvatarPath: '<%= userAvatarPath %>',
     };
 </script>
 <% if (session.userId && session.userId == post.userId) { %>

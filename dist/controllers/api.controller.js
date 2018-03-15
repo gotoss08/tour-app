@@ -1,37 +1,39 @@
-const util = require('../util/util.js');
+'use strict';
 
-module.exports.feedbackGet = (req, res, next) => {
+var util = require('../util/util.js');
+
+module.exports.feedbackGet = function (req, res, next) {
     util.checkUserLoginWithRedirect(req, res, next);
 
     return res.render('api/feedback');
 };
 
-const nodemailer = require('nodemailer');
-module.exports.feedbackPost = (req, res, next) => {
+var nodemailer = require('nodemailer');
+module.exports.feedbackPost = function (req, res, next) {
     // TODO: add normal email account
-    nodemailer.createTestAccount((err, account) => {
+    nodemailer.createTestAccount(function (err, account) {
         // create reusable transporter object using the default SMTP transport
-        let transporter = nodemailer.createTransport({
+        var transporter = nodemailer.createTransport({
             host: 'smtp.ethereal.email',
             port: 587,
             secure: false, // true for 465, false for other ports
             auth: {
                 user: account.user, // generated ethereal user
-                pass: account.pass, // generated ethereal password
-            },
+                pass: account.pass // generated ethereal password
+            }
         });
 
         // setup email data with unicode symbols
-        let mailOptions = {
+        var mailOptions = {
             from: req.body.email, // sender address
             to: 'gotoss08@gmail.com', // list of receivers
             subject: 'SvoimHodom Feedback', // Subject line
             text: req.body.body, // plain text body
-            html: req.body.body, // html body
+            html: req.body.body // html body
         };
 
         // send mail with defined transport object
-        transporter.sendMail(mailOptions, (err, info) => {
+        transporter.sendMail(mailOptions, function (err, info) {
             if (err) return next(err);
 
             console.log('Message sent: %s', info.messageId);
@@ -46,6 +48,6 @@ module.exports.feedbackPost = (req, res, next) => {
     });
 };
 
-module.exports.test = (req, res, next) => {
+module.exports.test = function (req, res, next) {
     return res.render('api/test');
 };

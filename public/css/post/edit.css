@@ -16,6 +16,21 @@
     margin-bottom: -15px;
 }
 
+.card-divider {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.card-bg-hover {
+    transition: background-color .1s;
+}
+
+.card-bg-hover:hover {
+    background-color: rgba(0,0,0,.05);
+}
+
 .waypoint-cards {
     width: 100%;
 }

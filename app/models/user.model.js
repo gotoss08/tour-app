@@ -6,24 +6,24 @@ const UserSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: true,
-        trim: true
+        trim: true,
     },
     username: {
         type: String,
         unique: true,
         required: true,
-        trim: true
+        trim: true,
     },
     password: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 }, {
-    timestamps: true
+    timestamps: true,
 });
 
 UserSchema.statics.authenticate = (username, password, callback) => {
-    User.findOne({ username: username })
+    User.findOne({username: username})
         .exec((err, user) => {
             if (err) {
                 return callback(err);
@@ -33,7 +33,7 @@ UserSchema.statics.authenticate = (username, password, callback) => {
                 return callback(err);
             }
             bcrypt.compare(password, user.password, (err, result) => {
-                if(result === true) {
+                if (result === true) {
                     return callback(null, user);
                 } else {
                     return callback();
@@ -46,7 +46,7 @@ UserSchema.pre('save', function(next) {
     const user = this;
     console.log(user);
     bcrypt.hash(user.password, 10, (err, hash) => {
-        if(err) {
+        if (err) {
             return next(err);
         }
         user.password = hash;

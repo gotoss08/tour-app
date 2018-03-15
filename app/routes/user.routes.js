@@ -7,11 +7,10 @@ router.post('/register', userController.userRegisterPost);
 router.get('/login', userController.userLoginGet);
 router.post('/login', userController.userLoginPost);
 
-router.get('/', userController.userGet);
-router.get('/:userName', userController.userNameGet);
+router.get('/me', userController.getCurrentUser);
+router.get('/:userName', userController.getUser);
 
 router.post('/logout', userController.userLogoutPost);
-
 
 router.get('/posts', (req, res) => {
     res.render('posts');

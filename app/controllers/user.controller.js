@@ -9,37 +9,33 @@ module.exports.userRegisterGet = (req, res) => {
 };
 
 module.exports.userRegisterPost = (req, res, next) => {
-    if(req.body.username && req.body.email && req.body.password) {
+    if (req.body.username && req.body.email && req.body.password) {
         const userData = {
             username: req.body.username,
             email: req.body.email,
-            password: req.body.password
+            password: req.body.password,
         };
 
         User.create(userData, (err, user) => {
-            if (err) {
-                return next(err);
-            } else {
-                request('http://localhost:3000/user/login?' + querystring.stringify({ username: req.body.username, password: req.body.password }), (error, response, body) => {
-                    if(error) {
-                        return next(error);
-                    }
+            if (err) return next(err);
 
-                    console.log(response);
-                });
+            res.redirect(307, '/user/login' + querystring.stringify({username: req.body.username, password: req.body.password}));
+            // request('http://localhost:3000/user/login?' + querystring.stringify({username: req.body.username, password: req.body.password}), (error, response, body) => {
+            //     if (error) {
+            //         return next(error);
+            //     }
 
-
-                // return res.redirect('/user/login');
-            }
+            //     console.log(response);
+            // });
         });
     } else {
-        return next(new Error('Fill all fields!'));
+        return next(new Error('Неверные значения полей регистрации!'));
     }
 };
 
 module.exports.userLoginGet = (req, res) => {
-    if(req.session.userId) {
-        return res.redirect('/user/');
+    if (req.session.userId) {
+        return res.redirect('/user/me');
     } else {
         return res.render('user/login');
     }
@@ -47,80 +43,62 @@ module.exports.userLoginGet = (req, res) => {
 
 module.exports.userLoginPost = (req, res, next) => {
     if (req.body.username && req.body.password) {
-        User.authenticate(req.body.username, req.body.password, (error, user) => {
-            if (error || !user) {
-                const error = new Error('Wrong username or password');
+        User.authenticate(req.body.username, req.body.password, (err, user) => {
+            if (err || !user) {
+                const error = new Error('Неправильное имя пользователя или пароль!');
                 error.status = 401;
                 return next(error);
-            } else {
-                req.session.userId = user._id;
-                if (req.cookies['return-page']) {
-                    res.clearCookie('return-page');
-                    return res.redirect(req.cookies['return-page']);
-                }
-                return res.redirect('back');
             }
+
+            req.session.userId = user._id;
+            return res.redirect('/user/me');
         });
     } else {
-        const error = new Error('All fields required!');
+        const error = new Error('Поля с именем пользователя или паролем пусты!');
         error.status = 400;
         return next(error);
     }
 };
 
-module.exports.userGet = (req, res, next) => {
-    User.findById(req.session.userId, (error, user) => {
-            if (error) {
-                return next(error);
-            } else {
-                if (user == null) {
-                    const err = new Error('Not authorized! Go back');
-                    err.status = 400;
-                    return next(err);
-                } else {
-                    Post.find({ userId: user._id }, (err, posts) => {
-                        if (err) {
-                            return next(err);
-                        }
+module.exports.getCurrentUser = (req, res, next) => {
+    User.findById(req.session.userId, (err, user) => {
+        if (err) return next(err);
+        if (!user) {
+            const unauthorizedError = new Error('Вы должны авторизоваться в системе, перед тем как просматривать свой профиль!');
+            unauthorizedError.status = 401;
+            return next(unauthorizedError);
+        }
 
-                        return res.render('user/profile', { user: user, posts: posts });
-                    });
-                }
-            }
+        Post.find({userId: user._id}, (err, posts) => {
+            if (err) return next(err);
+            return res.render('user/profile', {user: user, posts: posts});
         });
+    });
 };
 
-module.exports.userNameGet = (req, res, next) => {
-    console.log('trying to get user profile');
-    User.findOne({ username: req.params.userName }, (error, user) => {
-            if (error) {
-                return next(error);
-            } else {
-                if (user == null) {
+module.exports.getUser = (req, res, next) => {
+    User.findOne({username: req.params.userName}, (err, user) => {
+        if (err) return next(err);
+        if (!user) return next(new Error('Не удалось найти пользователя: ' + req.params.userName));
 
-                } else {
-                    Post.find({ userId: user._id }, (err, posts) => {
-                        if (err) {
-                            return next(err);
-                        }
-
-                        console.log(user);
-
-                        return res.render('user/profile', { user: user, posts: posts });
-                    });
-                }
+        Post.find({userId: user._id}, (err, posts) => {
+            if (err) {
+                return next(err);
             }
+
+            console.log('user: ' + JSON.stringify(user, null, 2));
+
+            return res.render('user/profile', {user: user, posts: posts});
         });
+    });
 };
 
 module.exports.userLogoutPost = (req, res, next) => {
-    if (req.session) {
-        req.session.destroy((err) => {
-            if (err) {
-                return next(err);
-            } else {
-                return res.redirect('/');
-            }
-        });
-    }
+    if (!req.session) return;
+
+    req.session.destroy((err) => {
+        if (err) return next(err);
+
+        return res.redirect('/');
+    });
 };

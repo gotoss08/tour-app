@@ -26,6 +26,7 @@
     "mkdirp": "^0.5.1",
     "mongoose": "^4.13.9",
     "mongoose-text-search": "0.0.2",
+    "nodemailer": "^4.6.3",
     "request": "^2.83.0",
     "sanitize-html": "^1.18.2",
     "uniqid": "^4.1.1",

@@ -1,6 +1,7 @@
 const router = require('express').Router();
-const controller = require('../controllers/api.controller');
+const api = require('../controllers/api.controller.js');
 
-router.get('/map/calcpath', controller.mapCalcpath);
+router.get('/feedback', api.feedbackGet);
+router.post('/feedback', api.feedbackPost);
 
 module.exports = router;

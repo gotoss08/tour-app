@@ -1,0 +1,44 @@
+.page-content-container {
+    width: 90vw;
+    height: 90vh;
+
+    font-family: Roboto;
+}
+
+h4 {
+    width: 100%;
+}
+
+input {
+    width: 100%;
+
+    padding: 5px;
+    margin: 0;
+
+    background-color: transparent;
+    outline: none;
+    border: none;
+}
+
+textarea {
+    width: 100%;
+
+    padding: 5px;
+    margin: 0;
+
+    background-color: transparent;
+    outline: none;
+    border: none;
+
+    transition: background-color .1s;
+}
+
+textarea:focus, textarea:hover, input:focus, input:hover {
+    background-color: rgba(0,0,0,0.03);
+}
+
+.default-button {
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}

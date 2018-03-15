@@ -1,9 +1,4 @@
 $(document).ready(() => {
-    $.notify.defaults({
-        globalPosition: 'bottom left',
-        className: 'info',
-    });
-
     $('#post-save-button').click(function() {
         let data = prepareData();
 

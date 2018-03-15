@@ -1,9 +1,4 @@
 $(document).ready(() => {
-    $.notify.defaults({
-        globalPosition: 'bottom left',
-        className: 'info',
-    });
-
     $('#post-edit-button').click(function() {
         window.location.replace(`/p/${receivedPostData.post.postId}/edit`);
     });
@@ -229,7 +224,7 @@ var createVoteInteractions = (options) => {
     });
 
     let voteBtnHTML = `
-        <button class="vote-button rounded mt-2">Проголосовать</button>
+        <button class="default-button vote-button rounded mt-2">Проголосовать</button>
     `;
     let voteBtn = $(voteBtnHTML);
 

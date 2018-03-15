@@ -109,3 +109,23 @@ html, body {
     font-family: 'PT Sans', sans-serif;
     font-size: 15pt;
 }
+
+.page-content-container {
+    margin-top: 65px;
+}
+
+.default-button {
+    background-color: rgba(0,0,0,0.03);
+    outline: none;
+    border: none;
+
+    font-family: Roboto;
+    font-weight: bold;
+    font-size: 1em;
+
+    transition: background-color .1s;
+}
+
+.default-button:hover {
+    background-color: rgba(0,0,0,0.1);
+}

@@ -1,0 +1,15 @@
+<% include ../partials/header_start.ejs %>
+<link rel="stylesheet" href="/css/api/feedback.css">
+<% include ../partials/header_end.ejs %>
+<div class="container page-content-container d-flex justify-content-center">
+    <div class="row align-self-center">
+        <div class="col-12 text-center">
+            <h4 class="mb-4">Хотите связаться с администрацией?</h4>
+            <input id="feedback-email" type="text" placeholder="Ваш email для обратной связи...">
+            <textarea id="feedback-body" class="mt-1" cols="30" rows="10" placeholder="Ваше сообщение для администрации..."></textarea>
+            <button id="feedback-send" class="mt-1 default-button rounded float-left">Отправить</button>
+        </div>
+    </div>
+</div>
+<script src="/js/api/feedback.js"></script>
+<% include ../partials/footer.ejs %>

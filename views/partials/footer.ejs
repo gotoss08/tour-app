@@ -56,13 +56,15 @@
         });
 
         /* avatar */
-        let userAvatar = $('#user-avatar-placeholder');
-        let userAvatarPath = '<%= userAvatarPath %>';
-        if (userAvatarPath) {
-            userAvatar.css('background-image', `url(${userAvatarPath})`);
-        } else {
-            userAvatar.append('<i class="user-no-avatar-icon fas fa-user align-middle"></i>');
-        }
+        <% if (session && session.userId) { %>
+            let userAvatar = $('#user-avatar-placeholder');
+            let userAvatarPath = '<%= userAvatarPath %>';
+            if (userAvatarPath) {
+                userAvatar.css('background-image', `url(${userAvatarPath})`);
+            } else {
+                userAvatar.append('<i class="user-no-avatar-icon fas fa-user align-middle"></i>');
+            }
+        <% } %>
     });
 </script>
 </body>

@@ -3,10 +3,6 @@ $(document).ready(() => {
         window.location.replace(`/p/${receivedPostData.post.postId}/edit`);
     });
 
-    generateMetaCard();
-
-    loadData(receivedPostData);
-
     // createVoteCard();
 });
 
@@ -32,6 +28,12 @@ var initMap = () => {
 
     // create basic info window
     markerInfoWindow = createMarkerWindow();
+
+    // generate card with post meta information
+    generateMetaCard();
+
+    // update all fields accodring to data from server
+    loadData(receivedPostData);
 };
 
 var generateWaypointCardHTML = (marker) => {
@@ -98,15 +100,17 @@ var generateMetaCard = () => {
             </div>
             <hr class="card-divider">
             <div class="waypoint-card-body">
-                <div class="form-control waypoint-card-body-editor meta-body">
-                    Таким образом начало повседневной работы по формированию позиции требуют определения и уточнения системы обучения кадров, соответствует насущным потребностям. Значимость этих проблем настолько очевидна, что реализация намеченных плановых заданий позволяет выполнять важные задания по разработке форм развития. С другой стороны укрепление и развитие структуры влечет за собой процесс внедрения и модернизации существенных финансовых и административных условий.
-                </div>
+                <div class="form-control waypoint-card-body-editor meta-body"></div>
             </div>
             <hr class="card-divider">
             <div class="meta-card-footer d-flex flex-column">
                 <div class="card-bg-hover d-flex flex-row align-items-center p-2">
-                    <button class="default-button meta-card-footer-like-button mr-1"><i class="far fa-heart"></i></button><span id="like-counter">0</span>
-                    <i class="fas fa-eye ml-2 mr-1"></i><span id="views-counter">0</span>
+                    <span title="Количество людей которым понравилась заметка.">
+                        <button id="like-button" class="default-button meta-card-footer-like-button"><i class="far fa-heart"></i></button><span id="like-counter">0</span>
+                    </span>
+                    <span title="Количество просмотров заметки.">
+                        <i class="fas fa-eye ml-2 mr-1"></i><span id="views-counter">0</span>
+                    </span>
                 </div>
                 <hr class="card-divider">
                 <div class="d-flex flex-row align-items-center align-items-stretch">
@@ -147,6 +151,11 @@ var loadData = (data) => {
     /* counters */
     $('#views-counter').html(data.post.uniqIpsVisited);
     $('#like-counter').html(data.post.likes);
+
+    /* like-button functional */
+    $('#like-button').click(() => {
+        console.log('liked');
+    });
 
     /* post author */
     let authorProfileLink = $('#author-profile-link');

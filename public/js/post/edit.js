@@ -88,12 +88,6 @@ $(document).ready(() => {
             buttonReceived();
         });
     });
-
-    createAddVoteCard();
-
-    generateMetaCard();
-
-    loadData(receivedPostData);
 });
 
 let map;
@@ -131,6 +125,15 @@ var initMap = () => {
             await createMarker(e.latLng);
         })();
     });
+
+    // create card for vote creation
+    createAddVoteCard();
+
+    // create card for meta info
+    generateMetaCard();
+
+    // fill all fields with data loaded from server
+    loadData(receivedPostData);
 };
 
 // info window for showing marker address

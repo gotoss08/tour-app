@@ -105,10 +105,8 @@ var generateMetaCard = () => {
             <hr class="card-divider">
             <div class="meta-card-footer d-flex flex-column">
                 <div class="card-bg-hover d-flex flex-row align-items-center p-2">
-                    <span title="Количество людей которым понравилась заметка.">
-                        <button id="like-button" class="default-button meta-card-footer-like-button"><i class="far fa-heart"></i></button><span id="like-counter">0</span>
-                    </span>
-                    <span title="Количество просмотров заметки.">
+                    <button id="like-button" class="default-button meta-card-footer-like-button"><i class="far fa-heart faa-pulse-hover"></i></button><span id="like-counter">0</span>
+                    <span title="Количество <b>уникальных</b> просмотров заметки.">
                         <i class="fas fa-eye ml-2 mr-1"></i><span id="views-counter">0</span>
                     </span>
                 </div>
@@ -152,9 +150,37 @@ var loadData = (data) => {
     $('#views-counter').html(data.post.uniqIpsVisited);
     $('#like-counter').html(data.post.likes);
 
+    if (data.post.currentUserLiked) {
+        console.dir($('#like-button'));
+        console.log('current user liked: ' + data.post.currentUserLiked);
+        $('#like-button').find('i').removeClass('far').addClass('fas');
+    } else {
+        $('#like-button').find('i').removeClass('fas').addClass('far');
+    }
+
     /* like-button functional */
-    $('#like-button').click(() => {
-        console.log('liked');
+    $('#like-button').click(function() {
+        let self = this;
+
+        let likeAjax = $.ajax({
+            method: 'post',
+            url: `/p/${data.post.postId}/like`,
+        });
+
+        likeAjax.done((data) => {
+            $('#like-counter').html(data.likes.length);
+            if (data.userJustLiked) {
+                $(self).find('[data-fa-i2svg]').removeClass('far').addClass('fas');
+            } else {
+                $(self).find('[data-fa-i2svg]').removeClass('fas').addClass('far');
+            }
+        });
+
+        likeAjax.fail((xhr) => {
+            $.notify(xhr.responseText, 'danger');
+        });
+
+        console.log('liked: ' + data.post.currentUserLiked);
     });
 
     /* post author */

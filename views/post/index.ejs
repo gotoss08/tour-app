@@ -40,6 +40,7 @@
             uniqIpsVisited: <%= post.uniqIpsVisited.length %>,
             totalVisitCount: <%= post.totalVisitCount %>,
             likes: <%= post.likes.length %>,
+            currentUserLiked: Boolean(<%= post.currentUserLiked %>),
             countries: [
                 <% for(let i = 0; i < post.countries.length; i++) { %>
                     <% let country = post.countries[i]; %>

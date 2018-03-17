@@ -55,13 +55,6 @@ module.exports.edit = (req, res, next) => {
         });
 };
 
-
-/* POST [CRUD] */
-
-module.exports.create = () => {
-
-};
-
 module.exports.read = (req, res, next) => {
     checkPostIdParams(req, res, next);
 
@@ -70,18 +63,18 @@ module.exports.read = (req, res, next) => {
     Post.findById(req.params.postId).exec()
         .then((post) => {
             if (post && post.posted) {
-                /* update counters */
-                let notFoundCurrentIp = true;
-                for(let i = 0; i < post.uniqIpsVisited.length; i++) {
-                    let ip = post.uniqIpsVisited[i];
-                    if (ip == clientIp) {
-                        notFoundCurrentIp = false;
-                        break;
-                    }
-                }
-                if (notFoundCurrentIp) post.uniqIpsVisited.push(clientIp);
+                /* update post visit counters */
+                if (post.uniqIpsVisited.indexOf(clientIp) == -1) post.uniqIpsVisited.push(clientIp);
                 post.totalVisitCount+=1;
                 post.save();
+
+                /* check for user liked this post */
+                post.currentUserLiked = false;
+                if (req.session && req.session.userId) {
+                    post.currentUserLiked = post.likes.filter((likedUserId) => {
+                        return likedUserId == req.session.userId;
+                    }).length != 0;
+                }
 
                 console.log(JSON.stringify(post, null, 2));
 
@@ -119,10 +112,12 @@ module.exports.read = (req, res, next) => {
         });
 };
 
+/* POST */
+
 module.exports.update = (req, res, next) => {
     if (!util.checkUserLogin(req, res, next)) {
         res.status(401).send();
-        return next(new Error('Для этого действия необходим вход в аккаунт.'));
+        return next(new Error('Для этого действия необходима авторизация в аккаунте.'));
     }
     checkPostIdParams(req, res, next);
 
@@ -252,6 +247,28 @@ module.exports.update = (req, res, next) => {
 
 module.exports.delete = () => {
 
+};
+
+module.exports.like = (req, res, next) => {
+    if (!util.checkUserLogin(req, res, next)) {
+        let errorMessage = 'Для этого действия необходима авторизация в аккаунте.';
+        res.status(401).send(errorMessage);
+        return next(new Error(errorMessage));
+    }
+    checkPostIdParams(req, res, next);
+
+    Post.findById(req.params.postId).exec()
+        .then((post) => {
+            if (!post) return res.sendStatus(400);
+            let currentUserId = req.session.userId;
+            let currentUserAlreadyLiked = post.likes.indexOf(currentUserId) != -1;
+
+            if (!currentUserAlreadyLiked) post.likes.push(currentUserId);
+            else post.likes.splice(post.likes.indexOf(currentUserId), 1);
+
+            post.save();
+            return res.status(200).send({likes: post.likes, userJustLiked: !currentUserAlreadyLiked});
+        });
 };
 
 /* helpers */

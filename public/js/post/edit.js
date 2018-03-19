@@ -448,6 +448,12 @@ var prepareData = () => {
         }
     }
 
+    /* countries */
+    data.countries = [];
+    markers.forEach((marker) => {
+        if (data.countries.indexOf(marker.country) == -1) data.countries.push(marker.country);
+    });
+
     return data;
 };
 
@@ -524,18 +530,6 @@ var loadData = (data) => {
     }
 
     calcRoute();
-};
-
-var getTotalCountryList = () => {
-    const countries = [];
-
-    markers.forEach((marker) => {
-        if (countries.indexOf(marker.country) == -1) countries.push(marker.country);
-    });
-
-    $.notify(JSON.stringify(countries));
-
-    return countries;
 };
 
 var validateData = () => {

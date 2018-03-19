@@ -1,5 +1,7 @@
 const util = require('../util/util.js');
 
+/* feedback */
+
 module.exports.feedbackGet = (req, res, next) => {
     util.checkUserLoginWithRedirect(req, res, next);
 
@@ -45,6 +47,26 @@ module.exports.feedbackPost = (req, res, next) => {
         });
     });
 };
+
+/* country */
+const Country = require('../models/country.model.js');
+
+module.exports.createCountry = (req, res, next) => {
+    if (!req.body.countries || !req.body.countries.length || req.body.countries.length < 1) return res.sendStatus(400);
+
+    Country.create(req.body.countries, (err, countries) => {
+        if (err) return next(err);
+
+        return res.status(200).send(countries);
+    });
+};
+
+module.exports.findCountry = (req, res, next) => {
+
+
+};
+
+/* test page for creating and testing elements */
 
 module.exports.test = (req, res, next) => {
     return res.render('api/test');

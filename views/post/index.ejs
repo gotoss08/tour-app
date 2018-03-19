@@ -1,5 +1,6 @@
 <% include ../partials/header_start.ejs %>
 <!-- page styles -->
+<link rel="stylesheet" href="/css/libs/viewer.min.css">
 <link rel="stylesheet" href="/css/post/index.css">
 <% include ../partials/header_end.ejs %>
 <div class="container mt-3 mt-md-4">
@@ -9,13 +10,14 @@
 <script src="/js/libs/he.js"></script>
 <script src="/js/libs/autosize.min.js"></script>
 <script src="/js/libs/jquery.waypoints.min.js"></script>
+<script src="/js/libs/moment.min.js"></script>
+<script src="/js/libs/moment.locale.ru.js"></script>
+<script src="/js/libs/viewer.min.js"></script>
 <% if (voteAttached) { %>
 <script src="/js/libs/chart.min.js"></script>
 <% } %>
 <!-- load post data -->
-<script>
-    <% console.log('vote attached: ' + voteAttached); %>
-
+<script id="received-post-data-script">
     const receivedPostData = {
         post: {
             postId: '<%= post._id %>',
@@ -47,6 +49,8 @@
                     '<%= country %>',
                 <% } %>
             ],
+            postedAt: new Date('<%= post.createdAt %>'),
+            editedAt: new Date('<%= post.updatedAt %>'),
         },
         voteAttached: Boolean(<%= voteAttached %>),
         <% if (voteAttached) { %>
@@ -64,16 +68,11 @@
                 ]
             },
             <% let currentUserVoted = false; %>
-            <%
-                console.log('voted users ' + JSON.stringify(vote.votedUsers, null, 2));
-                console.log('current user id ' + session.userId);
-            %>
             <% for(let i = 0; i < vote.votedUsers.length; i++) { %>
                 <%  let user = vote.votedUsers[i]; %>
                 <% if (user._id == session.userId) { %>
                     <%
                         currentUserVoted = true;
-                        console.log('current user voted');
                         break;
                     %>
                 <% } %>
@@ -85,6 +84,15 @@
         <% } %>
         username: '<%= username %>',
         userAvatarPath: '<%= userAvatarPath %>',
+        countries: [
+            <% for (let i = 0; i < countries.length; i++) { %>
+                <% let country = countries[i]; %>
+                {
+                    id: String('<%= country._id %>'),
+                    name: String('<%= country.name %>'),
+                },
+            <% } %>
+        ],
     };
 </script>
 <% if (session.userId && session.userId == post.userId) { %>

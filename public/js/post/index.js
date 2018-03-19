@@ -3,7 +3,11 @@ $(document).ready(() => {
         window.location.replace(`/p/${receivedPostData.post.postId}/edit`);
     });
 
-    // createVoteCard();
+    // set default locale to russian
+    moment.locale('ru');
+    console.log('moment locale ' + moment.locale());
+
+    $.trim('.received-post-data-script');
 });
 
 let map;
@@ -34,6 +38,15 @@ var initMap = () => {
 
     // update all fields accodring to data from server
     loadData(receivedPostData);
+
+    // add classes for limiting image width and height to fit the card
+    let images = $('.waypoint-cards p img');
+    images.addClass('w-100 h-100');
+    images.attr('title', 'Открыть в просмотрщике фотографий.');
+    tippy('.waypoint-cards p img');
+
+    // create and attach image viewer to photos
+    initImageViewer(images);
 };
 
 var generateWaypointCardHTML = (marker) => {
@@ -117,13 +130,9 @@ var generateMetaCard = () => {
                     </a>
                     <div class="meta-card-footer-item card-bg-hover d-flex flex-column">
                         <div class="d-flex flex-row align-items-center mb-3">
-                            <div class="meta-date mr-2">15.03.2018</div>
-                            <div class="meta-time">18:32</div>
+                            <div class="meta-date"></div>
                         </div>
-                        <div class="meta-country mr-2">
-                            <a href="#">Russia</a>,
-                            <a href="#">Kazakhstan</a>
-                        </div>
+                        <div class="meta-country mr-2"></div>
                     </div>
                 </div>
             </div>
@@ -150,16 +159,13 @@ var loadData = (data) => {
     $('#views-counter').html(data.post.uniqIpsVisited);
     $('#like-counter').html(data.post.likes);
 
+    /* like-button functional */
+    let likeButton = $('#like-button');
     if (data.post.currentUserLiked) {
-        console.dir($('#like-button'));
-        console.log('current user liked: ' + data.post.currentUserLiked);
-        $('#like-button').find('i').removeClass('far').addClass('fas');
-    } else {
-        $('#like-button').find('i').removeClass('fas').addClass('far');
+        likeButton.find('i').removeClass('far').addClass('fas');
     }
 
-    /* like-button functional */
-    $('#like-button').click(function() {
+    likeButton.click(function() {
         let self = this;
 
         let likeAjax = $.ajax({
@@ -179,9 +185,23 @@ var loadData = (data) => {
         likeAjax.fail((xhr) => {
             $.notify(xhr.responseText, 'danger');
         });
-
-        console.log('liked: ' + data.post.currentUserLiked);
     });
+
+    /* time and date */
+    let postedMoment = moment(data.post.postedAt);
+
+    $('.meta-date').html(postedMoment.fromNow());
+    $('.meta-date').prop('title', postedMoment.format('Do MMMM YYYY в kk:m'));
+    tippy('.meta-date');
+
+    /* countries */
+    let countriesHTML = '';
+    for (let i = 0; i < data.countries.length; i++) {
+        let country = data.countries[i];
+        countriesHTML += `<a href="/${country.id}">${country.name}</a>`;
+        if (i != data.countries.length-1) countriesHTML += ', ';
+    }
+    $('.meta-country').html(countriesHTML);
 
     /* post author */
     let authorProfileLink = $('#author-profile-link');
@@ -401,4 +421,26 @@ var updateVoteChart = (vote) => {
     });
 
     voteChart.update();
+};
+
+var initImageViewer = (images) => {
+    let imageContainer = $('<ul></ul>');
+
+    let html = '<ul>';
+    for(let i = 0; i < images.length; i++) {
+        let image = images[i];
+        html += '<li>'
+        html += `<img src="${$(image).attr('src')}">`;
+        html += '</li>';
+    }
+    html += '</ul>'
+
+    let viewer = new Viewer($(html)[0]);
+
+    for(let i = 0; i < images.length; i++) {
+        let image = images[i];
+        $(image).click(() => {
+            viewer.show();
+        });
+    }
 };

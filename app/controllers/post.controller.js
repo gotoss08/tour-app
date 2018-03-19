@@ -1,10 +1,12 @@
 const sanitizeHtml = require('sanitize-html');
+const mongoose = require('mongoose');
 
 const util = require('../util/util.js');
 
 const {Post} = require('../models/post.model.js');
 const {Vote} = require('../models/vote.model.js');
 const User = require('../models/user.model');
+const Country = require('../models/country.model.js');
 
 /* GET */
 
@@ -98,6 +100,21 @@ module.exports.read = (req, res, next) => {
             });
         })
         .then((data) => {
+            data.countries = [];
+            if (data.post.countries && data.post.countries.length) {
+                let countryIds = [];
+                for (let i = 0; i < data.post.countries.length; i++) {
+                    let country = data.post.countries[i];
+                    countryIds.push(new mongoose.Types.ObjectId(country));
+                }
+                return Country.find({_id: {$in: countryIds}}).exec().then((countries) => {
+                    console.log('found countries: ' + JSON.stringify(countries, null, 2));
+                    data.countries = countries;
+                    return data;
+                });
+            } else return data;
+        })
+        .then((data) => {
             return User.findById(data.post.userId).exec().then((user) => {
                 data.username = user.username;
                 data.userAvatarPath = user.avatarPath;
@@ -110,6 +127,10 @@ module.exports.read = (req, res, next) => {
         .catch((err) => {
             return next(err);
         });
+};
+
+module.exports.findByCountries = (req, res, next) => {
+    return res.send('find by countries');
 };
 
 /* POST */
@@ -171,15 +192,12 @@ module.exports.update = (req, res, next) => {
             } else return data;
         })
         .then((data) => {
-            console.log('vote stage');
             if (!data.vote && data.postVote && data.post.voteId) {
-                console.log('if (!data.vote && data.postVote && data.post.voteId)');
                 return Vote.findByIdAndRemove(data.post.voteId).then(() => {
                     data.post.voteId = '';
                     return data;
                 });
             } else if (data.vote && !data.postVote) {
-                console.log('else if (data.vote && !data.postVote)');
                 data.vote.options.forEach((option) => {
                     console.dir(option);
                 });
@@ -193,34 +211,25 @@ module.exports.update = (req, res, next) => {
                     return data;
                 });
             } else if (data.vote && data.postVote) {
-                console.log(JSON.stringify(data, null, 2));
-                console.log('else if (data.vote && data.postVote)');
                 let difference = false;
 
                 if (!data.vote.title || !data.postVote.title || data.vote.title != data.postVote.title) difference = true;
-                console.log('if (!data.vote.title || !data.postVote.title || data.vote.title != data.postVote.title)');
 
                 if (data.vote.options && data.postVote.options && data.vote.options.length == data.postVote.options.length) {
-                    console.log('if (data.vote.options && data.postVote.options && data.vote.options.length == data.postVote.options.length)');
                     for(let i = 0; i < data.vote.options.length; i++) {
                         let voteOption = data.vote.options[i];
                         let postVoteOption = data.postVote.options[i];
 
                         if (voteOption.title != postVoteOption.title) difference = true;
                     }
-                    console.log('for(let i = 0; i < data.vote.options.length; i++)');
                 } else difference = true;
 
-                console.log('difference: ' + difference);
-
                 if (difference) {
-                    console.log('if (difference)');
                     return Vote.create({
                         title: data.vote.title,
                         options: data.vote.options,
                         userId: req.session.userId,
                     }).then((vote) => {
-                        console.log('.then((vote) =>');
                         data.vote = vote;
                         return data;
                     });
@@ -231,12 +240,63 @@ module.exports.update = (req, res, next) => {
             } else return data;
         })
         .then((data) => {
+            if (!postData.countries || postData.countries.length < 1) return data;
+
+            console.log('received countries from client: ' + JSON.stringify(postData.countries, null, 2));
+            return Country.find().exec()
+                .then((countries) => {
+                    console.log('loaded countries from db: ' + JSON.stringify(countries, null, 2));
+
+                    data.post.countries = [];
+                    data.preparedCountries = [];
+
+                    if (!countries || countries.length < 1) {
+                        for (let i = 0; i < postData.countries.length; i++) {
+                            data.preparedCountries.push({name: postData.countries[i]});
+                        }
+                    } else {
+                        for (let i = 0; i < postData.countries.length; i++) {
+                            let receivedCountry = postData.countries[i];
+                            let found = false;
+
+                            for (let j = 0; j < countries.length; j++) {
+                                let countryInDb = countries[j];
+
+                                if (String(countryInDb.name).toUpperCase() === String(receivedCountry).toUpperCase()) {
+                                    data.post.countries.push(countryInDb._id);
+
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                data.preparedCountries.push({name: receivedCountry});
+                            }
+                        }
+                    }
+
+                    console.log('prepared countries: ' + JSON.stringify(data.preparedCountries, null, 2));
+                    return data;
+                })
+                .then((data) => {
+                    return Country.create(data.preparedCountries).then((countries) => {
+                        if (countries) {
+                            for (let i = 0; i < countries.length; i++) {
+                                data.post.countries.push(countries[i]._id);
+                            }
+                        }
+                        return data;
+                    });
+                });
+        })
+        .then((data) => {
             if (data.vote) {
                 data.post.voteId = data.vote._id;
             }
 
+            console.log('data: ' + JSON.stringify(data, null, 2));
+
             return data.post.save().then(() => {
-                console.log(JSON.stringify(data, null, 2));
                 return res.status(200).send(data);
             });
         })

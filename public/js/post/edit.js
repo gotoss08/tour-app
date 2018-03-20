@@ -389,7 +389,12 @@ var prepareData = () => {
 
     /* base data */
     let metaTitle = $('.meta-title').val();
-    if (metaTitle && metaTitle.trim()) data.title = metaTitle.trim();
+    if (metaTitle && metaTitle.trim()) {
+        data.title = metaTitle.trim();
+
+        // set page title to post title
+        document.title = data.title;
+    }
 
     let metaSubtitle = $('.meta-subtitle').val();
     if (metaSubtitle && metaSubtitle.trim()) data.subtitle = metaSubtitle.trim();
@@ -458,6 +463,9 @@ var prepareData = () => {
 };
 
 var loadData = (data) => {
+    // set page title to post title
+    if (data.post.title) document.title = data.post.title;
+    else document.title = 'Своим ходом - черновик'
 
     $('.meta-title').val(data.post.title);
     $('.meta-subtitle').val(data.post.subtitle);

@@ -148,8 +148,8 @@ var generateMetaCard = () => {
 
 var loadData = (data) => {
 
-    console.log('post id ' + data.post.postId);
-    console.log('vote id ' + data.post.voteId);
+    // set page title to post title
+    document.title = data.post.title;
 
     $('.meta-title').html(data.post.title);
     $('.meta-subtitle').html(data.post.subtitle);

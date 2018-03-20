@@ -45,9 +45,7 @@ module.exports.userLoginPost = (req, res, next) => {
     if (req.body.username && req.body.password) {
         User.authenticate(req.body.username, req.body.password, (err, user) => {
             if (err || !user) {
-                const error = new Error('Неправильное имя пользователя или пароль!');
-                error.status = 401;
-                return next(error);
+                return res.status(401).send('Такое имя пользователя или пароль не найдены.');
             }
 
             req.session.userId = user._id;

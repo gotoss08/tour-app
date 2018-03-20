@@ -1,0 +1,32 @@
+.page-content-container {
+    width: 90vw;
+    height: 90vh;
+
+    font-family: Roboto;
+}
+
+input {
+    width: 100%;
+
+    padding: 10px;
+
+    border: none;
+    outline: none;
+}
+
+.card {
+    width: 400px;
+}
+
+.default-button {
+    background-color: rgba(0,0,0,0);
+    cursor: pointer;
+}
+
+.default-button:focus {
+    outline: none;
+}
+
+.secondary-button  {
+    font-weight: normal;
+}

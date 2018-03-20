@@ -119,6 +119,8 @@ html, body {
     outline: none;
     border: none;
 
+    padding: 5px;
+
     font-family: Roboto;
     font-weight: bold;
     font-size: 1em;
@@ -128,4 +130,26 @@ html, body {
 
 .default-button:hover {
     background-color: rgba(0,0,0,0.1);
+}
+
+.card {
+    padding: 10px;
+}
+
+.card-bg-hover {
+    transition: background-color .1s;
+}
+
+.card-bg-hover:focus {
+    background-color: rgba(0,0,0,.03);
+}
+
+.card-bg-hover:hover {
+    background-color: rgba(0,0,0,.05);
+}
+
+.card-shadow {
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }

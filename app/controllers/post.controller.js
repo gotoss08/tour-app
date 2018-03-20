@@ -130,7 +130,7 @@ module.exports.read = (req, res, next) => {
 };
 
 module.exports.findByCountries = (req, res, next) => {
-    return res.send('find by countries');
+    return res.send('find by countries ' + req.body);
 };
 
 /* POST */

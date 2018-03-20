@@ -1,12 +1,14 @@
 $(document).ready(() => {
     $('#post-save-button').click(function() {
+        if (!validateVote(true)) return false;
+        $('.notifyjs-wrapper').trigger('notify-hide');
+
         let data = prepareData();
 
         let self = this;
         let prevHTML = $(self).html();
 
         let buttonSending = () => {
-            $.notify('Button click');
             $(self).html('<i class="fas fa-spinner"></i>');
             $(self).children('i').addClass('spinner-rotation');
             $(self).attr('disabled', true);
@@ -28,13 +30,13 @@ $(document).ready(() => {
         removeAllMarkers();
 
         request.done((data, status) => {
-            $.notify('[send to server] was ' + status, 'success')
+            $.notify('Данные успешно сохранены на сервере.', 'success')
             $(self).attr('disabled', false);
             loadData(data);
         });
 
         request.fail((xhr, status) => {
-            $.notify('[send to server] was ' + status, 'danger')
+            $.notify('Ошибка при отправке данных на сервер.', 'error')
         });
 
         request.always(() => {
@@ -43,7 +45,7 @@ $(document).ready(() => {
     });
 
     $('#post-publish-button').click(function() {
-        validateData();
+        if (!validateData()) return false;
 
         let data = prepareData();
 
@@ -218,8 +220,6 @@ let removeAllMarkers = () => {
     waypoints.length = 0;
 
     directionsDisplay.setMap(null);
-
-    $.notify('All markers removed');
 };
 
 let addEventListeners = (marker) => {
@@ -533,10 +533,89 @@ var loadData = (data) => {
 };
 
 var validateData = () => {
+    $('.notifyjs-wrapper').trigger('notify-hide');
+
+    let errors = false;
+
+    let showEmptyError = (element) => {
+        element.notify('Это поле не может быть пустым.', {position: 'right', autoHide: false, className: 'error'});
+        errors = true;
+    };
+
+    let metaTitle = $('.meta-card .meta-title');
+    if (!metaTitle.val() && !metaTitle.val().trim()) showEmptyError(metaTitle);
+
+    let metaSubtitle = $('.meta-card .meta-subtitle');
+    if (!metaSubtitle.val() && !metaSubtitle.val().trim()) showEmptyError(metaSubtitle);
+
+    let metaBody = $('.meta-card .waypoint-card-body-editor');
+    let metaBodyContent = striptags(MediumEditor.getEditorFromElement(metaBody.get(0)).getContent());
+    if (!metaBodyContent) showEmptyError($(metaBody.get(0)));
+
     // if (data.markers.length < 1) return;
-    $('.waypoint-card').each((index, element) => {
-        // console.dir(element);
+    $('.waypoint-cards .waypoint-card:not(.meta-card)').each((index, element) => {
+
+
+        let header = $(element).find('.waypoint-card-header-input');
+        if (!header.val() && !header.val().trim()) showEmptyError(header);
+
+        let body = $(element).find('.waypoint-card-body-editor');
+        let bodyContent = striptags(MediumEditor.getEditorFromElement(body.get(0)).getContent());
+        if (!bodyContent) showEmptyError($(body.get(0)));
     });
+
+    let voteCard = $('.vote-card-active');
+    if (voteCard.length) {
+        let voteHeader = voteCard.find('.vote-card-header-input');
+        if (!voteHeader.val() && !voteHeader.val().trim()) {
+            voteHeader.notify('Тема голосования не может быть пустой.', {position: 'right', className: 'error', autoHide: false});
+            errors = true;
+        }
+
+        let voteOptions = voteCard.find('.vote-card-body-input');
+        let filledVoteOptions = 0;
+        voteOptions.each((index, element) => {
+            let optionValue = $(element).val();
+            if (optionValue && optionValue.trim()) filledVoteOptions += 1;
+        });
+        if (filledVoteOptions < 2) {
+            voteCard.find('.waypoint-card-body').notify('Не может быть меньше 2 вариантов голосования.', {position: 'right', className: 'error', autoHide: false});
+            errors = true;
+        };
+    }
+
+    if (!validateVote()) errors = true;
+
+    if (errors) {
+        $.notify('У вас имеются незаполненные поля.', 'error');
+        return false;
+    }
+
+    return true;
+};
+
+var validateVote = (showNotifications) => {
+    let voteCard = $('.vote-card-active');
+    if (voteCard.length) {
+        let voteHeader = voteCard.find('.vote-card-header-input');
+        if (!voteHeader.val() && !voteHeader.val().trim()) {
+            voteHeader.notify('Тема голосования не может быть пустой.', {position: 'right', className: 'error', autoHide: false});
+            return false;
+        }
+
+        let voteOptions = voteCard.find('.vote-card-body-input');
+        let filledVoteOptions = 0;
+        voteOptions.each((index, element) => {
+            let optionValue = $(element).val();
+            if (optionValue && optionValue.trim()) filledVoteOptions += 1;
+        });
+        if (filledVoteOptions < 2) {
+            voteCard.find('.waypoint-card-body').notify('Не может быть меньше 2 вариантов голосования.', {position: 'right', className: 'error', autoHide: false});
+            return false;
+        };
+    }
+
+    return true;
 };
 
 let createAddVoteCard = () => {

@@ -4,9 +4,9 @@ const api = require('../controllers/post.controller.js');
 /* GET */
 
 router.get('/new', api.new);
+router.get('/country', api.findByCountries);
 router.get('/:postId/edit', api.edit);
 router.get('/:postId', api.read);
-router.get('/country', api.findByCountries);
 
 /* POST */
 

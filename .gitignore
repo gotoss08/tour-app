@@ -1,3 +1,5 @@
 node_modules
 .idea
 public/post_files
+public/user_files
+dist

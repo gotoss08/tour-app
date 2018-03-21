@@ -72,7 +72,7 @@ const mkdirp = require('mkdirp');
 const uniqid = require('uniqid');
 
 module.exports.imageUpload = (req, res, next) => {
-    console.log('upload started');
+    // TODO: compress loading images
 
     if (!req.files) {
         return res.status(400).send('No files uploaded!');
@@ -86,15 +86,11 @@ module.exports.imageUpload = (req, res, next) => {
     let dir = req.body.dir;
     let filename = req.body.filename;
 
-    console.log('file', file, 'dir', dir, 'filename', filename);
-
     let filepath = path.join(__dirname, '..', '..', 'public', dir, filename);
     let dirname = path.dirname(filepath);
 
     mkdirp(dirname, function(err) {
         if (err) return next(err);
-
-        console.log('Storing user file at: ' + filepath);
 
         file.mv(filepath, (err) => {
             if (err) return next(err);

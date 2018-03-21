@@ -89,7 +89,6 @@ app.use(function(req, res, next) {
 
     User.findById(req.session.userId).exec().then((user) => {
         if (user) {
-
             req.username = user.username;
             req.userAvatarPath = user.avatarPath;
 

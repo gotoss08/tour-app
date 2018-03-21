@@ -1,6 +1,10 @@
 const request = require('request');
 const querystring = require('querystring');
 
+const path = require('path');
+const mkdirp = require('mkdirp');
+const uniqid = require('uniqid');
+
 const User = require('../models/user.model');
 const Post = require('../models/post.model').Post;
 
@@ -9,28 +13,51 @@ module.exports.userRegisterGet = (req, res) => {
 };
 
 module.exports.userRegisterPost = (req, res, next) => {
-    if (req.body.username && req.body.email && req.body.password) {
-        const userData = {
-            username: req.body.username,
-            email: req.body.email,
-            password: req.body.password,
-        };
+    if (!req.body.username || !req.body.email || !req.body.password) return res.status(400).send('Не найдено пользовательской информации.');
 
-        User.create(userData, (err, user) => {
+    /* process user info */
+    const userData = {
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+    };
+
+    if (req.files && req.files.avatar) {
+        /* process files */
+        let file = req.files.avatar;
+        let filename = uniqid() + '-' + file.name;
+        let localFilepath = path.join('user_files', 'avatars', filename);
+        let filepath = path.join(__dirname, '..', '..', 'public', localFilepath);
+        let dirname = path.dirname(filepath);
+
+        mkdirp(dirname, function(err) {
             if (err) return next(err);
 
-            res.redirect(307, '/user/login?' + querystring.stringify({username: req.body.username, password: req.body.password}));
-            // request('http://localhost:3000/user/login?' + querystring.stringify({username: req.body.username, password: req.body.password}), (error, response, body) => {
-            //     if (error) {
-            //         return next(error);
-            //     }
-
-            //     console.log(response);
-            // });
+            file.mv(filepath, (err) => {
+                if (err) return next(err);
+            });
         });
-    } else {
-        return next(new Error('Неверные значения полей регистрации!'));
-    }
+
+        avatarAttached = true;
+
+        userData.avatarPath = '/' + localFilepath.replace(/\\/g, '/');
+    };
+
+    console.log('user data: ' + JSON.stringify(userData, null, 2));
+
+    User.create(userData, (err, user) => {
+        if (err) return next(err);
+
+        User.authenticate(userData.username, userData.password, (err, user) => {
+            if (err || !user) {
+                next(err);
+                return res.status(401).send('Такое имя пользователя или пароль не найдены.');
+            }
+
+            req.session.userId = user._id;
+            return res.sendStatus(200);
+        });
+    });
 };
 
 module.exports.userLoginGet = (req, res) => {

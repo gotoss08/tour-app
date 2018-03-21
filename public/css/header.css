@@ -85,8 +85,9 @@
     text-align: center;
     background-color: rgba(0,0,0,.64);
 
-    -webkit-background-size: contain;
-    background-size: contain;
+    -webkit-background-size: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .user-avatar {

@@ -32,7 +32,7 @@ UserSchema.statics.authenticate = (username, password, callback) => {
             if (err) {
                 return callback(err);
             } else if (!user) {
-                const err = new Error('User not found');
+                const err = new Error('Пользователь не найден.');
                 err.status = 401;
                 return callback(err);
             }

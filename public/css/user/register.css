@@ -9,6 +9,18 @@
     width: 400px;
 }
 
+.info-card
+{
+    position: absolute;
+
+    display: none;
+
+    width: 275px;
+    /*max-width: 250px;*/
+
+    transition: all .1s ease;
+}
+
 input {
     width: 100%;
 
@@ -18,18 +30,24 @@ input {
     outline: none;
 }
 
-.info-card {
-    position: absolute;
-    width: 275px;
-    /*max-width: 250px;*/
-
-    transition: all .1s ease;
-
-    display: none;
+input::placeholder, input:-ms-input-placeholder, input::-ms-input-placeholder {
+    font-style: italic;
 }
 
 hr {
     padding: 0;
     margin: 0;
     margin: 5px;
+}
+
+.default-button {
+    background-color: transparent;
+}
+
+.default-button, .default-button:hover, .default-button:focus {
+    color: black;
+    text-decoration: none;
+    text-align: center;
+    outline: none;
+    border: none;
 }

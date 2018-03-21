@@ -9,15 +9,21 @@
         <div class="col-12">
             <div class="card register-card card-shadow">
                 <h3 class="text-center mb-4">Регистрация</h3>
-                <input id="username" class="card-bg-hover" type="text" placeholder="Имя пользователя.." autocomplete="off">
-                <input id="email" class="card-bg-hover" type="text" placeholder="Email..." autocomplete="off">
+                Имя пользователя
+                <input id="username" class="card-bg-hover" type="text" placeholder="..." autocomplete="off">
+                Email
+                <input id="email" class="card-bg-hover" type="text" placeholder="..." autocomplete="off">
                 <hr>
-                <input id="password1" class="card-bg-hover" type="text" placeholder="Пароль..."  autocomplete="off">
-                <input id="password2" class="card-bg-hover" type="text" placeholder="Повторите пароль..." autocomplete="off">
+                Пароль
+                <input id="password1" class="card-bg-hover" type="password" placeholder="..." autocomplete="off">
+                Повторите пароль
+                <input id="password2" class="card-bg-hover" type="password" placeholder="..." autocomplete="off">
                 <hr>
-                <input id="avatar" class="card-bg-hover" type="file" accept=".jpg, .jpeg, .png" placeholder="Загрузите аватар" autocomplete="off">
+                Загрузите аватар(не обязательно)<input id="avatar" class="card-bg-hover" type="file" accept=".jpg, .jpeg, .png" placeholder="Загрузите аватар" autocomplete="off">
                 <hr>
-                <button class="default-button card-bg-hover">Зарегестрироваться</button>
+                <button id="register" class="default-button card-bg-hover">Зарегестрироваться</button>
+                <span class="text-center">или</span>
+                <a id="login" href="/user/login" role="button" class="default-button card-bg-hover">Войти</a>
             </div>
         </div>
     </div>

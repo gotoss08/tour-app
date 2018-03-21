@@ -1,33 +1,26 @@
 <% include ../partials/header_start.ejs %>
 <link rel="stylesheet" href="/css/user/register.css">
 <% include ../partials/header_end.ejs %>
-
-<div class="container mt-5">
-    <div class="col-12 pb-3">
-        <h1><%= __('register.header') %></h1>
-    </div>
-    <div class="col-5">
-        <form id="registerForm" action="/user/register" method="post">
-            <div class="form-group">
-                <input type="text" id="usernameInput" name="username" class="form-control" placeholder="<%= __('register.username.placeholder') %>">
+<div class="card info-card card-shadow">
+    Some info body
+</div>
+<div class="container page-content-container d-flex justify-content-center">
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card register-card card-shadow">
+                <h3 class="text-center mb-4">Регистрация</h3>
+                <input id="username" class="card-bg-hover" type="text" placeholder="Имя пользователя.." autocomplete="off">
+                <input id="email" class="card-bg-hover" type="text" placeholder="Email..." autocomplete="off">
+                <hr>
+                <input id="password1" class="card-bg-hover" type="text" placeholder="Пароль..."  autocomplete="off">
+                <input id="password2" class="card-bg-hover" type="text" placeholder="Повторите пароль..." autocomplete="off">
+                <hr>
+                <input id="avatar" class="card-bg-hover" type="file" accept=".jpg, .jpeg, .png" placeholder="Загрузите аватар" autocomplete="off">
+                <hr>
+                <button class="default-button card-bg-hover">Зарегестрироваться</button>
             </div>
-            <div class="form-group">
-                <input type="email" id="emailInput" name="email" class="form-control" placeholder="<%= __('register.email.placeholder') %>">
-            </div>
-            <hr>
-            <small id="passwordHelpBlock" class="form-text text-muted pb-2"><%= __('register.password.help') %></small>
-            <div class="form-group">
-                <input type="password" id="passwordInput" name="password" class="form-control" placeholder="<%= __('register.password.placeholder') %>">
-            </div>
-            <div class="form-group">
-                <input type="password" id="passwordConfirmationInput" name="passwordConfirmation" class="form-control" placeholder="<%= __('register.passwordConfirmation.placeholder') %>">
-            </div>
-            <hr>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary"><%= __('register.submit') %></button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
+<script src="/js/user/register.js"></script>
 <% include ../partials/footer.ejs %>

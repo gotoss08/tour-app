@@ -66,6 +66,56 @@ module.exports.findCountry = (req, res, next) => {
 
 };
 
+/* post image upload */
+const path = require('path');
+const mkdirp = require('mkdirp');
+const uniqid = require('uniqid');
+
+module.exports.imageUpload = (req, res, next) => {
+    console.log('upload started');
+
+    if (!req.files) {
+        return res.status(400).send('No files uploaded!');
+    }
+
+    if (!req.body.dir || !req.body.filename) {
+        return res.status(400).send('Invalid dir or filename!');
+    }
+
+    let file = req.files.file;
+    let dir = req.body.dir;
+    let filename = req.body.filename;
+
+    console.log('file', file, 'dir', dir, 'filename', filename);
+
+    let filepath = path.join(__dirname, '..', '..', 'public', dir, filename);
+    let dirname = path.dirname(filepath);
+
+    mkdirp(dirname, function(err) {
+        if (err) return next(err);
+
+        console.log('Storing user file at: ' + filepath);
+
+        file.mv(filepath, (err) => {
+            if (err) return next(err);
+            return res.sendStatus(204);
+        });
+    });
+};
+
+module.exports.imageGenerateKey = (req, res, next) => {
+    if (req.body.filename) {
+        let date = new Date();
+        let day = date.toISOString().slice(0, 10);
+        let time = date.getTime();
+        let filename = uniqid() + '-' + time + '-' + req.body.filename;
+
+        return res.status(200).send({dir: 'post_files/' + day + '/', filename: filename});
+    } else {
+        return res.status(400).send('invalid filename');
+    }
+};
+
 /* test page for creating and testing elements */
 
 module.exports.test = (req, res, next) => {

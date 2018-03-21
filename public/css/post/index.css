@@ -198,10 +198,6 @@
     -webkit-margin-end: 0px;
 }
 
-.waypoint-card-body-editor p img {
-    cursor: pointer;
-}
-
 .waypoint-card-body-editor-help
 {
     color: rgba(0,0,0,.3);

@@ -34,7 +34,7 @@ var createMarkerWindow = () => {
 };
 
 var focusMap = (marker) => {
-    map.setZoom(18);
+    map.setZoom(12);
     map.panTo(marker.getPosition());
     showInfoWindow(marker);
 };
@@ -91,7 +91,7 @@ var calcRoute = async () => {
             destination: finish,
             waypoints: waypoints,
             travelMode: 'DRIVING',
-            unitSystem: google.maps.UnitSystem.METRIC,
+            preserveViewport: true,
         };
 
         console.log('path start');

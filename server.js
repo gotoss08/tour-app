@@ -127,7 +127,6 @@ app.use('/p', require('./app/routes/post.routes'));
 app.use('/v', require('./app/routes/vote.routes'));
 app.use('/search', require('./app/routes/search.routes'));
 app.use('/api', require('./app/routes/api.routes'));
-app.use('/post', require('./app/routes/post1.routes'));
 
 // home page
 app.get('/', (req, res) => {

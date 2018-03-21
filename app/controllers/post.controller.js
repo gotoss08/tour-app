@@ -166,7 +166,7 @@ module.exports.update = (req, res, next) => {
             if (postData.subtitle) post.subtitle = sanitizeHtml(postData.subtitle);
 
             post.body = '';
-            if (postData.body) post.body = sanitizeHtml(postData.body);
+            if (postData.body) post.body = sanitizeHtmlWithOptions(postData.body);
 
             post.markers = [];
 

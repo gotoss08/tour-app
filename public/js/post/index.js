@@ -40,10 +40,12 @@ var initMap = () => {
     loadData(receivedPostData);
 
     // add classes for limiting image width and height to fit the card
-    let images = $('.waypoint-cards p img');
+    let imagesSelector = '.waypoint-cards p img, .meta-body img';
+    let images = $(imagesSelector);
     images.addClass('w-100 h-100');
     images.attr('title', 'Открыть в просмотрщике фотографий.');
-    tippy('.waypoint-cards p img');
+    images.css('cursor', 'pointer');
+    tippy(imagesSelector);
 
     // create and attach image viewer to photos
     initImageViewer(images);

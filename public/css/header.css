@@ -110,19 +110,15 @@
     color: rgba(0,0,0,0.64);
     padding-top: 10px;
     padding-bottom: 10px;
+    transition: color .2s, background-color .2s;
 }
 
 .dropdown-item:hover {
     text-decoration: none;
     color: rgba(0,0,0,0.84);
+    background-color: rgba(0,0,0,.03);
 }
 
-.dropdown-item a {
-    color: rgba(0,0,0,0.64);
-    transition: color .2s;
-}
-
-.dropdown-item a:hover {
-    text-decoration: none;
-    color: rgba(0,0,0,0.84);
+.dropdown-item:active {
+    background-color: rgba(0,0,0,.05);
 }

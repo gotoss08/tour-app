@@ -50,6 +50,9 @@ $(document).ready(() => {
     let avatar = $('#avatar');
 
     /* validation */
+    let usernameFree = true;
+    let emailFree = true;
+
     username.keyup(function() {
         let usernameVal = $(this).val();
         if (usernameVal && usernameVal.trim()) {
@@ -63,9 +66,11 @@ $(document).ready(() => {
                 if (response == 'free') {
                     username.addClass('input-valid').removeClass('input-error');
                     usernameStatus.html('Имя пользователя свободно.').addClass('status-free').removeClass('status-taken');
+                    usernameFree = true;
                 } else if (response == 'taken') {
                     username.addClass('input-error').removeClass('input-valid');
                     usernameStatus.html('Такое имя пользователя уже используется.').addClass('status-taken').removeClass('status-free');
+                    usernameFree = false;
                 } else {
                     console.error('Произошла ошибка на сервере.');
                 }
@@ -80,7 +85,7 @@ $(document).ready(() => {
     let validateEmail = (email) => {
         let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
-    }
+    };
 
     email.keyup(function() {
         let emailVal = $(this).val();
@@ -96,9 +101,11 @@ $(document).ready(() => {
                     if (response == 'free') {
                         email.addClass('input-valid').removeClass('input-error');
                         emailStatus.html('Email свободен.').addClass('status-free').removeClass('status-taken');
+                        emailFree = true;
                     } else if (response == 'taken') {
                         email.addClass('input-error').removeClass('input-valid');
                         emailStatus.html('Такой email уже используется.').addClass('status-taken').removeClass('status-free');
+                        emailFree = false;
                     } else {
                         console.error('Произошла ошибка на сервере.');
                     }
@@ -208,6 +215,24 @@ $(document).ready(() => {
 
         if (!validatePasswords()) {
             $.notify('Введенные вами пароли не совпадают.', 'error');
+            errors = true;
+        }
+
+        if (!usernameFree) {
+            username.notify('Имя пользователя занято.', {
+                position: 'left',
+                className: 'error',
+                autoHide: false,
+            });
+            errors = true;
+        }
+
+        if (!emailFree) {
+            email.notify('Email занят.', {
+                position: 'left',
+                className: 'error',
+                autoHide: false,
+            });
             errors = true;
         }
 

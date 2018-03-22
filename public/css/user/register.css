@@ -51,3 +51,19 @@ hr {
     outline: none;
     border: none;
 }
+
+.input-valid, .input-valid:hover, .input-valid:active, .input-valid:focus {
+    background-color: rgba(0,255,0,.1);
+}
+
+.input-error, .input-error:hover, .input-error:active, .input-error:focus {
+    background-color: rgba(255,0,0,.1);
+}
+
+.status-taken {
+    color: red;
+}
+
+.status-free {
+    color: green;
+}

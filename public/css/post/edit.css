@@ -146,12 +146,11 @@
     margin-top: 6px;
     margin-bottom: 6px;
     padding: 0;
-
     transition: height 2s;
-
     color: rgba(0,0,0,.84);
     border: none;
     background-color: transparent;
+    width: 100%;
 }
 
 .medium-editor-placeholder

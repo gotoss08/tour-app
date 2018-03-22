@@ -374,7 +374,7 @@ let generateMetaCard = () => {
         autoLink: true,
         buttonLabels: 'fontawesome',
         placeholder: {
-            text: 'Общие впечатления, описание поездки...',
+            text: 'Описание поездки, впечатления...',
         },
         toolbar: {
             buttons: ['bold', 'italic', 'underline', 'anchor', 'h2', 'h3'],

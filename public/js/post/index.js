@@ -442,6 +442,7 @@ var initImageViewer = (images) => {
     for(let i = 0; i < images.length; i++) {
         let image = images[i];
         $(image).click(() => {
+            viewer.view(i);
             viewer.show();
         });
     }

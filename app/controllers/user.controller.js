@@ -8,6 +8,26 @@ const uniqid = require('uniqid');
 const User = require('../models/user.model');
 const Post = require('../models/post.model').Post;
 
+module.exports.isUsernameAlreayTaken = (req, res, next) => {
+    if (!req.body.username) return res.sendStatus(400);
+    console.log('request');
+
+    User.findOne({username: req.body.username}).exec().then((user) => {
+        if (!user) res.status(200).send('free');
+        else res.status(200).send('taken');
+    });
+};
+
+module.exports.isEmailAlreayTaken = (req, res, next) => {
+    if (!req.body.email) return res.sendStatus(400);
+    console.log('request');
+
+    User.findOne({email: req.body.email}).exec().then((user) => {
+        if (!user) res.status(200).send('free');
+        else res.status(200).send('taken');
+    });
+};
+
 module.exports.userRegisterGet = (req, res) => {
     return res.render('user/register');
 };
@@ -72,7 +92,7 @@ module.exports.userLoginPost = (req, res, next) => {
     if (req.body.username && req.body.password) {
         User.authenticate(req.body.username, req.body.password, (err, user) => {
             if (err || !user) {
-                return res.status(401).send('Такое имя пользователя или пароль не найдены.');
+                return next(new Error('Такое имя пользователя или пароль не найдены.'));
             }
 
             req.session.userId = user._id;

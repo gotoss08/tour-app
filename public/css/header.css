@@ -88,6 +88,7 @@
     -webkit-background-size: cover;
     background-size: cover;
     background-repeat: no-repeat;
+    background-position: center;
 }
 
 .user-avatar {
@@ -100,26 +101,20 @@
     color: white;
 }
 
-#user-dropdown-menu-link {
-    color: rgba(0,0,0,0.64);
-}
-
-#user-dropdown-menu-link:hover {
-    color: rgba(0,0,0,0.84);
-}
-
-#user-dropdown-menu-link:active {
-    color: rgba(0,0,0,1);
-}
-
 .dropdown-menu {
     font-family: Roboto;
     font-size: .8em;
 }
 
 .dropdown-item {
+    color: rgba(0,0,0,0.64);
     padding-top: 10px;
     padding-bottom: 10px;
+}
+
+.dropdown-item:hover {
+    text-decoration: none;
+    color: rgba(0,0,0,0.84);
 }
 
 .dropdown-item a {

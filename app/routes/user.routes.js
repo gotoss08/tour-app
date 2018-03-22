@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const userController = require('../controllers/user.controller');
 
+router.post('/username', userController.isUsernameAlreayTaken);
+router.post('/email', userController.isEmailAlreayTaken);
+
 router.get('/register', userController.userRegisterGet);
 router.get('/login', userController.userLoginGet);
 router.get('/me', userController.getCurrentUser);

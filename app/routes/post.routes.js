@@ -11,7 +11,7 @@ router.get('/:postId', api.read);
 /* POST */
 
 router.post('/:postId/update', api.update);
-router.post('/:postId/delete', api.delete);
+router.post('/:postId/remove', api.remove);
 router.post('/:postId/like', api.like);
 
 module.exports = router;

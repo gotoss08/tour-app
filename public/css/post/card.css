@@ -1,0 +1,327 @@
+.card-divider {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.waypoint-cards {
+    width: 100%;
+}
+
+.waypoint-card
+{
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 25px;
+
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.card-shadow {
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.waypoint-card-header
+{
+    margin: 0;
+    padding: 15px;
+
+    letter-spacing: -.015em;
+    background-color: rgba(0,0,0,0.03);
+}
+
+.waypoint-card-header-input
+{
+    font-family: Roboto Slab;
+    font-size: 1.1em;
+    font-weight: 800;
+
+    width: 100%;
+
+    color: rgba(0,0,0,.84);
+    border: none;
+    background-color: transparent;
+
+    word-wrap: break-word;
+}
+
+.waypoint-card-header-icon {
+    font-size: 18px;
+}
+
+.show-on-map-button .fas {
+
+}
+
+.waypoint-card-header-input:placeholder
+{
+    color: rgba(0,0,0,.84);
+}
+
+.waypoint-card-header-input:focus:placeholder
+{
+    color: rgba(0,0,0,0);
+}
+
+.waypoint-card-header-input:focus,
+.waypoint-card-body-editor:focus,
+.waypoint-card-header button:focus
+{
+    color: rgba(0,0,0,.84);
+    border-color: inherit;
+    outline: none;
+    background-color: transparent;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+}
+
+.waypoint-card-header button,
+.waypoint-card-header button:focus
+{
+    font-weight: 900;
+
+    transition: color .2s;
+
+    color: rgba(0,0,0,.84);
+    border: none;
+    background-color: transparent;
+}
+
+.waypoint-card-header button:hover
+{
+    color: rgba(0,0,0,.54);
+}
+
+.waypoint-card-header button:active
+{
+    color: rgba(0,0,0,1);
+}
+
+.waypoint-card-body
+{
+    margin: 0;
+    padding: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    color: rgba(0,0,0,.84);
+}
+
+.waypoint-card-body-editor
+{
+    height: auto;
+    margin: 0;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    padding: 0;
+
+    transition: height 2s;
+
+    color: rgba(0,0,0,.84);
+    border: none;
+    background-color: transparent;
+}
+
+.medium-editor-placeholder
+{
+    margin-top: 3px;
+    margin-bottom: 9px;
+}
+
+.medium-editor-placeholder:after
+{
+    font-weight: normal;
+    font-style: normal;
+
+    color: rgba(0,0,0,.84);
+}
+
+
+.waypoint-card-body-editor p
+{
+    margin-top: 6px;
+    margin-bottom: 6px;
+
+    --x-height-multiplier: 0.375;
+    --baseline-multiplier: 0.17;
+    font-family: Roboto;
+    letter-spacing: .01rem;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 12pt;
+    line-height: 1.58;
+    letter-spacing: -.025em;
+
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+
+    word-break: break-word;
+    word-wrap: break-word;
+
+    display: block;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+}
+
+.waypoint-card-body-editor-help
+{
+    color: rgba(0,0,0,.3);
+}
+
+/* meta */
+
+.meta-card input {
+    width: 100%;
+}
+
+.meta-title {
+    font-size: 1.25em;
+}
+
+.meta-subtitle {
+    padding: 0;
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: normal;
+    color: rgba(0,0,0,.84);
+    height: 15px;
+}
+
+.meta-subtitle:active, .meta-subtitle:focus, .meta-subtitle:placeholder {
+    color: rgba(0,0,0,.64);
+}
+
+.meta-card-footer
+{
+    margin: 0;
+    padding: 0;
+
+    letter-spacing: -.015em;
+    background-color: rgba(0,0,0,0.03);
+
+    color: rgba(0,0,0,.84);
+
+    transition: color .1s;
+}
+
+.meta-card-footer-item {
+    margin: 0;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+@keyframes like-animation {
+    0% {
+        width: 100%;
+        height: 100%;
+    }
+    50% {
+        width: 105%;
+        height: 105%;
+    }
+    100% {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.meta-like-button
+{
+    transition: color .1s;
+
+    color: rgba(0,0,0,.84);
+    background-color: transparent;
+}
+
+.meta-like-button:focus, .meta-like-button:active
+{
+    outline: none;
+    border: none;
+}
+
+.meta-like-button:active {
+}
+
+.meta-like-button:hover
+{
+    color: rgba(0,0,0,.44);
+    background-color: transparent;
+}
+
+
+.meta-date {
+    color: rgba(0,0,0,.64);
+}
+
+.meta-time {
+    color: rgba(0,0,0,.84);
+}
+
+.meta-country {
+    font-size: 0.8em;
+}
+
+/* vote */
+
+.vote-card-header-input {
+    font-family: Roboto Slab;
+    font-size: 1.1em;
+    font-weight: 800;
+
+    width: 100%;
+
+    color: rgba(0,0,0,.84);
+    border: none;
+    background-color: transparent;
+}
+
+.vote-card-header-input:placeholder {
+    color: rgba(0,0,0,.64);
+}
+
+.vote-card-header-input:active, .vote-card-header-input:focus {
+    outline: none;
+    color: rgba(0,0,0,.84);
+}
+
+.vote-card-header-input:focus:placeholder {
+    color: rgba(0,0,0,0);
+}
+
+.vote-card-body-input {
+    font-family: Roboto Slab;
+    font-size: 1em;
+    font-weight: 800;
+
+    width: 100%;
+
+    color: rgba(0,0,0,.84);
+    border: none;
+    background-color: transparent;
+}
+
+.vote-card-body-input:placeholder {
+    color: rgba(0,0,0,.64);
+}
+
+.vote-card-body-input:active, .vote-card-body-input:focus {
+    outline: none;
+    color: rgba(0,0,0,.84);
+}
+
+.vote-card-body-input:focus:placeholder {
+    color: rgba(0,0,0,0);
+}
+
+.vote-card .waypoint-card-body .vote-button {
+    width: 100%;
+    height: 2em;
+}

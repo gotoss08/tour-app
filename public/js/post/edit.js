@@ -79,7 +79,7 @@ $(document).ready(() => {
         request.done((data, status) => {
             $.notify('[send to server] was ' + status, 'success')
             $(self).attr('disabled', false);
-            window.location.replace('/p/' + receivedPostData.post.postId);
+            window.location.href = '/p/' + receivedPostData.post.postId;
         });
 
         request.fail((xhr, status) => {

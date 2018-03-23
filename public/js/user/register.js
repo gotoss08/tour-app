@@ -255,7 +255,7 @@ $(document).ready(() => {
         xhr.onload = function() {
             if (this.status == 200) {
                 $.notify('Регистрация прошла успешно.', 'success');
-                window.location.replace('/user/me');
+                window.location.href = '/user/me';
             } else {
                 $.notify('Произошла ошибка при регистрации.', 'error');
             }

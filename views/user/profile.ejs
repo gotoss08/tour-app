@@ -1,51 +1,116 @@
 <% include ../partials/header_start.ejs %>
-<link rel="stylesheet" href="/css/profile.css">
-<link rel="stylesheet" href="/css/animate.min.css">
-<script src="/js/noty.min.js"></script>
+<link rel="stylesheet" href="/css/libs/alertify.css">
+<link rel="stylesheet" href="/css/post/card.css">
+<link rel="stylesheet" href="/css/user/profile.css">
 <% include ../partials/header_end.ejs %>
-
-<div class="container mt-5">
-    <div class="col-12 mt-4 profile">
-        <% if(String(session.userId) === String(user._id) ) { %>
-        <h1 class="mb-4"><%= __('user.profile.my.header') %></h1>
-        <p><span class="text-muted"><%= __('user.profile.username') %>:</span> <%= user.username %></p>
-        <p><span class="text-muted"><%= __('user.profile.email') %>:</span> <%= user.email %></p>
-        <p><span class="text-muted">User id:</span> <%= user._id %></p>
-        <p><span class="text-muted">Session id:</span> <%= session.userId %></p>
-        <% } else { %>
-        <h1><%= __('user.profile.of') %><%= user.username %></h1>
-        <% } %>
-        <hr>
-        <h2><%= __('user.profile.posts.header') %></h2>
-        <div class="list-group mt-3">
-            <% for(var i = 0; i < posts.length; i++) { %>
-            <% var post = posts[i]; %>
-                <% if(String(session.userId) === String(user._id) ) { %>
-                    <div class="list-group-item" id="post-<%= post._id %>">
-                        <a class="align-middle" href="/post/<%= post._id %>" title="<%= post.title %>"><%= limitText(post.title, 70) %></a>
-                        <div class="button-group d-sm-inline-flex d-md-block d-xl-inline">
-                            <button class="btn btn-outline-danger float-right" onclick="removePost('<%= post._id %>')"><i class="fas fa-trash-alt mr-1"></i><%= __('user.profile.posts.remove') %></button>
-                            <a role="button" href="/post/edit/<%= post._id %>" class="btn btn-outline-primary float-right mr-1"><i class="fas fa-edit mr-1"></i><%= __('user.profile.posts.edit') %></a>
-                        </div>
-                    </div>
-                <% } else { %>
-                    <a href="/post/<%= post._id %>" class="list-group-item"><%= post.title %></a>
-                <% } %>
-            <% } %>
+<div class="container page-content-container">
+    <div class="row d-flex flex-row">
+        <div class="col-4">
+            <div id="avatar-container" class="card-shadow rounded"><img id="avatar" src="" width="auto" height="100%" alt=""></div>
+        </div>
+        <div class="col-8 d-flex flex-column">
+            <h3 id="username">gotoss08</h3>
+            <div>Количество публикаций: <span id="posts-count">0</span></div>
+            <div>Общее количество отметок "понравилось": <span id="likes-count">0</span></div>
+            <div>Общее количество уникальных просмотров: <span id="unique-views-count">0</span></div>
+            <div>Общее количество посещений статей: <span id="visit-count">0</span></div>
+        </div>
+        <div class="col-12">
+            <hr>
+            <button>Черновики</button>
+            <button>Публикации</button>
+            <hr>
+            <div class="cards d-flex justify-content-center"></div>
         </div>
     </div>
 </div>
-
+<template id="card-template">
+    <div class="waypoint-card meta-card rounded">
+        <div class="waypoint-card-header card-bg-hover d-flex flex-row">
+            <div class="meta-card-header-titles mr-auto" title="Открыть эту заметку">
+                <div class="waypoint-card-header-input meta-title">Meta title</div>
+                <div class="waypoint-card-header-input meta-subtitle">Meta subtitle</div>
+            </div>
+            <div class="meta-card-header-buttons d-flex flex-row">
+                <button class="post-edit-button" title="Редактировать заметку"><i class="fas fa-edit" style="color:black"></i></button>
+                <button class="post-remove-button" title="Удалить заметку"><i class="fas fa-trash-alt" style="color:red"></i></button>
+            </div>
+        </div>
+        <hr class="card-divider">
+        <div class="waypoint-card-body">
+            <div class="form-control waypoint-card-body-editor meta-body"></div>
+        </div>
+        <hr class="card-divider">
+        <div class="meta-card-footer d-flex flex-column">
+            <div class="card-bg-hover d-flex flex-row align-items-center p-2">
+                <span class="meta-likes" title="Количество людей, которым <b>понравилась</b> эта заметка">
+                    <i class="far fa-heart faa-pulse-hover mr-1"></i>
+                    <span class="meta-like-counter">0</span>
+                </span>
+                <span class="meta-views mr-auto" title="Количество <b>уникальных</b> просмотров заметки">
+                    <i class="fas fa-eye ml-2 mr-1"></i>
+                    <span class="meta-views-counter">0</span>
+                </span>
+                <div class="meta-card-footer-item d-flex flex-column">
+                    <div class="d-flex flex-row align-items-center mb-1">
+                        <div class="meta-date">03.23.2018</div>
+                    </div>
+                    <div class="meta-country mr-2">
+                        <a href="#">Казахстан</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<!-- masonry lib for smart card layout -->
+<script src="/js/libs/masonry.pkgd.min.js"></script>
+<!-- lorem ipsum generator lib -->
+<script src="/js/libs/holder-ipsum.js"></script>
+<!-- moment js lib for dates manipulation -->
+<script src="/js/libs/moment.min.js"></script>
+<script src="/js/libs/moment.locale.ru.js"></script>
+<!-- he lib for decoding html -->
+<script src="/js/libs/he.js"></script>
+<!-- jquery truncate lib for easy text crop -->
+<script src="/js/libs/jquery.truncate.js"></script>
+<!-- tippy lib for confirm dialog -->
+<script src="/js/libs/tippy.all.min.js"></script>
+<!-- profile scripts -->
 <script>
-    $(() => {
-        removePost = (postId) => {
-            $.ajax({
-                url: '/post/remove/' + postId,
-                method: 'POST',
-                success: (data) => $('#post-' + postId).animateCss('fadeOutLeft', () => $('#post-' + postId).remove())
-            });
-        }
-    });
-</script>
+    var profileData = {
+        username: '<%= user.username %>',
+        userAvatarPath: '<%= user.avatarPath %>',
+        posts: [
+            <% for (let i = 0; i < posts.length; i++) { %>
+                <% let post = posts[i]; %>
+                <% console.log(post.countries); %>
+                {
+                    id: '<%= post._id %>',
+                    title: '<%= post.title %>',
+                    subtitle: '<%= post.subtitle %>',
+                    body: '<%= post.body %>',
+                    uniqIpsVisited: <%= post.uniqIpsVisited.length %>,
+                    totalVisitCount: <%= post.totalVisitCount %>,
+                    likes: <%= post.likes.length %>,
+                    countries: [
+                        <% for (let j = 0; j < post.preparedCountries.length; j++) { %>
+                            <% let country = post.preparedCountries[j]; %>
+                            {
+                                id: String('<%= country.id %>'),
+                                name: String('<%= country.name %>'),
+                            },
+                        <% } %>
+                    ],
+                    postedAt: new Date('<%= post.createdAt %>'),
+                    editedAt: new Date('<%= post.updatedAt %>'),
+                },
+            <% } %>
+        ],
+        currentUser: Boolean(<%= currentUser %>),
+    };
 
+    console.dir(profileData);
+</script>
+<script src="/js/user/profile.js"></script>
 <% include ../partials/footer.ejs %>

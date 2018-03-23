@@ -1,0 +1,88 @@
+.page-content-container {
+    margin-top: 100px;
+    font-family: Roboto;
+}
+
+#avatar-container {
+    width: 100%;
+    height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden
+}
+
+#avatar {
+    flex-shrink: 0;
+    min-width: 100%;
+    min-height: 100%
+}
+
+.cards {
+
+}
+
+.waypoint-card {
+    width: 100%;
+    margin: 10px;
+}
+
+@media (min-width: 576px) {
+    width: 100%;
+
+}
+
+@media (min-width: 768px) {
+    .waypoint-card {
+        width: 47%;
+    }
+}
+
+@media (min-width: 992px) {
+    .waypoint-card {
+        width: 31%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .waypoint-card {
+        width: 31%;
+    }
+}
+
+
+
+.post-view {
+    width: 100%;
+    height: 100%;
+}
+
+.waypoint-card-header {
+    padding: 0;
+    margin: 0;
+}
+
+.meta-card-header-titles {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 100%;
+}
+
+.meta-card-header-buttons {
+    padding-right: 5px;
+}
+
+.waypoint-card-header button, .meta-card-header-titles {
+    background-color: rgba(0,0,0,0);
+    transition: background-color .1s;
+}
+
+.waypoint-card-header button:hover, .meta-card-header-titles:hover {
+    background-color: rgba(0,0,0,.05);
+}
+
+.meta-card-footer-item {
+    padding: 0;
+}

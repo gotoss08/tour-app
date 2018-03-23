@@ -40,7 +40,7 @@ $(document).ready(() => {
         loginAjax.done(() => {
             $.notify('Вы успешно вошли в свой аккаунт.', 'success');
             setTimeout(() => {
-                window.location.replace('/user/me');
+                window.location.href = '/user/me';
             }, 250);
         });
 
@@ -61,7 +61,7 @@ $(document).ready(() => {
     };
 
     let register = () => {
-        window.location.replace('/user/register');
+        window.location.href = '/user/register';
     };
 
     $('#username, #password').keypress((e) => {

@@ -1,6 +1,8 @@
 <% include ../partials/header_start.ejs %>
 <!-- page styles -->
 <link rel="stylesheet" href="/css/libs/viewer.min.css">
+<link rel="stylesheet" href="/css/libs/alertify.css">
+<link rel="stylesheet" href="/css/post/card.css">
 <link rel="stylesheet" href="/css/post/index.css">
 <% include ../partials/header_end.ejs %>
 <div class="container mt-3 mt-md-4">
@@ -96,6 +98,8 @@
     };
 </script>
 <% if (session.userId && session.userId == post.userId) { %>
+<!-- alertify lib for dialog confirmation -->
+<script src="/js/libs/alertify.js"></script>
 <!-- create additional buttons in header -->
 <script src="/js/post/index-header.js"></script>
 <% } %>

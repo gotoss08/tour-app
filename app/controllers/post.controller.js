@@ -108,7 +108,6 @@ module.exports.read = (req, res, next) => {
                     countryIds.push(new mongoose.Types.ObjectId(country));
                 }
                 return Country.find({_id: {$in: countryIds}}).exec().then((countries) => {
-                    console.log('found countries: ' + JSON.stringify(countries, null, 2));
                     data.countries = countries;
                     return data;
                 });
@@ -305,8 +304,22 @@ module.exports.update = (req, res, next) => {
         });
 };
 
-module.exports.delete = () => {
-
+module.exports.remove = (req, res, next) => {
+    if (!util.checkUserLogin(req, res, next)) {
+        let errorMessage = 'Для этого действия необходима авторизация в аккаунте.';
+        res.status(401).send(errorMessage);
+        return next(new Error(errorMessage));
+    }
+    checkPostIdParams(req, res, next);
+    Post.findById(req.params.postId).exec().then((post) => {
+        if (!post) return res.sendStatus(400);
+        if (post.userId == req.session.userId) {
+            post.remove();
+            return res.sendStatus(200);
+        } else {
+            return res.sendStatus(400);
+        }
+    });
 };
 
 module.exports.like = (req, res, next) => {

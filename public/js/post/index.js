@@ -1,6 +1,23 @@
 $(document).ready(() => {
     $('#post-edit-button').click(function() {
-        window.location.replace(`/p/${receivedPostData.post.postId}/edit`);
+        window.location.href = `/p/${receivedPostData.post.postId}/edit`;
+    });
+
+    $('#post-remove-button').click(function() {
+        alertify.confirm('Вы уверены что хотите удалить этот пост?', () => {
+            let removeAjax = $.ajax({
+                method: 'post',
+                url: `/p/${receivedPostData.post.postId}/remove`,
+            });
+
+            removeAjax.done(() => {
+                window.location.href = `/user/${receivedPostData.username}`;
+            });
+
+            removeAjax.fail(() => {
+                $.notify('Произошла ошибка при удалении.');
+            });
+        });
     });
 
     // set default locale to russian
@@ -120,15 +137,15 @@ var generateMetaCard = () => {
             <hr class="card-divider">
             <div class="meta-card-footer d-flex flex-column">
                 <div class="card-bg-hover d-flex flex-row align-items-center p-2">
-                    <button id="like-button" class="default-button meta-card-footer-like-button"><i class="far fa-heart faa-pulse-hover"></i></button><span id="like-counter">0</span>
+                    <button class="default-button meta-like-button"><i class="far fa-heart faa-pulse-hover"></i></button><span class="meta-like-counter">0</span>
                     <span title="Количество <b>уникальных</b> просмотров заметки.">
-                        <i class="fas fa-eye ml-2 mr-1"></i><span id="views-counter">0</span>
+                        <i class="fas fa-eye ml-2 mr-1"></i><span class="meta-views-counter">0</span>
                     </span>
                 </div>
                 <hr class="card-divider">
                 <div class="d-flex flex-row align-items-center align-items-stretch">
-                    <a id="author-profile-link" class="meta-card-footer-item card-bg-hover meta-user mr-auto d-flex flex-row align-items-center">
-                        <div id="author-avatar-placeholder" class="rounded-circle avatar-placeholder mr-2"></div>
+                    <a class="meta-card-footer-item card-bg-hover meta-author-profile-link mr-auto d-flex flex-row align-items-center">
+                        <div class="rounded-circle avatar-placeholder mr-2"></div>
                     </a>
                     <div class="meta-card-footer-item card-bg-hover d-flex flex-column">
                         <div class="d-flex flex-row align-items-center mb-3">
@@ -158,11 +175,11 @@ var loadData = (data) => {
     $('.meta-body').html(he.decode(data.post.body));
 
     /* counters */
-    $('#views-counter').html(data.post.uniqIpsVisited);
-    $('#like-counter').html(data.post.likes);
+    $('.meta-views-counter').html(data.post.uniqIpsVisited);
+    $('.meta-like-counter').html(data.post.likes);
 
     /* like-button functional */
-    let likeButton = $('#like-button');
+    let likeButton = $('.meta-like-button');
     if (data.post.currentUserLiked) {
         likeButton.find('i').removeClass('far').addClass('fas');
     }
@@ -176,7 +193,7 @@ var loadData = (data) => {
         });
 
         likeAjax.done((data) => {
-            $('#like-counter').html(data.likes.length);
+            $('.meta-like-counter').html(data.likes.length);
             if (data.userJustLiked) {
                 $(self).find('[data-fa-i2svg]').removeClass('far').addClass('fas');
             } else {
@@ -206,11 +223,11 @@ var loadData = (data) => {
     $('.meta-country').html(countriesHTML);
 
     /* post author */
-    let authorProfileLink = $('#author-profile-link');
+    let authorProfileLink = $('.meta-author-profile-link');
     authorProfileLink.append(data.username);
     authorProfileLink.attr('href', '/user/' + data.username);
 
-    let authorAvatar = $('#author-avatar-placeholder');
+    let authorAvatar = $('.avatar-placeholder');
     if (data.userAvatarPath) {
         authorAvatar.css('background-image', `url(${data.userAvatarPath})`);
     } else {

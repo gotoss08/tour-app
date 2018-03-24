@@ -11,6 +11,20 @@ const User = require('../models/user.model');
 const Post = require('../models/post.model').Post;
 const Country = require('../models/country.model.js');
 
+
+module.exports.userRegisterGet = (req, res) => {
+    return res.render('user/register');
+};
+
+module.exports.userLoginGet = (req, res) => {
+    if (req.session && req.session.userId) {
+        return res.redirect('/user/' + req.session.username);
+    } else {
+        return res.render('user/login');
+    }
+};
+
+
 module.exports.isUsernameAlreayTaken = (req, res, next) => {
     if (!req.body.username) return res.sendStatus(400);
 
@@ -29,9 +43,6 @@ module.exports.isEmailAlreayTaken = (req, res, next) => {
     });
 };
 
-module.exports.userRegisterGet = (req, res) => {
-    return res.render('user/register');
-};
 
 module.exports.userRegisterPost = (req, res, next) => {
     if (!req.body.username || !req.body.email || !req.body.password) return res.status(400).send('Не найдено пользовательской информации.');
@@ -72,19 +83,11 @@ module.exports.userRegisterPost = (req, res, next) => {
                 next(err);
                 return res.status(401).send('Такое имя пользователя или пароль не найдены.');
             }
-
             req.session.userId = user._id;
+            req.session.username = user.username;
             return res.sendStatus(200);
         });
     });
-};
-
-module.exports.userLoginGet = (req, res) => {
-    if (req.session && req.session.userId) {
-        return res.redirect('/user/' + req.session.username);
-    } else {
-        return res.render('user/login');
-    }
 };
 
 module.exports.userLoginPost = (req, res, next) => {
@@ -98,25 +101,86 @@ module.exports.userLoginPost = (req, res, next) => {
     } else return res.status(401).send('Поля с именем пользователя или паролем пусты!');
 };
 
+module.exports.userLogoutPost = (req, res, next) => {
+    if (!req.session) return;
+
+    req.session.destroy((err) => {
+        if (err) return next(err);
+
+        return res.redirect('/');
+    });
+};
+
+
 module.exports.getCurrentUser = (req, res, next) => {
     if (req.session && req.session.userId) return res.redirect('/user/' + req.session.username);
     else return res.redirect('/user/login');
 };
 
 module.exports.getUser = (req, res, next) => {
-    User.findOne({username: req.params.userName}).exec()
+    User.findOne({username: req.params.username}).exec()
         .then((user) => {
-            if (!user) throw new Error('Не удалось найти пользователя: ' + req.params.userName);
+            if (!user) throw new Error('Не удалось найти пользователя: ' + req.params.username);
             let data = {};
             data.user = user;
             return data;
         })
         .then((data) => {
             return Post.find({userId: data.user._id, posted: true}).exec().then((posts) => {
-                if (posts && posts.length) data.posts = posts;
-                else data.posts = [];
+                data.postsCount = 0;
+                data.totalLikesCount = 0;
+                data.totalVisitCount = 0;
+                data.totalUniqViewsCount = 0;
+                if (posts && posts.length) {
+                    data.postsCount = posts.length;
+                    posts.forEach((post) => {
+                        data.totalLikesCount += post.likes.length;
+                        data.totalVisitCount += post.totalVisitCount;
+                        data.totalUniqViewsCount += post.uniqIpsVisited.length;
+                    });
+                }
                 return data;
             });
+        })
+        .then((data) => {
+            data.currentUser = false;
+            if (req.session && req.session.userId && data.user._id.toString() == req.session.userId) data.currentUser = true;
+            return res.render('user/profile', data);
+        })
+        .catch((err) => {
+            if (err) return next(err);
+        });
+};
+
+module.exports.collectPosts = (req, res, next) => {
+    let page = 1;
+    if (req.body.page) page = req.body.page;
+    let itemsPerPage = 5;
+
+    Post.find({userId: req.params.userId, posted: true}).skip((page-1) * itemsPerPage).limit(itemsPerPage).exec()
+        .then((posts) => {
+            if (!posts || !posts.length) throw new Error('Не удалось найти заметки.');
+            let data = {};
+            data.posts = posts;
+            return data;
+        })
+        .then((data) => {
+            data.preparedPosts = [];
+            data.posts.forEach((post) => {
+                data.preparedPosts.push({
+                    id: post._id.toString(),
+                    title: post.title,
+                    subtitle: post.subtitle,
+                    body: post.body,
+                    uniqIpsVisited: post.uniqIpsVisited.length,
+                    totalVisitCount: post.totalVisitCount,
+                    likes: post.likes.length,
+                    countries: Array.from(post.countries),
+                    postedAt: new Date(post.createdAt.getTime()),
+                    editedAt: new Date(post.updatedAt.getTime()),
+                });
+            });
+            return data;
         })
         .then((data) => {
             return Country.find().exec().then((countries) => {
@@ -131,7 +195,7 @@ module.exports.getUser = (req, res, next) => {
             });
         })
         .then((data) => {
-            data.posts.forEach((post) => {
+            data.preparedPosts.forEach((post) => {
                 let postCountryIds = [];
                 post.countries.forEach((country) => {
                     postCountryIds.push(new mongoose.Types.ObjectId(country));
@@ -153,21 +217,11 @@ module.exports.getUser = (req, res, next) => {
             return data;
         })
         .then((data) => {
-            data.currentUser = false;
-            if (req.session && req.session.userId && data.user._id.toString() == req.session.userId) data.currentUser = true;
-            return res.render('user/profile', data);
+            return res.status(200).send({posts: data.preparedPosts});
         })
         .catch((err) => {
-            if (err) return next(err);
+            // next(err);
+            console.error(err);
+            return res.status(200).send({posts: []});
         });
-};
-
-module.exports.userLogoutPost = (req, res, next) => {
-    if (!req.session) return;
-
-    req.session.destroy((err) => {
-        if (err) return next(err);
-
-        return res.redirect('/');
-    });
 };

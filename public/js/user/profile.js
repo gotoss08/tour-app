@@ -1,44 +1,39 @@
-$(document).ready(() => {
-    function viewPost(post) {
-        window.location.href = '/p/' + post.id;
-    };
+let page = 1;
+let loadingPosts = false;
 
-    function editPost(post) {
-        window.location.href = '/p/' + post.id + '/edit';
-    };
+function viewPost(post) {
+    window.location.href = '/p/' + post.id;
+};
 
-    function removePost(post) {
-        alertify
-            .okBtn("Удалить")
-            .cancelBtn("Отмена")
-            .confirm('Вы уверены что хотите удалить этот пост?', () => {
-                let removeAjax = $.ajax({
-                    method: 'post',
-                    url: '/p/' + post.id + '/remove',
-                });
+function editPost(post) {
+    window.location.href = '/p/' + post.id + '/edit';
+};
 
-                removeAjax.done(() => {
-                    post.card.remove();
-                    $('.cards').masonry();
-                    $.notify('Заметка удалена.', 'success');
-                });
-
-                removeAjax.fail(() => {
-                    $.notify('Произошла ошибка при удалении.', 'error');
-                });
+function removePost(post) {
+    alertify
+        .okBtn("Удалить")
+        .cancelBtn("Отмена")
+        .confirm('Вы уверены что хотите удалить этот пост?', () => {
+            let removeAjax = $.ajax({
+                method: 'post',
+                url: '/p/' + post.id + '/remove',
             });
-    };
 
-    $('#avatar').attr('src', profileData.userAvatarPath);
-    $('#username').html(profileData.username);
-    $('#posts-count').html(profileData.posts.length);
+            removeAjax.done(() => {
+                post.card.remove();
+                $('.cards').masonry();
+                $.notify('Заметка удалена.', 'success');
+            });
 
-    let totalLikesCount = 0;
-    let totalUniqViewsCount = 0;
-    let totalVisitCount = 0;
+            removeAjax.fail(() => {
+                $.notify('Произошла ошибка при удалении.', 'success');
+            });
+        });
+};
 
-    for (let i = 0; i < profileData.posts.length; i++) {
-        let post = profileData.posts[i];
+function createCardsForPosts(posts) {
+    for (let i = 0; i < posts.length; i++) {
+        let post = posts[i];
 
         let cardHTML = $('#card-template').html();
         let card = $(cardHTML);
@@ -58,13 +53,9 @@ $(document).ready(() => {
 
         card.find('.meta-like-counter').html(post.likes);
         tippy(card.find('.meta-likes').get(0));
-        totalLikesCount += post.likes;
 
         card.find('.meta-views-counter').html(post.uniqIpsVisited);
         tippy(card.find('.meta-views').get(0));
-        totalUniqViewsCount += post.uniqIpsVisited;
-
-        totalVisitCount += post.totalVisitCount;
 
         let postedMoment = moment(post.postedAt);
         let metaDate = card.find('.meta-date');
@@ -74,30 +65,70 @@ $(document).ready(() => {
 
         /* countries */
         let countriesHTML = '';
-        for (let i = 0; i < post.countries.length; i++) {
-            let country = post.countries[i];
+        for (let i = 0; i < post.preparedCountries.length; i++) {
+            let country = post.preparedCountries[i];
             countriesHTML += `<a href="/${country.id}">${country.name}</a>`;
-            if (i != post.countries.length-1) countriesHTML += ', ';
+            if (i != post.preparedCountries.length-1) countriesHTML += ', ';
         }
         card.find('.meta-country').html(countriesHTML);
 
-        $('.cards').append(card);
+        $('.cards').append(card).masonry('appended', card);
 
         let images = $('.meta-body img');
         images.addClass('w-100 h-100');
     }
-
-    $('.cards').masonry({
-        itemSelector: '.waypoint-card',
-        columnWidth: '.waypoint-card',
-        percentPosition: true,
-    });
+    $('.cards').masonry('layout');
 
     setTimeout(() => {
-        $('.cards').masonry();
-    }, 250);
+        $('.cards').masonry('layout');
+    }, 350);
+};
 
-    $('#likes-count').html(totalLikesCount);
-    $('#unique-views-count').html(totalUniqViewsCount);
-    $('#visit-count').html(totalVisitCount);
+function loadNewPosts() {
+    loadingPosts = true;
+
+    animatePostsLoading();
+
+    let loadPostsAjax = $.ajax({
+        method: 'post',
+        url: '/user/' + profileData.id + '/posts',
+        data: {page: page},
+    });
+
+    loadPostsAjax.done((data) => {
+        $('.cards').masonry({
+            itemSelector: '.waypoint-card',
+            columnWidth: '.waypoint-card',
+            percentPosition: true,
+        });
+        createCardsForPosts(data.posts);
+        postsLoaded();
+        loadingPosts = false;
+    });
+
+    page += 1;
+};
+
+$(document).ready(() => {
+    $('#avatar').attr('src', profileData.userAvatarPath);
+    $('#username').html(profileData.username);
+
+    $('#publications-button').click(() => {
+        loadNewPosts();
+    });
+
+    loadNewPosts();
+
+    $(window).scroll(function() {
+        if (!loadingPosts && $(window).scrollTop() + $(window).height() == $(document).height()) {
+            loadNewPosts();
+        }
+    });
+
+    // createCardsForPosts();
+
+    $('#posts-count').html(profileData.postsCount);
+    $('#likes-count').html(profileData.totalLikesCount);
+    $('#unique-views-count').html(profileData.totalUniqViewsCount);
+    $('#visit-count').html(profileData.totalVisitCount);
 });

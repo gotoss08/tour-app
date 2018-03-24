@@ -18,7 +18,7 @@
         <div class="col-12">
             <hr>
             <button>Черновики</button>
-            <button>Публикации</button>
+            <button id="publications-button">Публикации</button>
             <hr>
             <div class="cards d-flex justify-content-center"></div>
         </div>
@@ -77,36 +77,18 @@
 <!-- tippy lib for confirm dialog -->
 <script src="/js/libs/alertify.js"></script>
 <!-- profile scripts -->
+<!-- load custom profile header -->
+<script src="/js/user/profile-header.js"></script>
 <script>
     var profileData = {
+        id: '<%= user._id %>',
         username: '<%= user.username %>',
         userAvatarPath: '<%= user.avatarPath %>',
-        posts: [
-            <% for (let i = 0; i < posts.length; i++) { %>
-                <% let post = posts[i]; %>
-                {
-                    id: '<%= post._id %>',
-                    title: '<%= post.title %>',
-                    subtitle: '<%= post.subtitle %>',
-                    body: '<%= post.body %>',
-                    uniqIpsVisited: <%= post.uniqIpsVisited.length %>,
-                    totalVisitCount: <%= post.totalVisitCount %>,
-                    likes: <%= post.likes.length %>,
-                    countries: [
-                        <% for (let j = 0; j < post.preparedCountries.length; j++) { %>
-                            <% let country = post.preparedCountries[j]; %>
-                            {
-                                id: String('<%= country.id %>'),
-                                name: String('<%= country.name %>'),
-                            },
-                        <% } %>
-                    ],
-                    postedAt: new Date('<%= post.createdAt %>'),
-                    editedAt: new Date('<%= post.updatedAt %>'),
-                },
-            <% } %>
-        ],
         currentUser: Boolean(<%= currentUser %>),
+        postsCount: <%= postsCount %>,
+        totalLikesCount: <%= totalLikesCount %>,
+        totalVisitCount: <%= totalVisitCount %>,
+        totalUniqViewsCount: <%= totalUniqViewsCount %>,
     };
 </script>
 <script src="/js/user/profile.js"></script>

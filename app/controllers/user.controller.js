@@ -13,7 +13,6 @@ const Country = require('../models/country.model.js');
 
 module.exports.isUsernameAlreayTaken = (req, res, next) => {
     if (!req.body.username) return res.sendStatus(400);
-    console.log('request');
 
     User.findOne({username: req.body.username}).exec().then((user) => {
         if (!user) res.status(200).send('free');
@@ -23,7 +22,6 @@ module.exports.isUsernameAlreayTaken = (req, res, next) => {
 
 module.exports.isEmailAlreayTaken = (req, res, next) => {
     if (!req.body.email) return res.sendStatus(400);
-    console.log('request');
 
     User.findOne({email: req.body.email}).exec().then((user) => {
         if (!user) res.status(200).send('free');
@@ -66,8 +64,6 @@ module.exports.userRegisterPost = (req, res, next) => {
         userData.avatarPath = '/' + localFilepath.replace(/\\/g, '/');
     };
 
-    console.log('user data: ' + JSON.stringify(userData, null, 2));
-
     User.create(userData, (err, user) => {
         if (err) return next(err);
 
@@ -85,7 +81,7 @@ module.exports.userRegisterPost = (req, res, next) => {
 
 module.exports.userLoginGet = (req, res) => {
     if (req.session && req.session.userId) {
-        return res.redirect('/user/me');
+        return res.redirect('/user/' + req.session.username);
     } else {
         return res.render('user/login');
     }
@@ -96,29 +92,15 @@ module.exports.userLoginPost = (req, res, next) => {
         User.authenticate(req.body.username, req.body.password, (err, user) => {
             if (err || !user) return res.status(401).send('Неверное имя пользователя или пароль.');
             req.session.userId = user._id;
+            req.session.username = user.username;
             return res.sendStatus(200);
         });
     } else return res.status(401).send('Поля с именем пользователя или паролем пусты!');
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-    if (req.session && req.session.userId) {
-        User.findById(req.session.userId, (err, user) => {
-            if (err) return next(err);
-            if (!user) {
-                const unauthorizedError = new Error('Вы должны авторизоваться в системе, перед тем как просматривать свой профиль!');
-                unauthorizedError.status = 401;
-                return next(unauthorizedError);
-            }
-
-            Post.find({userId: user._id, posted: true}, (err, posts) => {
-                if (err) return next(err);
-                return res.render('user/profile', {user: user, posts: posts});
-            });
-        });
-    } else {
-        return next(new Error('Вы должны авторизоваться в системе, перед тем как просматривать свой профиль!'));
-    }
+    if (req.session && req.session.userId) return res.redirect('/user/' + req.session.username);
+    else return res.redirect('/user/login');
 };
 
 module.exports.getUser = (req, res, next) => {

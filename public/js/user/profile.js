@@ -8,22 +8,25 @@ $(document).ready(() => {
     };
 
     function removePost(post) {
-        alertify.confirm('Вы уверены что хотите удалить этот пост?', () => {
-            let removeAjax = $.ajax({
-                method: 'post',
-                url: '/p/' + post.id + '/remove',
-            });
+        alertify
+            .okBtn("Удалить")
+            .cancelBtn("Отмена")
+            .confirm('Вы уверены что хотите удалить этот пост?', () => {
+                let removeAjax = $.ajax({
+                    method: 'post',
+                    url: '/p/' + post.id + '/remove',
+                });
 
-            removeAjax.done(() => {
-                post.card.remove();
-                $('.cards').masonry();
-                $.notify('Заметка удалена.', 'success');
-            });
+                removeAjax.done(() => {
+                    post.card.remove();
+                    $('.cards').masonry();
+                    $.notify('Заметка удалена.', 'success');
+                });
 
-            removeAjax.fail(() => {
-                $.notify('Произошла ошибка при удалении.', 'error');
+                removeAjax.fail(() => {
+                    $.notify('Произошла ошибка при удалении.', 'error');
+                });
             });
-        });
     };
 
     $('#avatar').attr('src', profileData.userAvatarPath);

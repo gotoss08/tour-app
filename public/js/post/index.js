@@ -4,20 +4,23 @@ $(document).ready(() => {
     });
 
     $('#post-remove-button').click(function() {
-        alertify.confirm('Вы уверены что хотите удалить этот пост?', () => {
-            let removeAjax = $.ajax({
-                method: 'post',
-                url: `/p/${receivedPostData.post.postId}/remove`,
-            });
+        alertify
+            .okBtn("Удалить")
+            .cancelBtn("Отмена")
+            .confirm('Вы уверены что хотите удалить этот пост?', () => {
+                let removeAjax = $.ajax({
+                    method: 'post',
+                    url: `/p/${receivedPostData.post.postId}/remove`,
+                });
 
-            removeAjax.done(() => {
-                window.location.href = `/user/${receivedPostData.username}`;
-            });
+                removeAjax.done(() => {
+                    window.location.href = `/user/${receivedPostData.username}`;
+                });
 
-            removeAjax.fail(() => {
-                $.notify('Произошла ошибка при удалении.');
+                removeAjax.fail(() => {
+                    $.notify('Произошла ошибка при удалении.');
+                });
             });
-        });
     });
 
     // set default locale to russian
@@ -202,7 +205,7 @@ var loadData = (data) => {
         });
 
         likeAjax.fail((xhr) => {
-            $.notify(xhr.responseText, 'danger');
+            $.notify(xhr.responseText, 'error');
         });
     });
 

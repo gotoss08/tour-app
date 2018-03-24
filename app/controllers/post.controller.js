@@ -28,7 +28,6 @@ module.exports.edit = (req, res, next) => {
 
     Post.findById(req.params.postId).exec()
         .then((post) => {
-            console.log(JSON.stringify(post));
             if (post && post.userId == req.session.userId) {
                 let data = {post: post, voteAttached: false};
                 return data;
@@ -77,8 +76,6 @@ module.exports.read = (req, res, next) => {
                         return likedUserId == req.session.userId;
                     }).length != 0;
                 }
-
-                console.log(JSON.stringify(post, null, 2));
 
                 let data = {post: post, voteAttached: false};
                 return data;
@@ -197,10 +194,6 @@ module.exports.update = (req, res, next) => {
                     return data;
                 });
             } else if (data.vote && !data.postVote) {
-                data.vote.options.forEach((option) => {
-                    console.dir(option);
-                });
-
                 return Vote.create({
                     title: data.vote.title,
                     options: data.vote.options,
@@ -241,11 +234,8 @@ module.exports.update = (req, res, next) => {
         .then((data) => {
             if (!postData.countries || postData.countries.length < 1) return data;
 
-            console.log('received countries from client: ' + JSON.stringify(postData.countries, null, 2));
             return Country.find().exec()
                 .then((countries) => {
-                    console.log('loaded countries from db: ' + JSON.stringify(countries, null, 2));
-
                     data.post.countries = [];
                     data.preparedCountries = [];
 
@@ -273,8 +263,6 @@ module.exports.update = (req, res, next) => {
                             }
                         }
                     }
-
-                    console.log('prepared countries: ' + JSON.stringify(data.preparedCountries, null, 2));
                     return data;
                 })
                 .then((data) => {
@@ -292,8 +280,6 @@ module.exports.update = (req, res, next) => {
             if (data.vote) {
                 data.post.voteId = data.vote._id;
             }
-
-            console.log('data: ' + JSON.stringify(data, null, 2));
 
             return data.post.save().then(() => {
                 return res.status(200).send(data);

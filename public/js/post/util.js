@@ -64,17 +64,10 @@ var createMarker = async (latLng, options={}) => {
     });
 
     initMarker(marker, options);
-
     addEventListeners(marker);
-
     createWaypointCard(marker);
-
     recreateMapFocusWaypoints();
-
-    console.log('started geocoding');
     await geocodeAddress(marker);
-    console.log('finished geocoding');
-
     await calcRoute(marker.waypoint);
 };
 
@@ -94,12 +87,8 @@ var calcRoute = async () => {
             preserveViewport: true,
         };
 
-        console.log('path start');
-
         await new Promise((resolve) => {
             directionsService.route(request, (result, status) => {
-                console.log('path progress');
-
                 if (status == 'OK') {
                     directionsDisplay.setMap(map);
                     directionsDisplay.setDirections(result);
@@ -107,9 +96,6 @@ var calcRoute = async () => {
 
                 waypoints.splice(0, 0, start);
                 waypoints.splice(waypoints.length, 0, finish);
-
-                console.log('path end');
-
                 resolve();
             });
         });
@@ -141,9 +127,6 @@ var recreateMapFocusWaypoints = () => {
         let toTop = cardDOMElement.offset().top;
         let viewportHeight = $(window).outerHeight();
         let containerHeight = $('.waypoint-cards').innerHeight();
-
-        console.log('to top: ' + toTop);
-        console.log('countainer height: ' + containerHeight);
 
         if (toTop + viewportHeight >= containerHeight) addWaypoint('85%');
         else addWaypoint(135);

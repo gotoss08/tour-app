@@ -26,12 +26,7 @@ module.exports.vote = (req, res, next) => {
             }
         }
 
-        if (userVoted) {
-            console.log('user already voted');
-            return res.status(403).send('Вы уже проголосовали.');
-        }
-
-        console.log(JSON.stringify(vote, null, 2));
+        if (userVoted) return res.status(403).send('Вы уже проголосовали.');
 
         if (vote.options.length) {
             for (let i = 0; i < vote.options.length; i++) {
@@ -44,7 +39,6 @@ module.exports.vote = (req, res, next) => {
 
                     vote.save((err) => {
                         if (err) return next(err);
-                        console.log('user voted');
                         return res.status(200).send({vote: vote});
                     });
 

@@ -25,7 +25,6 @@ $(document).ready(() => {
 
     // set default locale to russian
     moment.locale('ru');
-    console.log('moment locale ' + moment.locale());
 
     $.trim('.received-post-data-script');
 });
@@ -366,8 +365,6 @@ var createVoteInteractions = (options) => {
 };
 
 var sendVoteRequest = (voteId, optionId) => {
-    console.log('sending vote request');
-
     let voteAjax = $.ajax({
         method: 'post',
         url: `/v/${voteId}/${optionId}`
@@ -386,8 +383,6 @@ var sendVoteRequest = (voteId, optionId) => {
 var voteChart;
 
 var createVoteChart = (vote) => {
-    console.log('creating vote chart');
-
     $('.vote-card .waypoint-card-body').append('<canvas id="vote-chart" class="mb-3" width="100%" height="50%"></canvas>');
 
     // create chart

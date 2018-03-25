@@ -18,6 +18,18 @@
     min-height: 100%
 }
 
+.load-posts-button{
+    background-color: rgba(0,0,0,.04);
+}
+
+.load-posts-button:focus {
+    outline: none;
+}
+
+.load-posts-button-current {
+    background-color: rgba(0,0,0,.1);
+}
+
 .cards {
 
 }
@@ -49,8 +61,6 @@
         width: 31%;
     }
 }
-
-
 
 .post-view {
     width: 100%;

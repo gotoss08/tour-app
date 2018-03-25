@@ -2,6 +2,8 @@
 <!-- medium editor css -->
 <link rel="stylesheet" href="/css/post/libs/medium-editor.min.css">
 <link rel="stylesheet" href="/css/post/libs/medium-editor.theme.default.min.css">
+<!-- alertify -->
+<link rel="stylesheet" href="/css/libs/alertify.css">
 <!-- page styles -->
 <link rel="stylesheet" href="/css/post/edit.css">
 <!-- <link rel="stylesheet" href="/css/post/index.css"> -->
@@ -14,6 +16,7 @@
 <script src="/js/libs/autosize.min.js"></script>
 <script src="/js/libs/jquery.waypoints.min.js"></script>
 <script src="/js/libs/striptags.js"></script>
+<script src="/js/libs/alertify.js"></script>
 <!-- medium editor js -->
 <script src="/js/post/libs/medium-editor.min.js"></script>
 <!-- load post data -->
@@ -66,6 +69,7 @@
                 ],
             },
         <% } %>
+        username: '<%= username %>',
     };
 
     console.dir(receivedPostData);

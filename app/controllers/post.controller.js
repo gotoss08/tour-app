@@ -49,6 +49,12 @@ module.exports.edit = (req, res, next) => {
             });
         })
         .then((data) => {
+            return User.findById(data.post.userId).exec().then((user) => {
+                data.username = user.username;
+                return data;
+            });
+        })
+        .then((data) => {
             return res.render('post/edit', data);
         })
         .catch((err) => {
@@ -79,6 +85,8 @@ module.exports.read = (req, res, next) => {
 
                 let data = {post: post, voteAttached: false};
                 return data;
+            } else if (req.session && req.session.userId && req.session.userId == post.userId) {
+                return res.redirect(`/p/${post._id}/edit`);
             } else {
                 throw new Error('Такого поста либо не существует, либо у вас нет прав для его просмотра.');
             }

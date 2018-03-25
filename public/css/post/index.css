@@ -15,12 +15,3 @@
     margin-top: 41px;
     margin-bottom: -15px;
 }
-
-.post-remove-button {
-    color: black;
-    transition: color .1s;
-}
-
-#post-remove-button:hover {
-    color: red;
-}

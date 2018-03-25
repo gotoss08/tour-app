@@ -1,4 +1,5 @@
 let page = 1;
+let loadQueryData = {};
 let loadingPosts = false;
 
 function viewPost(post) {
@@ -89,10 +90,12 @@ function loadNewPosts() {
 
     animatePostsLoading();
 
+    loadQueryData.page = page;
+
     let loadPostsAjax = $.ajax({
         method: 'post',
         url: '/user/' + profileData.id + '/posts',
-        data: {page: page},
+        data: loadQueryData,
     });
 
     loadPostsAjax.done((data) => {
@@ -113,9 +116,35 @@ $(document).ready(() => {
     $('#avatar').attr('src', profileData.userAvatarPath);
     $('#username').html(profileData.username);
 
-    $('#publications-button').click(() => {
-        loadNewPosts();
-    });
+    loadQueryData = {
+        posted: true,
+    };
+
+    if (profileData.currentUser) {
+        $('#publications-button').click(() => {
+            $('#publications-button').addClass('load-posts-button-current');
+            $('#drafts-button').removeClass('load-posts-button-current');
+
+            page = 1;
+            $('.cards').empty();
+            loadQueryData = {
+                posted: true,
+            };
+            loadNewPosts();
+        });
+
+        $('#drafts-button').click(() => {
+            $('#publications-button').removeClass('load-posts-button-current');
+            $('#drafts-button').addClass('load-posts-button-current');
+
+            page = 1;
+            $('.cards').empty();
+            loadQueryData = {
+                posted: false,
+            };
+            loadNewPosts();
+        });
+    } else $('#load-posts-buttons').remove();
 
     loadNewPosts();
 

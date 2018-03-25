@@ -153,11 +153,14 @@ module.exports.getUser = (req, res, next) => {
 };
 
 module.exports.collectPosts = (req, res, next) => {
+    let posted = true;
+    if (req.session && req.session.userId == req.params.userId) posted = req.body.posted;
+
     let page = 1;
     if (req.body.page) page = req.body.page;
     let itemsPerPage = 5;
 
-    Post.find({userId: req.params.userId, posted: true}).skip((page-1) * itemsPerPage).limit(itemsPerPage).exec()
+    Post.find({userId: req.params.userId, posted: posted}).skip((page-1) * itemsPerPage).limit(itemsPerPage).exec()
         .then((posts) => {
             if (!posts || !posts.length) throw new Error('Не удалось найти заметки.');
             let data = {};

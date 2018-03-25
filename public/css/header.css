@@ -15,7 +15,6 @@
     box-shadow: 0px -2px 10px 0px rgba(0,0,0,0.75);
 }
 
-
 #header button:focus {
     outline: none;
     text-decoration: none;
@@ -34,6 +33,15 @@
 .header-button:hover {
     text-decoration: none;
     color: rgba(0,0,0,0.94);
+}
+
+.post-remove-button {
+    color: black;
+    transition: color .1s;
+}
+
+#post-remove-button:hover {
+    color: red;
 }
 
 .spinner-rotation {

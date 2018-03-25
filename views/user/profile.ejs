@@ -16,9 +16,11 @@
             <div>Общее количество посещений статей: <span id="visit-count">0</span></div>
         </div>
         <div class="col-12">
-            <hr>
-            <button>Черновики</button>
-            <button id="publications-button">Публикации</button>
+            <div id="load-posts-buttons">
+                <hr>
+                <button id="drafts-button" class="default-button load-posts-button">Черновики</button>
+                <button id="publications-button" class="default-button load-posts-button">Публикации</button>
+            </div>
             <hr>
             <div class="cards d-flex justify-content-center"></div>
         </div>
@@ -28,8 +30,8 @@
     <div class="waypoint-card meta-card rounded">
         <div class="waypoint-card-header card-bg-hover d-flex flex-row">
             <div class="meta-card-header-titles mr-auto" title="Открыть эту заметку">
-                <div class="waypoint-card-header-input meta-title">Meta title</div>
-                <div class="waypoint-card-header-input meta-subtitle">Meta subtitle</div>
+                <div class="waypoint-card-header-input meta-title"></div>
+                <div class="waypoint-card-header-input meta-subtitle"></div>
             </div>
             <div class="meta-card-header-buttons d-flex flex-row">
                 <button class="post-edit-button" title="Редактировать заметку"><i class="fas fa-edit" style="color:black"></i></button>
@@ -45,18 +47,18 @@
             <div class="card-bg-hover d-flex flex-row align-items-center p-2">
                 <span class="meta-likes" title="Количество людей, которым <b>понравилась</b> эта заметка">
                     <i class="far fa-heart faa-pulse-hover mr-1"></i>
-                    <span class="meta-like-counter">0</span>
+                    <span class="meta-like-counter"></span>
                 </span>
                 <span class="meta-views mr-auto" title="Количество <b>уникальных</b> просмотров заметки">
                     <i class="fas fa-eye ml-2 mr-1"></i>
-                    <span class="meta-views-counter">0</span>
+                    <span class="meta-views-counter"></span>
                 </span>
                 <div class="meta-card-footer-item d-flex flex-column">
                     <div class="d-flex flex-row align-items-center mb-1">
-                        <div class="meta-date">03.23.2018</div>
+                        <div class="meta-date"></div>
                     </div>
                     <div class="meta-country mr-2">
-                        <a href="#">Казахстан</a>
+                        <a href="#"></a>
                     </div>
                 </div>
             </div>

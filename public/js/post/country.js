@@ -38,7 +38,7 @@ function createCardsForPosts(posts) {
         let countriesHTML = '';
         for (let i = 0; i < post.preparedCountries.length; i++) {
             let country = post.preparedCountries[i];
-            countriesHTML += `<a href="/${country.id}">${country.name}</a>`;
+            countriesHTML += `<a href="/p/country/${country.id}">${country.name}</a>`;
             if (i != post.preparedCountries.length-1) countriesHTML += ', ';
         }
         card.find('.meta-country').html(countriesHTML);
@@ -55,13 +55,13 @@ function createCardsForPosts(posts) {
     }, 350);
 };
 
-function searchPostsByCountry() {
+function searchPostsByCountry(data) {
     $('.cards').empty();
 
     let searchByCountryAjax = $.ajax({
         method: 'post',
         url: '/p/country',
-        data: {countries: $('.country-select').val()},
+        data: data ? data : {countries: $('.country-select').val()},
     });
 
     searchByCountryAjax.done((data) => {
@@ -84,5 +84,5 @@ $(document).ready(() => {
         $('.country-select').append(`<option value="${country.id}">${country.name}</option>`);
     });
     $('.country-select').chosen({no_results_text: 'Об этой стране заметок не найдено.', inherit_select_classes: true});
-    $('.country-select').focus();
+    if (countriesData.country) searchPostsByCountry({countries: [countriesData.country]});
 });

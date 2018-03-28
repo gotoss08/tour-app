@@ -138,10 +138,12 @@ module.exports.countrySearch = (req, res, next) => {
         .then((countries) => {
             data = {};
             data.countries = countries;
+            data.country = '';
+            if (req.params.countryId) data.country = req.params.countryId;
             return data;
         })
         .then((data) => {
-            return res.render('post/country', {countries: data.countries});
+            return res.render('post/country', data);
         })
         .catch((err) => {
             return next(err);

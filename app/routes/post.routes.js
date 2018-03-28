@@ -5,6 +5,7 @@ const api = require('../controllers/post.controller.js');
 
 router.get('/new', api.new);
 router.get('/country', api.countrySearch);
+router.get('/country/:countryId', api.countrySearch);
 router.get('/:postId/edit', api.edit);
 router.get('/:postId', api.read);
 

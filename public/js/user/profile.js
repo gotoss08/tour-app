@@ -73,7 +73,7 @@ function createCardsForPosts(posts) {
         let countriesHTML = '';
         for (let i = 0; i < post.preparedCountries.length; i++) {
             let country = post.preparedCountries[i];
-            countriesHTML += `<a href="/${country.id}">${country.name}</a>`;
+            countriesHTML += `<a href="/p/country/${country.id}">${country.name}</a>`;
             if (i != post.preparedCountries.length-1) countriesHTML += ', ';
         }
         card.find('.meta-country').html(countriesHTML);

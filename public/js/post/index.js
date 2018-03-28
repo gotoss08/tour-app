@@ -219,7 +219,7 @@ var loadData = (data) => {
     let countriesHTML = '';
     for (let i = 0; i < data.countries.length; i++) {
         let country = data.countries[i];
-        countriesHTML += `<a href="/${country.id}">${country.name}</a>`;
+        countriesHTML += `<a href="/p/country/${country.id}">${country.name}</a>`;
         if (i != data.countries.length-1) countriesHTML += ', ';
     }
     $('.meta-country').html(countriesHTML);

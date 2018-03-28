@@ -69,10 +69,9 @@
                     name: '<%= country.name %>',
                 },
             <% } %>
-        ]
+        ],
+        country: '<%= country %>',
     };
-
-    console.dir(countriesData);
 </script>
 <script src="/js/post/country.js"></script>
 <% include ../partials/footer.ejs %>

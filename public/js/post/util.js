@@ -2,7 +2,7 @@
 var createMap = () => {
     return new google.maps.Map($('#map').get(0), {
         center: {lat: 49.82081217632622, lng: 73.08635614723323},
-        zoom: 20,
+        zoom: 3,
         gestureHandling: 'greedy',
     });
 };
@@ -23,7 +23,7 @@ var createDirectionsDisplay = (map) => {
     let directionsDisplay = new google.maps.DirectionsRenderer({
         draggable: false,
         suppressMarkers: true,
-        preserveViewport: true,
+        preserveViewport: false,
     });
     directionsDisplay.setMap(map);
     return directionsDisplay;
@@ -62,13 +62,13 @@ var createMarker = async (latLng, options={}) => {
         animation: google.maps.Animation.DROP,
         position: latLng,
     });
-
     initMarker(marker, options);
     addEventListeners(marker);
     createWaypointCard(marker);
     recreateMapFocusWaypoints();
     await geocodeAddress(marker);
     await calcRoute(marker.waypoint);
+    map.setZoom(3);
 };
 
 // method for calculating path between all waypoints

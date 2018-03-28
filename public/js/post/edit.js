@@ -30,13 +30,13 @@ $(document).ready(() => {
         removeAllMarkers();
 
         request.done((data, status) => {
-            $.notify('Данные успешно сохранены на сервере.', 'success')
+            $.notify('Данные успешно сохранены на сервере.', 'success');
             $(self).attr('disabled', false);
             loadData(data);
         });
 
         request.fail((xhr, status) => {
-            $.notify('Ошибка при отправке данных на сервер.', 'error')
+            $.notify('Ошибка при отправке данных на сервер.', 'error');
         });
 
         request.always(() => {

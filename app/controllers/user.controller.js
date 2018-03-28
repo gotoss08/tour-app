@@ -160,7 +160,7 @@ module.exports.collectPosts = (req, res, next) => {
     if (req.body.page) page = req.body.page;
     let itemsPerPage = 5;
 
-    Post.find({userId: req.params.userId, posted: posted}).skip((page-1) * itemsPerPage).limit(itemsPerPage).exec()
+    Post.find({userId: req.params.userId, posted: posted}).sort({createdAt: '-1'}).skip((page-1) * itemsPerPage).limit(itemsPerPage).exec()
         .then((posts) => {
             if (!posts || !posts.length) throw new Error('Не удалось найти заметки.');
             let data = {};
@@ -223,7 +223,6 @@ module.exports.collectPosts = (req, res, next) => {
             return res.status(200).send({posts: data.preparedPosts});
         })
         .catch((err) => {
-            // next(err);
             console.error(err);
             return res.status(200).send({posts: []});
         });

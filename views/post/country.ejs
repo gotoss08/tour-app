@@ -1,27 +1,14 @@
 <% include ../partials/header_start.ejs %>
-<link rel="stylesheet" href="/css/libs/alertify.css">
+<link rel="stylesheet" href="/css/libs/chosen.min.css">
 <link rel="stylesheet" href="/css/post/card.css">
-<link rel="stylesheet" href="/css/user/profile.css">
+<link rel="stylesheet" href="/css/post/country.css">
 <% include ../partials/header_end.ejs %>
 <div class="container page-content-container">
-    <div class="row d-flex flex-row">
-        <div id="avatar-placeholder" class="col-4">
-            <div id="avatar-container" class="card-shadow rounded"><img id="avatar" src="" width="auto" height="100%" alt=""></div>
+    <div class="row">
+        <div class="col-6 mx-auto">
+            <select style="font-size: 20px;" class="country-select mr-auto" data-placeholder="Выберите страну..." multiple onchange="searchPostsByCountry()"></select>
         </div>
-        <div class="col-8 d-flex flex-column">
-            <h3 id="username">gotoss08</h3>
-            <div>Количество публикаций: <span id="posts-count">0</span></div>
-            <div>Общее количество отметок "понравилось": <span id="likes-count">0</span></div>
-            <div>Общее количество уникальных просмотров: <span id="unique-views-count">0</span></div>
-            <div>Общее количество посещений статей: <span id="visit-count">0</span></div>
-        </div>
-        <div class="col-12">
-            <div id="load-posts-buttons">
-                <hr>
-                <button id="drafts-button" class="default-button load-posts-button">Черновики</button>
-                <button id="publications-button" class="default-button load-posts-button">Публикации</button>
-            </div>
-            <hr>
+        <div class="col-12 mt-3">
             <div class="cards d-flex justify-content-center"></div>
         </div>
     </div>
@@ -32,10 +19,6 @@
             <div class="meta-card-header-titles mr-auto" title="Открыть эту заметку">
                 <div class="waypoint-card-header-input meta-title"></div>
                 <div class="waypoint-card-header-input meta-subtitle"></div>
-            </div>
-            <div class="meta-card-header-buttons d-flex flex-row">
-                <button class="post-edit-button" title="Редактировать заметку"><i class="fas fa-edit" style="color:black"></i></button>
-                <button class="post-remove-button" title="Удалить заметку"><i class="fas fa-trash-alt" style="color:red"></i></button>
             </div>
         </div>
         <hr class="card-divider">
@@ -65,6 +48,8 @@
         </div>
     </div>
 </template>
+<!-- chosen lib for better select controls -->
+<script src="/js/libs/chosen.jquery.min.js"></script>
 <!-- masonry lib for smart card layout -->
 <script src="/js/libs/masonry.pkgd.min.js"></script>
 <!-- moment js lib for dates manipulation -->
@@ -74,22 +59,20 @@
 <script src="/js/libs/he.js"></script>
 <!-- jquery truncate lib for easy text crop -->
 <script src="/js/libs/jquery.truncate.js"></script>
-<!-- tippy lib for confirm dialog -->
-<script src="/js/libs/alertify.js"></script>
-<!-- profile scripts -->
-<!-- load custom profile header -->
-<script src="/js/user/profile-header.js"></script>
 <script>
-    var profileData = {
-        id: '<%= user._id %>',
-        username: '<%= user.username %>',
-        userAvatarPath: '<%= user.avatarPath %>',
-        currentUser: Boolean(<%= currentUser %>),
-        postsCount: <%= postsCount %>,
-        totalLikesCount: <%= totalLikesCount %>,
-        totalVisitCount: <%= totalVisitCount %>,
-        totalUniqViewsCount: <%= totalUniqViewsCount %>,
+    let countriesData = {
+        countries: [
+            <% for(let i = 0; i < countries.length; i++) { %>
+                <% let country = countries[i]; %>
+                {
+                    id: '<%= country._id %>',
+                    name: '<%= country.name %>',
+                },
+            <% } %>
+        ]
     };
+
+    console.dir(countriesData);
 </script>
-<script src="/js/user/profile.js"></script>
+<script src="/js/post/country.js"></script>
 <% include ../partials/footer.ejs %>

@@ -133,11 +133,87 @@ module.exports.read = (req, res, next) => {
         });
 };
 
-module.exports.findByCountries = (req, res, next) => {
-    return res.send('find by countries ' + req.body);
+module.exports.countrySearch = (req, res, next) => {
+    Country.find().exec()
+        .then((countries) => {
+            data = {};
+            data.countries = countries;
+            return data;
+        })
+        .then((data) => {
+            return res.render('post/country', {countries: data.countries});
+        })
+        .catch((err) => {
+            return next(err);
+        });
 };
 
 /* POST */
+
+module.exports.searchPostsByCountry = (req, res, next) => {
+    if (!req.body.countries || !req.body.countries.length) return res.sendStatus(400);
+
+    Post.find({countries: {$all: req.body.countries}}).sort({createdAt: '-1'}).exec()
+        .then((posts) => {
+            data = {posts: posts, preparedPosts: []};
+            data.posts.forEach((post) => {
+                data.preparedPosts.push({
+                    id: post._id.toString(),
+                    title: post.title,
+                    subtitle: post.subtitle,
+                    body: post.body,
+                    uniqIpsVisited: post.uniqIpsVisited.length,
+                    totalVisitCount: post.totalVisitCount,
+                    likes: post.likes.length,
+                    countries: Array.from(post.countries),
+                    postedAt: new Date(post.createdAt.getTime()),
+                    editedAt: new Date(post.updatedAt.getTime()),
+                });
+            });
+            return data;
+        })
+        .then((data) => {
+            return Country.find().exec().then((countries) => {
+                data.countries = [];
+                countries.forEach((country) => {
+                    data.countries.push({
+                        id: country._id,
+                        name: country.name,
+                    });
+                });
+                return data;
+            });
+        })
+        .then((data) => {
+            data.preparedPosts.forEach((post) => {
+                let postCountryIds = [];
+                post.countries.forEach((country) => {
+                    postCountryIds.push(new mongoose.Types.ObjectId(country));
+                });
+                post.preparedCountries = [];
+                postCountryIds.forEach((postCountryId) => {
+                    data.countries.forEach((country) => {
+                        let countryId = country.id;
+
+                        if (postCountryId.equals(countryId)) {
+                            post.preparedCountries.push({
+                                id: country.id,
+                                name: country.name,
+                            });
+                        }
+                    });
+                });
+            });
+            return data;
+        })
+        .then((data) => {
+            return res.status(200).send({posts: data.preparedPosts});
+        })
+        .catch((err) => {
+            console.error(err);
+            return res.sendStatus(400);
+        });
+};
 
 module.exports.update = (req, res, next) => {
     if (!util.checkUserLogin(req, res, next)) {
@@ -305,15 +381,49 @@ module.exports.remove = (req, res, next) => {
         return next(new Error(errorMessage));
     }
     checkPostIdParams(req, res, next);
-    Post.findById(req.params.postId).exec().then((post) => {
-        if (!post) return res.sendStatus(400);
-        if (post.userId == req.session.userId) {
-            post.remove();
+    Post.findById(req.params.postId).exec()
+        .then((post) => {
+            if (!post) return res.sendStatus(400);
+            if (post.userId == req.session.userId) {
+                let data = {post: post};
+                return data;
+            } else throw new Error('Невозможно удалить чужую заметку.');
+        })
+        .then((data) => {
+            return Post.find({posted: true}).exec().then((posts) => {
+                let countryIds = [];
+                let countries = {};
+                posts.forEach((post) => {
+                    post.countries.forEach((postCountryId) => {
+                        if (countryIds.indexOf(postCountryId) == -1) {
+                            countryIds.push(postCountryId);
+                            countries[postCountryId] = 1;
+                        } else countries[postCountryId] += 1;
+                    });
+                });
+                countryIds.forEach((countryId, index) => {
+                    if (data.post.countries.indexOf(countryId) == -1) countryIds.splice(countryIds.indexOf(countryId), 1);
+                });
+                data.toRemoveCountries = [];
+                countryIds.forEach((countryId) => {
+                    if (countries[countryId] == 1) data.toRemoveCountries.push(countryId);
+                });
+                return data;
+            });
+        })
+        .then((data) => {
+            return Country.remove({_id: {$all: data.toRemoveCountries}}).exec().then(() => {
+                return data;
+            });
+        })
+        .then((data) => {
+            data.post.remove();
             return res.sendStatus(200);
-        } else {
+        })
+        .catch((err) => {
+            console.error(err);
             return res.sendStatus(400);
-        }
-    });
+        });
 };
 
 module.exports.like = (req, res, next) => {

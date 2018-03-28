@@ -56,16 +56,18 @@ function createCardsForPosts(posts) {
 };
 
 function searchPostsByCountry(data) {
+    let countrySelectVal = $('.country-select').val();
+    if (!countrySelectVal.length && (!data || data && !data.countries.length)) return;
+
     $('.cards').empty();
 
     let searchByCountryAjax = $.ajax({
         method: 'post',
         url: '/p/country',
-        data: data ? data : {countries: $('.country-select').val()},
+        data: data ? data : {countries: countrySelectVal},
     });
 
     searchByCountryAjax.done((data) => {
-        console.dir(data);
         $('.cards').masonry({
             itemSelector: '.waypoint-card',
             columnWidth: '.waypoint-card',
@@ -84,5 +86,9 @@ $(document).ready(() => {
         $('.country-select').append(`<option value="${country.id}">${country.name}</option>`);
     });
     $('.country-select').chosen({no_results_text: 'Об этой стране заметок не найдено.', inherit_select_classes: true});
-    if (countriesData.country) searchPostsByCountry({countries: [countriesData.country]});
+    if (countriesData.country) {
+        $('.country-select').val([countriesData.country]);
+        $('.country-select').trigger('chosen:updated');
+        searchPostsByCountry({countries: [countriesData.country]});
+    }
 });

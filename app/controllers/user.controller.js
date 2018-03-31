@@ -158,7 +158,7 @@ module.exports.collectPosts = (req, res, next) => {
 
     let page = 1;
     if (req.body.page) page = req.body.page;
-    let itemsPerPage = 5;
+    let itemsPerPage = 10;
 
     Post.find({userId: req.params.userId, posted: posted}).sort({createdAt: '-1'}).skip((page-1) * itemsPerPage).limit(itemsPerPage).exec()
         .then((posts) => {

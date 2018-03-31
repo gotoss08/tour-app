@@ -2,8 +2,9 @@
 <body>
     <div id="header" class="d-flex align-items-center">
         <div class="container d-flex flex-row align-items-center">
-            <img src="/imgs/logo.png" alt="">
-            <div class="header-page-control-section d-flex flex-row justify-content-start align-items-center mr-auto" style="margin-top: 3px"></div>
+            <a href="/"><img src="/imgs/logo.png" alt=""><a>
+            <a class="header-link" href="/p/country">Фильтр по странам</a>
+            <div class="header-page-control-section d-flex flex-row justify-content-start align-items-center ml-2 mr-auto" style="margin-top: 3px"></div>
             <div class="header-global-controls-section d-flex flex-row justify-content-end align-items-center">
                 <div class="header-search">
                     <button><i class="fas fa-search"></i></button>
@@ -18,11 +19,7 @@
                     <div class="dropdown-menu">
                         <% if (session.userId) { %>
                             <a class="dropdown-item" href="/p/new">Новая заметка</a>
-                            <a class="dropdown-item" href="#">Продолжить</a>
-                            <a class="dropdown-item" href="#">Заметки</a>
-                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/user/me">Профиль</a>
-                            <a class="dropdown-item" href="#">Настройки</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/api/feedback">Обратная связь</a>
                             <div class="dropdown-divider"></div>

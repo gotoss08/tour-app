@@ -3,14 +3,47 @@
     font-family: Roboto;
 }
 
+.country-select-container {
+    top: 30vh;
+}
+
 .country-select {
     width: 100%;
 }
 
-.chosen-container, .search-field {
-    /* background-color: transparent; */
-    /* border: none; */
+.chosen-container-multi .chosen-choices {
+    height: 30px;
+    border-radius: 3px;
+    border: 1px solid #CCCCCC;
 }
+
+.chosen-choices {
+    background-color: rgba(0,0,0,.03);
+}
+
+.country-select-text
+{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 23px;
+
+    transition: .1s background-color, .1s border-bottom, .1s color;
+    transition-timing-function: linear;
+
+    color: rgba(0,0,0,.84);
+    border-bottom: 2px solid rgba(0,0,0,.1);
+    border-radius: 5px;
+    background-color: rgba(0,0,0,.02);
+}
+
+.country-select-text:hover
+{
+    cursor: pointer;
+
+    color: rgba(0,0,0,1 );
+    border-bottom: 5px solid rgba(0,0,0,.1);
+    background-color: rgba(0,0,0,.05);
+}
+
 
 .search-area {
     padding: 5px;

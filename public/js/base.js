@@ -1,14 +1,14 @@
 $.fn.extend({
     animateCss: function(animationName, callback) {
-        var animationEnd = (function(el) {
-            var animations = {
+        let animationEnd = (function(el) {
+            let animations = {
                 animation: 'animationend',
                 OAnimation: 'oAnimationEnd',
                 MozAnimation: 'mozAnimationEnd',
                 WebkitAnimation: 'webkitAnimationEnd',
             };
 
-            for (var t in animations) {
+            for (let t in animations) {
                 if (el.style[t] !== undefined) {
                     return animations[t];
                 }

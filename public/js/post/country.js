@@ -1,3 +1,7 @@
+let page = 1;
+let loadQueryData = {};
+let prevCountrySelectVal;
+
 function viewPost(post) {
     window.location.href = '/p/' + post.id;
 };
@@ -59,12 +63,21 @@ function searchPostsByCountry(data) {
     let countrySelectVal = $('.country-select').val();
     if (!countrySelectVal.length && (!data || data && !data.countries.length)) return;
 
-    $('.cards').empty();
+
+    if (JSON.stringify(prevCountrySelectVal) !== JSON.stringify(countrySelectVal) ) {
+        console.log('vals different');
+        $('.cards').empty();
+        prevCountrySelectVal = countrySelectVal;
+        page = 1;
+    }
+
+    if (!data) data = {countries: countrySelectVal};
+    data.page = page;
 
     let searchByCountryAjax = $.ajax({
         method: 'post',
         url: '/p/country',
-        data: data ? data : {countries: countrySelectVal},
+        data: data,
     });
 
     searchByCountryAjax.done((data) => {
@@ -79,16 +92,42 @@ function searchPostsByCountry(data) {
     searchByCountryAjax.fail(() => {
         $.notify('Произошла ошибка во время поиска заметок.', 'error');
     });
+
+    page += 1;
 };
 
 $(document).ready(() => {
     countriesData.countries.forEach((country) => {
         $('.country-select').append(`<option value="${country.id}">${country.name}</option>`);
     });
+
     $('.country-select').chosen({no_results_text: 'Об этой стране заметок не найдено.', inherit_select_classes: true});
+
     if (countriesData.country) {
         $('.country-select').val([countriesData.country]);
         $('.country-select').trigger('chosen:updated');
         searchPostsByCountry({countries: [countriesData.country]});
+        $('.country-select-text').hide();
+        $('.country-select-container').animate({
+            top: 0,
+        }, 550, 'easeInOutBack');
+        $('.chosen-container').show();
+    } else {
+        $('.chosen-container').hide();
+        $('.country-select-text').click(() => {
+            $('.country-select-container').animate({
+                top: 0,
+            }, 550, 'easeInOutBack');
+            $('.country-select-text').hide();
+            $('.chosen-container').show();
+            $('.country-select').trigger('chosen:open');
+            $('.chosen-search-input').val('');
+        });
     }
+
+    $(window).scroll(function() {
+        if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+            searchPostsByCountry();
+        }
+    });
 });

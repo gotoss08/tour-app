@@ -1,11 +1,13 @@
 <% include ../partials/header_start.ejs %>
 <link rel="stylesheet" href="/css/libs/chosen.min.css">
 <link rel="stylesheet" href="/css/post/card.css">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 <link rel="stylesheet" href="/css/post/country.css">
 <% include ../partials/header_end.ejs %>
 <div class="container page-content-container">
     <div class="row">
-        <div class="col-6 mx-auto">
+        <div class="col-6 mx-auto country-select-container">
+            <p class="country-select-text text-center">обзор опубликованных заметок по странам</p>
             <select style="font-size: 20px;" class="country-select mr-auto" data-placeholder="Выберите страну..." multiple onchange="searchPostsByCountry()"></select>
         </div>
         <div class="col-12 mt-3">

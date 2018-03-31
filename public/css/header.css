@@ -21,18 +21,31 @@
 }
 
 .header-button {
+    border: none;
+    background-color: transparent;
+    outline: none;
+    color: rgba(0,0,0,.64);
+}
+
+.header-button:hover {
+    color: rgba(0,0,0,.84);
+}
+
+.header-link {
+    padding: 5px;
+    margin-top: 5px;
     background-color: transparent;
     outline: none;
     border: none;
     text-decoration: none;
-
-    color: rgba(0,0,0,.54);
-    transition: color .15s;
+    color: rgba(0,0,0,.84);
+    transition: background-color .15s, text-decoration .25s;
 }
 
-.header-button:hover {
-    text-decoration: none;
-    color: rgba(0,0,0,0.94);
+.header-link:hover {
+    color: rgba(0,0,0,.84);
+    text-decoration: underline;
+    background-color: rgba(0,0,0,.05);
 }
 
 .post-remove-button {

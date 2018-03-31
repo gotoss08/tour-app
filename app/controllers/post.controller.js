@@ -155,7 +155,11 @@ module.exports.countrySearch = (req, res, next) => {
 module.exports.searchPostsByCountry = (req, res, next) => {
     if (!req.body.countries || !req.body.countries.length) return res.sendStatus(400);
 
-    Post.find({countries: {$all: req.body.countries}}).sort({createdAt: '-1'}).exec()
+    let page = 1;
+    if (req.body.page) page = req.body.page;
+    let itemsPerPage = 10;
+
+    Post.find({countries: {$all: req.body.countries}}).sort({createdAt: '-1'}).skip((page-1) * itemsPerPage).limit(itemsPerPage).exec()
         .then((posts) => {
             data = {posts: posts, preparedPosts: []};
             data.posts.forEach((post) => {

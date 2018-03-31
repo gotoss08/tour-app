@@ -82,24 +82,6 @@ app.use(express.static('public'));
 app.locals.__ = __y18n;
 app.set('view engine', 'ejs');
 
-/* access to username and usericon */
-const User = require('./app/models/user.model.js');
-app.use(function(req, res, next) {
-    if (!req.session || !req.session.userId) return next();
-
-    User.findById(req.session.userId).exec().then((user) => {
-        if (user) {
-            req.username = user.username;
-            req.userAvatarPath = user.avatarPath;
-
-            app.locals.username = user.username;
-            app.locals.userAvatarPath = user.avatarPath;
-
-            next();
-        } else next();
-    });
-});
-
 // set uniqid generator available from everywhere
 app.locals.uniqid = require('uniqid');
 

@@ -243,7 +243,10 @@ module.exports.update = (req, res, next) => {
     Post.findById(req.params.postId).exec()
         .then((post) => {
             post.posted = false;
-            if (postData.posted) post.posted = postData.posted;
+            if (postData.posted) {
+                post.posted = postData.posted;
+                post.createdAt = new Date();
+            };
 
             post.title = '';
             if (postData.title) post.title = sanitizeHtml(postData.title);
@@ -376,7 +379,28 @@ module.exports.update = (req, res, next) => {
             });
         })
         .catch((err) => {
-            return next(err);
+            console.error(err);
+            return res.sendStatus(400);
+        });
+};
+
+module.exports.hide = (req, res, next) => {
+    if (!util.checkUserLogin(req, res, next)) {
+        res.status(401).send();
+        return next(new Error('Для этого действия необходима авторизация в аккаунте.'));
+    }
+    checkPostIdParams(req, res, next);
+
+    Post.findById(req.params.postId).exec().
+        then((post) => {
+            post.posted = false;
+            return post.save().then(() => {
+                return res.sendStatus(200);
+            });
+        })
+        .catch((err) => {
+            console.error(err);
+            return res.sendStatus(400);
         });
 };
 

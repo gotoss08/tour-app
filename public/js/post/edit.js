@@ -91,6 +91,21 @@ $(document).ready(() => {
         });
     });
 
+    $('#post-hide-button').click(() => {
+        let hideAjax = $.ajax({
+            method: 'post',
+            url: `/p/${receivedPostData.post.postId}/hide`,
+        });
+
+        hideAjax.done(() => {
+            $.notify('Заметка успешно скрыта.', 'success');
+        });
+
+        hideAjax.fail(() => {
+            $.notify('Произошла ошибка во время скрытия заметки.', 'error');
+        });
+    });
+
     $('#post-remove-button').click(function() {
         alertify
             .okBtn("Удалить")

@@ -12,6 +12,7 @@ router.get('/:postId', api.read);
 /* POST */
 router.post('/country', api.searchPostsByCountry);
 router.post('/:postId/update', api.update);
+router.post('/:postId/hide', api.hide);
 router.post('/:postId/remove', api.remove);
 router.post('/:postId/like', api.like);
 

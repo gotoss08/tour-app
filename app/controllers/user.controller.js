@@ -85,6 +85,7 @@ module.exports.userRegisterPost = (req, res, next) => {
             }
             req.session.userId = user._id;
             req.session.username = user.username;
+            req.session.userAvatarPath = user.avatarPath;
             return res.sendStatus(200);
         });
     });
@@ -96,6 +97,7 @@ module.exports.userLoginPost = (req, res, next) => {
             if (err || !user) return res.status(401).send('Неверное имя пользователя или пароль.');
             req.session.userId = user._id;
             req.session.username = user.username;
+            req.session.userAvatarPath = user.avatarPath;
             return res.sendStatus(200);
         });
     } else return res.status(401).send('Поля с именем пользователя или паролем пусты!');

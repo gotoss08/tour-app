@@ -146,8 +146,8 @@ var generateMetaCard = () => {
                 </div>
                 <hr class="card-divider">
                 <div class="d-flex flex-row align-items-center align-items-stretch">
-                    <a class="meta-card-footer-item card-bg-hover meta-author-profile-link mr-auto d-flex flex-row align-items-center">
-                        <div class="rounded-circle avatar-placeholder mr-2"></div>
+                    <a id="" class="meta-card-footer-item card-bg-hover meta-author-profile-link mr-auto d-flex flex-row align-items-center">
+                        <div class="rounded-circle avatar-placeholder meta-avatar-placeholder mr-2"></div>
                     </a>
                     <div class="meta-card-footer-item card-bg-hover d-flex flex-column">
                         <div class="d-flex flex-row align-items-center mb-3">
@@ -229,7 +229,7 @@ var loadData = (data) => {
     authorProfileLink.append(data.username);
     authorProfileLink.attr('href', '/user/' + data.username);
 
-    let authorAvatar = $('.avatar-placeholder');
+    let authorAvatar = $('.meta-avatar-placeholder');
     if (data.userAvatarPath) {
         authorAvatar.css('background-image', `url(${data.userAvatarPath})`);
     } else {

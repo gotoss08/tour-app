@@ -1,27 +1,70 @@
-<% include ../partials/full_header.ejs %>
-
-<div class="container">
-	<div class="row mt-5 mb-5">
+<% include ../partials/header_start.ejs %>
+<link rel="stylesheet" href="/css/post/card.css">
+<link rel="stylesheet" href="/css/search/index.css">
+<% include ../partials/header_end.ejs %>
+<div class="container page-content-container">
+	<div class="row">
 		<div class="col-12">
-			<form action="/search" method="get">
-				<div class="input-group">
-					<input type="text" class="form-control" name="query" value="<%= query %>" placeholder="Search text..." autocomplete="off" autofocus required>
-					<div class="input-group-append">
-						<button type="submit" class="btn btn-primary">Search</button>
-					</div>
-				</div>
-			</form>
-			<% if(query) { %>
-				<h2 class="mt-3"><%= results.length %> results for "<%= query %>"</h2>
-			<% } %>
-			<% for(let i = 0; i < results.length; i++) { %>
-				<% let result = results[i]; %>
-				<div>
-					<a href="<%= result.url %>"><%= result.text %></a>
-				</div>
-			<% } %>
+			<h4>Поиск среди всех публикаций по частичному совпаденю текста</h4>
+			<input id="search-input" type="text" value="<%= query %>"><button id="search-button">поиск</button>
+			<hr>
+			<h6 id="search-found-count">найдено</h6>
+			<hr>
+			<div class="cards"></div>
 		</div>
 	</div>
 </div>
+<template id="card-template">
+    <div class="waypoint-card meta-card rounded">
+        <div class="waypoint-card-header card-bg-hover d-flex flex-row">
+            <div class="meta-card-header-titles mr-auto" title="Открыть эту заметку">
+                <div class="waypoint-card-header-input meta-title"></div>
+                <div class="waypoint-card-header-input meta-subtitle"></div>
+            </div>
+        </div>
+        <hr class="card-divider">
+        <div class="waypoint-card-body">
+            <div class="form-control waypoint-card-body-editor meta-body"></div>
+        </div>
+        <hr class="card-divider">
+        <div class="meta-card-footer d-flex flex-column">
+            <div class="card-bg-hover d-flex flex-row align-items-center p-2">
+                <span class="meta-likes" title="Количество людей, которым <b>понравилась</b> эта заметка">
+                    <i class="far fa-heart faa-pulse-hover mr-1"></i>
+                    <span class="meta-like-counter"></span>
+                </span>
+                <span class="meta-views mr-auto" title="Количество <b>уникальных</b> просмотров заметки">
+                    <i class="fas fa-eye ml-2 mr-1"></i>
+                    <span class="meta-views-counter"></span>
+                </span>
+            </div>
+            <hr class="card-divider">
+            <div class="d-flex flex-row align-items-center align-items-stretch">
+                <a id="" class="meta-card-footer-item card-bg-hover meta-author-profile-link mr-auto d-flex flex-row align-items-center">
+                    <div class="rounded-circle avatar-placeholder meta-avatar-placeholder mr-2"></div>
+                </a>
+                <div class="meta-card-footer-item card-bg-hover d-flex flex-column">
+                    <div class="d-flex flex-row align-items-center mb-3">
+                        <div class="meta-date"></div>
+                    </div>
+                    <div class="meta-country mr-2"></div>
+                </div>
+            </div>
+        </div>
 
+    </div>
+</template>
+<!-- masonry lib for smart card layout -->
+<script src="/js/libs/masonry.pkgd.min.js"></script>
+<!-- moment js lib for dates manipulation -->
+<script src="/js/libs/moment.min.js"></script>
+<script src="/js/libs/moment.locale.ru.js"></script>
+<!-- he lib for decoding html -->
+<script src="/js/libs/he.js"></script>
+<!-- jquery truncate lib for easy text crop -->
+<script src="/js/libs/jquery.truncate.js"></script>
+<script>
+	let query = '<%= query %>';
+</script>
+<script src="/js/search/index.js"></script>
 <% include ../partials/footer.ejs %>

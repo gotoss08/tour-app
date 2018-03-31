@@ -10,6 +10,7 @@
         let searchButton = $('.header-search button');
 
         let performSearch = () => {
+            window.location.href = '/search/' + searchInput.val();
             if (searchInput.val()) {
                 console.log('searching for: ' + searchInput.val().trim());
             }

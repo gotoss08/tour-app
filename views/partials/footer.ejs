@@ -59,7 +59,6 @@
         <% if (session && session.userId) { %>
             let userAvatar = $('#user-avatar-placeholder');
             let userAvatarPath = '<%= session.userAvatarPath %>';
-            console.log('userAvatarPath: ' + userAvatarPath);
             if (userAvatarPath) {
                 userAvatar.css('background-image', `url(${userAvatarPath})`);
             } else {

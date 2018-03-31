@@ -229,3 +229,19 @@ module.exports.collectPosts = (req, res, next) => {
             return res.status(200).send({posts: []});
         });
 };
+
+module.exports.getUserById = (req, res, next) => {
+    User.findById(req.params.userId).exec()
+        .then((user) => {
+            let data = {};
+
+            data.username = user.username;
+            data.userAvatarPath = user.avatarPath;
+
+            return res.status(200).send(data);
+        })
+        .catch((err) => {
+            console.error(err);
+            return res.sendStatus(400);
+        });
+};

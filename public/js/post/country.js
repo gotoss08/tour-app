@@ -32,6 +32,26 @@ function createCardsForPosts(posts) {
         card.find('.meta-views-counter').html(post.uniqIpsVisited);
         tippy(card.find('.meta-views').get(0));
 
+        let authorProfileLink = card.find('.meta-author-profile-link');
+
+        let authorAvatar = card.find('.meta-avatar-placeholder');
+        authorAvatar.append('<i class="user-no-avatar-icon fas fa-user align-middle"></i>');
+
+        let fetchUserInfoAjax = $.ajax({
+            method: 'post',
+            url: '/user/' + post.userId,
+        });
+
+        fetchUserInfoAjax.done((data) => {
+            authorProfileLink.append(data.username);
+            authorProfileLink.attr('href', '/user/' + data.username);
+
+            if (data.userAvatarPath) {
+                authorAvatar.empty();
+                authorAvatar.css('background-image', `url(${data.userAvatarPath})`);
+            }
+        });
+
         let postedMoment = moment(post.postedAt);
         let metaDate = card.find('.meta-date');
         metaDate.html(postedMoment.fromNow());
@@ -65,7 +85,6 @@ function searchPostsByCountry(data) {
 
 
     if (JSON.stringify(prevCountrySelectVal) !== JSON.stringify(countrySelectVal) ) {
-        console.log('vals different');
         $('.cards').empty();
         prevCountrySelectVal = countrySelectVal;
         page = 1;

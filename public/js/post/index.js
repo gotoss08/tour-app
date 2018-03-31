@@ -274,8 +274,6 @@ var loadData = (data) => {
 
         if(body) {
             let bodyData = body;
-            console.dir(bodyData);
-            console.dir(he.decode(body));
             $(`#${cardId} .waypoint-card-body-editor`).html(he.decode(body));
         }
     });

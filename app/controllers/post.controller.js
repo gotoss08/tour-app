@@ -172,6 +172,7 @@ module.exports.searchPostsByCountry = (req, res, next) => {
                     totalVisitCount: post.totalVisitCount,
                     likes: post.likes.length,
                     countries: Array.from(post.countries),
+                    userId: post.userId,
                     postedAt: new Date(post.createdAt.getTime()),
                     editedAt: new Date(post.updatedAt.getTime()),
                 });

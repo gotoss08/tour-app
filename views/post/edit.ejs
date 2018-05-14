@@ -36,7 +36,7 @@
 
     const receivedPostData = {
         post: {
-            posted: Boolean('<%= post.posted %>'),
+            posted: <%= post.posted %>,
             title: '<%= post.title %>',
             subtitle: '<%= post.subtitle %>',
             body: '<%= post.body %>',
@@ -70,6 +70,7 @@
             },
         <% } %>
         username: '<%= username %>',
+        mapHelpReadStatus: <%= mapHelpReadStatus %>,
     };
 
     console.dir(receivedPostData);

@@ -11,6 +11,8 @@ router.post('/register', userController.userRegisterPost);
 router.post('/login', userController.userLoginPost);
 router.post('/logout', userController.userLogoutPost);
 
+router.post('/mark-post-map-help-as-read', userController.markPostMapHelpAsRead);
+
 router.get('/me', userController.getCurrentUser);
 router.get('/:username', userController.getUser);
 router.post('/:userId/posts', userController.collectPosts);

@@ -44,7 +44,8 @@ $(document).ready(() => {
         });
     });
 
-    $('#post-publish-button').click(function() {
+    const postPublishButton = $('#post-publish-button');
+    postPublishButton.click(function() {
         if (!validateData()) return false;
 
         let data = prepareData();
@@ -91,13 +92,17 @@ $(document).ready(() => {
         });
     });
 
-    $('#post-hide-button').click(() => {
+    const postHideButton = $('#post-hide-button');
+    postHideButton.click(() => {
         let hideAjax = $.ajax({
             method: 'post',
             url: `/p/${receivedPostData.post.postId}/hide`,
         });
 
         hideAjax.done(() => {
+            postHideButton.hide();
+            postPublishButton.show();
+
             $.notify('Заметка успешно скрыта.', 'success');
         });
 
@@ -106,10 +111,18 @@ $(document).ready(() => {
         });
     });
 
+    if (receivedPostData.post.posted) {
+        postHideButton.show();
+        postPublishButton.hide();
+    } else {
+        postHideButton.hide();
+        postPublishButton.show();
+    }
+
     $('#post-remove-button').click(function() {
         alertify
-            .okBtn("Удалить")
-            .cancelBtn("Отмена")
+            .okBtn('Удалить')
+            .cancelBtn('Отмена')
             .confirm('Вы уверены что хотите удалить этот пост?', () => {
                 let removeAjax = $.ajax({
                     method: 'post',
@@ -137,9 +150,7 @@ let markerInfoWindow;
 const waypoints = [];
 const markers = [];
 
-
-
-var initMap = () => {
+function initMap() {
     // create map
     map = createMap();
 
@@ -166,6 +177,8 @@ var initMap = () => {
     // create card for vote creation
     createAddVoteCard();
 
+    if (!receivedPostData.mapHelpReadStatus) generateMapHelperCard();
+
     // create card for meta info
     generateMetaCard();
 
@@ -174,7 +187,7 @@ var initMap = () => {
 };
 
 // info window for showing marker address
-let showInfoWindow = (marker) => {
+const showInfoWindow = (marker) => {
     let cardName = $(`#${marker.cardId} .waypoint-card-header-input`).val();
     let content = `
         <div class="d-flex align-items-center">
@@ -193,10 +206,10 @@ let showInfoWindow = (marker) => {
 };
 
 // geocode current address and assign it to marker
-let geocodeAddress = async (marker, callback=undefined) => {
+const geocodeAddress = async (marker, callback=undefined) => {
     let locationName;
 
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
         geocoder.geocode({'location': marker.waypoint.location}, (results, status) => {
             if (status == 'OK') {
                 // find current country
@@ -222,15 +235,15 @@ let geocodeAddress = async (marker, callback=undefined) => {
             }
         });
     }).then(() => {
-        if(marker.cardName == marker.locationName) updateCardName(marker, locationName);
+        if (marker.cardName == marker.locationName) updateCardName(marker, locationName);
 
         marker.locationName = locationName;
 
-        if(callback) callback();
+        if (callback) callback();
     });
 };
 
-let removeMarker = async (marker) => {
+const removeMarker = async (marker) => {
     markers.splice(markers.indexOf(marker), 1);
     waypoints.splice(waypoints.indexOf(marker.waypoint), 1);
     marker.setMap(null);
@@ -244,7 +257,7 @@ let removeMarker = async (marker) => {
     }
 };
 
-let removeAllMarkers = () => {
+const removeAllMarkers = () => {
     markers.forEach((marker) => {
         marker.setMap(null);
         removeWaypointCard(marker);
@@ -257,7 +270,7 @@ let removeAllMarkers = () => {
     directionsDisplay.setMap(null);
 };
 
-let addEventListeners = (marker) => {
+const addEventListeners = (marker) => {
     // show tooltip with location name
     marker.addListener('click', () => {
         showInfoWindow(marker);
@@ -279,8 +292,8 @@ let addEventListeners = (marker) => {
     });
 };
 
-let initEditorAndTooltips = (marker) => {
-    let editor = new MediumEditor(`#${marker.cardId} .waypoint-card-body-editor`, {
+const initEditorAndTooltips = (marker) => {
+    const editor = new MediumEditor(`#${marker.cardId} .waypoint-card-body-editor`, {
         autoLink: true,
         buttonLabels: 'fontawesome',
         placeholder: {
@@ -294,7 +307,7 @@ let initEditorAndTooltips = (marker) => {
     tippy('[title]');
 };
 
-let generateWaypointCardHTML = (marker) => {
+const generateWaypointCardHTML = (marker) => {
     return `
         <div id="${marker.cardId}" class="waypoint-card rounded">
             <div class="waypoint-card-header d-flex align-items-center">
@@ -313,7 +326,7 @@ let generateWaypointCardHTML = (marker) => {
             <div class="waypoint-card-body">
                 <textarea class="form-control waypoint-card-body-editor"></textarea>
                 <div class="d-flex align-items-center justify-content-end">
-                    <span class="waypoint-card-body-editor-help" title="<ul style='text-align: left; padding: 0; margin: 0; margin-left: 16px;'><li>При выделении текста, появляется меню редактора, в котором можно применить разные стили к выделенному фрагменту текста.</li><li>После публикации, заголовки так же будут обработаны и добавлены в виде тэгов.</li><li>Чтобы загрузить фотографию, просто перетащите её на текст в том месте, где вы хотите что бы она оказалась.</li></ul>">Помощь по редактированию <i class="fas fa-question-circle"></i></span>
+                    <span class="waypoint-card-body-editor-help" title="<ul style='text-align: left; padding: 0; margin: 0; margin-left: 16px;'><li>При выделении текста, появляется меню редактора, в котором можно применить разные стили к выделенному фрагменту текста.</li><li>Чтобы загрузить фотографию, просто перетащите её на текст в том месте, где вы хотите что бы она оказалась.</li></ul>">Помощь по редактированию <i class="fas fa-question-circle"></i></span>
                 </div>
                 <small id="post-body-main-error" class="form-text text-danger"></small>
             </div>
@@ -321,10 +334,10 @@ let generateWaypointCardHTML = (marker) => {
     `;
 };
 
-let createWaypointCard = async (marker) => {
-    await new Promise(resolve => {
-        let cardHtml = generateWaypointCardHTML(marker);
-        let cardDOMElement = $($.parseHTML(cardHtml));
+const createWaypointCard = async (marker) => {
+    await new Promise((resolve) => {
+        const cardHtml = generateWaypointCardHTML(marker);
+        const cardDOMElement = $($.parseHTML(cardHtml));
 
         $('.waypoint-cards').append(cardDOMElement);
 
@@ -367,7 +380,7 @@ let createWaypointCard = async (marker) => {
     });
 };
 
-let updateCardName = (marker, cardName) => {
+const updateCardName = (marker, cardName) => {
     // update marker location name
     marker.cardName = cardName;
 
@@ -375,37 +388,60 @@ let updateCardName = (marker, cardName) => {
     markerInfoWindow.setOptions({content: marker.cardName});
 
     // update card header`s input
-    let headerInputElement = $(`#${marker.cardId} .waypoint-card-header-input`);
+    const headerInputElement = $(`#${marker.cardId} .waypoint-card-header-input`);
     headerInputElement.val(marker.cardName);
 };
 
-let removeWaypointCard = (marker) => {
+const removeWaypointCard = (marker) => {
     $(`#${marker.cardId}`).remove();
 };
 
-let generateMetaCard = () => {
-    let metaCardHTML = `
+const generateMapHelperCard = () => {
+    const helperCardHTML = `
+        <div class="waypoint-card rounded">
+            <div class="waypoint-card-body">
+                Вы можете добавить места в которых вы побывали, просто нажав на это место на карте.
+                <button class="mt-2 btn btn-success w-100">Понятно</button>
+            </div>
+        </div>
+    `;
+
+    const helperCardElement = $(helperCardHTML);
+
+    helperCardElement.find('button').click(() => {
+        helperCardElement.remove();
+
+        $.ajax({
+            method: 'post',
+            url: '/user/mark-post-map-help-as-read',
+        });
+    });
+
+    $('.waypoint-cards').append(helperCardElement);
+};
+
+const generateMetaCard = () => {
+    const metaCardHTML = `
         <div class="waypoint-card meta-card rounded">
             <div class="waypoint-card-header d-flex flex-column">
-                <input class="waypoint-card-header-input meta-title" type="text" placeholder="Title...">
-                <textarea class="waypoint-card-header-input meta-subtitle" placeholder="Subtitle..."></textarea>
+                <input class="waypoint-card-header-input meta-title" type="text" placeholder="Заголовок...">
+                <textarea class="waypoint-card-header-input meta-subtitle" placeholder="Подзаголовок..."></textarea>
             </div>
             <hr class="card-divider">
             <div class="waypoint-card-body">
                 <textarea class="form-control waypoint-card-body-editor meta-body"></textarea>
                 <div class="d-flex align-items-center justify-content-end">
-                    <span class="waypoint-card-body-editor-help" title="<ul style='text-align: left; padding: 0; margin: 0; margin-left: 16px;'><li>При выделении текста, появляется меню редактора, в котором можно применить разные стили к выделенному фрагменту текста.</li><li>После публикации, заголовки так же будут обработаны и добавлены в виде тэгов.</li><li>Чтобы загрузить фотографию, просто перетащите её на текст в том месте, где вы хотите что бы она оказалась.</li></ul>">Помощь по редактированию <i class="fas fa-question-circle"></i></span>
+                    <span class="waypoint-card-body-editor-help" title="<ul style='text-align: left; padding: 0; margin: 0; margin-left: 16px;'><li>При выделении текста, появляется меню редактора, в котором можно применить разные стили к выделенному фрагменту текста.</li><li>Чтобы загрузить фотографию, просто перетащите её на текст в том месте, где вы хотите что бы она оказалась.</li></ul>">Помощь по редактированию <i class="fas fa-question-circle"></i></span>
                 </div>
                 <small id="post-body-main-error" class="form-text text-danger"></small>
             </div>
         </div>
     `;
-    let metaCardDOMElement = $($.parseHTML(metaCardHTML));
-    $('.waypoint-cards').append(metaCardDOMElement);
+    $('.waypoint-cards').append(metaCardHTML);
 
     autosize($('.meta-subtitle'));
 
-    let editor = new MediumEditor(`.meta-card .waypoint-card-body-editor`, {
+    const editor = new MediumEditor(`.meta-card .waypoint-card-body-editor`, {
         autoLink: true,
         buttonLabels: 'fontawesome',
         placeholder: {
@@ -419,7 +455,7 @@ let generateMetaCard = () => {
     tippy('[title]');
 };
 
-var prepareData = () => {
+const prepareData = () => {
     let data = {};
 
     /* base data */
@@ -440,7 +476,7 @@ var prepareData = () => {
     /* markers */
     data.markers = [];
 
-    for(let i = 0; i < markers.length; i++) {
+    for (let i = 0; i < markers.length; i++) {
         let marker = markers[i];
 
         let dataMarker = {};
@@ -469,7 +505,7 @@ var prepareData = () => {
         data.vote = {};
 
         let voteTitle = $('.vote-card-active .vote-card-header-input').val();
-        if(voteTitle && voteTitle.trim()) data.vote.title = voteTitle.trim();
+        if (voteTitle && voteTitle.trim()) data.vote.title = voteTitle.trim();
 
         let voteOptionElements = $('.vote-card-active .waypoint-card-body').find('.vote-card-body-input');
         if (voteOptionElements.length) {
@@ -477,11 +513,11 @@ var prepareData = () => {
 
             voteOptionElements.each((index, element) => {
                 let optionTitle = $(element).val();
-                if(optionTitle && optionTitle.trim()) {
+                if (optionTitle && optionTitle.trim()) {
                     optionTitle = optionTitle.trim();
 
                     data.vote.options.push({
-                        title: optionTitle
+                        title: optionTitle,
                     });
                 }
             });
@@ -497,7 +533,7 @@ var prepareData = () => {
     return data;
 };
 
-var loadData = (data) => {
+const loadData = (data) => {
     // set page title to post title
     if (data.post.title) document.title = data.post.title;
     else document.title = 'Своим ходом - черновик'
@@ -512,7 +548,7 @@ var loadData = (data) => {
         return a.positionIndex - b.positionIndex;
     });
 
-    data.post.markers.forEach(marker => {
+    data.post.markers.forEach((marker) => {
         // prepare position
         let unpreparedPosition = marker['position'];
         unpreparedPosition = marker['position'].slice(1, marker['position'].length-1);
@@ -532,7 +568,7 @@ var loadData = (data) => {
         });
 
         initMarker(marker, {
-            cardId: cardId
+            cardId: cardId,
         });
 
         addEventListeners(marker);
@@ -544,7 +580,7 @@ var loadData = (data) => {
 
         geocodeAddress(marker, () => {});
 
-        if(body) {
+        if (body) {
             MediumEditor
                 .getEditorFromElement($(`#${cardId} .waypoint-card-body-editor`).get(0))
                 .setContent(he.decode(body));
@@ -565,9 +601,10 @@ var loadData = (data) => {
 
         // remove autogenerated vote option fields
         voteCard.find('.waypoint-card-body').empty();
-        data.vote.options.forEach(option => {
+        data.vote.options.forEach((option) => {
             createVoteOption(option.title);
         });
+
         // create empty vote option field at the bottom
         createVoteOption();
     }
@@ -575,7 +612,7 @@ var loadData = (data) => {
     calcRoute();
 };
 
-var validateData = () => {
+const validateData = () => {
     $('.notifyjs-wrapper').trigger('notify-hide');
 
     let errors = false;
@@ -637,16 +674,16 @@ var validateData = () => {
     return true;
 };
 
-var validateVote = (showNotifications) => {
-    let voteCard = $('.vote-card-active');
+const validateVote = (showNotifications) => {
+    const voteCard = $('.vote-card-active');
     if (voteCard.length) {
-        let voteHeader = voteCard.find('.vote-card-header-input');
+        const voteHeader = voteCard.find('.vote-card-header-input');
         if (!voteHeader.val() && !voteHeader.val().trim()) {
             voteHeader.notify('Тема голосования не может быть пустой.', {position: 'right', className: 'error', autoHide: false});
             return false;
         }
 
-        let voteOptions = voteCard.find('.vote-card-body-input');
+        const voteOptions = voteCard.find('.vote-card-body-input');
         let filledVoteOptions = 0;
         voteOptions.each((index, element) => {
             let optionValue = $(element).val();
@@ -661,9 +698,9 @@ var validateVote = (showNotifications) => {
     return true;
 };
 
-let createAddVoteCard = () => {
+const createAddVoteCard = () => {
     $('.vote-card').remove();
-    let html = `
+    const html = `
         <div class="waypoint-card vote-card rounded">
             <div class="waypoint-card-header d-flex flex-row">
                 <button class="btn w-100" onclick="createVoteCard();" title="<span style='text-align: center;'>Нажмите на эту кнопку, если хотите провести голосование среди ваших читателей. Голосование будет добавлено в самый конец.</span>">Добавить голосование</button>
@@ -673,7 +710,7 @@ let createAddVoteCard = () => {
     $('#cards').append(html);
 };
 
-var createVoteOption = (value='', placeholder='Вариант голосования...') => {
+const createVoteOption = (value='', placeholder='Вариант голосования...') => {
     let html = `
         <div class="d-flex flex-row align-items-center">
             <i class="far fa-square mr-1"></i>
@@ -683,13 +720,13 @@ var createVoteOption = (value='', placeholder='Вариант голосован
 
     $('.vote-card > .waypoint-card-body').children().last().off();
     $('.vote-card > .waypoint-card-body').append(html);
-    $('.vote-card > .waypoint-card-body').children().last().change(() => createVoteOption());
+    $('.vote-card > .waypoint-card-body').children().last().keypress(() => createVoteOption());
 };
 
-var createVoteCard = ( ) => {
+const createVoteCard = ( ) => {
     $('.vote-card').remove();
 
-    let html = `
+    const html = `
         <div class="waypoint-card vote-card vote-card-active rounded">
             <div class="waypoint-card-header d-flex flex-row align-items-center">
                 <input class="vote-card-header-input" type="text" placeholder="Тема голосования...">
@@ -699,20 +736,7 @@ var createVoteCard = ( ) => {
                 </button>
             </div>
             <hr class="card-divider">
-            <div class="waypoint-card-body">
-                <div class="d-flex flex-row align-items-center">
-                    <i class="far fa-square mr-1"></i>
-                    <input class="vote-card-body-input" type="text" placeholder="Вариант голосования...">
-                </div>
-                <div class="d-flex flex-row align-items-center">
-                    <i class="far fa-square mr-1"></i>
-                    <input class="vote-card-body-input" type="text" placeholder="Вариант голосования...">
-                </div>
-                <div class="d-flex flex-row align-items-center">
-                    <i class="far fa-square mr-1"></i>
-                    <input class="vote-card-body-input" type="text" placeholder="Вариант голосования...">
-                </div>
-            </div>
+            <div class="waypoint-card-body"> </div>
         </div>
     `;
 
@@ -720,7 +744,5 @@ var createVoteCard = ( ) => {
 
     tippy('[title]');
 
-    $('.vote-card > .waypoint-card-body').children().last().change(function() {
-        createVoteOption();
-    });
+    for (let i = 0; i < 3; i++) createVoteOption();
 };

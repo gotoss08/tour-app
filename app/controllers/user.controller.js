@@ -245,3 +245,21 @@ module.exports.getUserById = (req, res, next) => {
             return res.sendStatus(400);
         });
 };
+
+module.exports.markPostMapHelpAsRead = (req, res, next) => {
+    if (!req.session && !req.session.userId) {
+        let errorMessage = 'Для этого действия необходима авторизация в аккаунте.';
+        res.status(401).send(errorMessage);
+        return next(new Error(errorMessage));
+    }
+
+    return User.update({_id: req.session.userId}, {mapHelpReadStatus: true}, (err) => {
+        if (err) {
+            console.error(err);
+            res.sendStatus(400);
+            return next(new Error('Произошла непредвиденная ошибка.'));
+        }
+
+        return res.sendStatus(200);
+    });
+};

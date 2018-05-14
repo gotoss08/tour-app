@@ -1,4 +1,5 @@
 let page = 1;
+let foundCount = 0;
 let loadQueryData = {};
 let prevSearchInputVal = '';
 
@@ -9,7 +10,12 @@ function viewPost(post) {
 function createCardsForPosts(posts) {
     if(!posts && !posts.length) return;
 
-    $('#search-found-count').html('найдено публикаций: ' + posts.length);
+    foundCount += posts.length;
+
+    if (foundCount > 0) {
+        $('#search-found-count').html('найдено публикаций: ' + foundCount);
+        $('#search-found-area').show();
+    }
 
     for (let i = 0; i < posts.length; i++) {
         let post = posts[i];
@@ -86,15 +92,23 @@ function createCardsForPosts(posts) {
 function searchPosts(data) {
     let searchInputVal = $('#search-input').val();
     if (!searchInputVal || !searchInputVal.trim()) return;
+    searchInputVal = searchInputVal.trim();
+
+    window.history.pushState('', document.title, encodeURI(searchInputVal));
 
     if (JSON.stringify(prevSearchInputVal) !== JSON.stringify(searchInputVal) ) {
+        foundCount = 0;
+        $('#search-found-area').hide();
+
         $('.cards').empty();
         prevSearchInputVal = searchInputVal;
         page = 1;
     }
 
-    if (!data) data = {query: searchInputVal};
-    data.page = page;
+    data = {
+        query: searchInputVal,
+        page,
+    };
 
     let searchAjax = $.ajax({
         method: 'post',
@@ -108,6 +122,7 @@ function searchPosts(data) {
             columnWidth: '.waypoint-card',
             percentPosition: true,
         });
+
         createCardsForPosts(data.posts);
     });
 
@@ -119,6 +134,8 @@ function searchPosts(data) {
 };
 
 $(window).ready(() => {
+    $('#search-found-area').hide();
+
     if (query) searchPosts({query: query});
 
     $('#search-input').keypress((e) => {

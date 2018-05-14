@@ -51,6 +51,7 @@ module.exports.edit = (req, res, next) => {
         .then((data) => {
             return User.findById(data.post.userId).exec().then((user) => {
                 data.username = user.username;
+                data.mapHelpReadStatus = user.mapHelpReadStatus;
                 return data;
             });
         })

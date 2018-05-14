@@ -1,15 +1,17 @@
 <% include partials/header_start.ejs %>
 <link rel="stylesheet" href="/css/index.css">
 <% include partials/header_end_nonav.ejs %>
-<div class="index-header divider-inside-top-bottom d-flex align-items-center text-center">
-    <p>СвоимХодом это площадка для тех кто любит путешествовать. Тут вы можете прочитать про путешествия других людей или поделиться своими.</p>
+<div class="index-header d-flex align-items-center text-center">
+    <p><img src="/imgs/index-logo.png" class="mx-auto" alt=""><br>это площадка для тех, кто любит путешествовать. Вы сможете <b>прочитать о путешествиях</b> других людей или <b>поделиться своими</b>.</p>
 </div>
-<div class="index-read-image index-read-position"></div>
-<div class="index-read index-read-position index-controls d-flex align-items-center justify-content-center">
-    <a href="/p/country">читать</a>
-</div>
-<div class="index-write-image index-write-position"></div>
-<div class="index-write index-write-position index-controls d-flex align-items-center justify-content-center">
-    <a href="/user/login">писать</a>
+<div class="index-footer">
+    <div class="index-read-image index-read-position"></div>
+    <div class="index-read index-read-position index-controls d-flex align-items-center justify-content-center">
+        <a href="/p/country">прочитать о путешествиях</a>
+    </div>
+    <div class="index-write-image index-write-position"></div>
+    <div class="index-write index-write-position index-controls d-flex align-items-center justify-content-center">
+        <a href="/user/login">поделиться своими</a>
+    </div>
 </div>
 <% include partials/footer.ejs %>

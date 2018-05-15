@@ -128,7 +128,7 @@ app.use((err, req, res, next) => {
     res.render('error', {message: err.message});
 });
 
-const port = 11705;
+const port = 10693;
 
 console.log('system port: ' + process.env.PORT);
 

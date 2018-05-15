@@ -128,9 +128,9 @@ app.use((err, req, res, next) => {
     res.render('error', {message: err.message});
 });
 
-const port = process.env.PORT || 3000;
+const port = 11705;
 
-console.log('system port: ' + port);
+console.log('system port: ' + process.env.PORT);
 
 // start server
 app.listen(port, () => {

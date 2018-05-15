@@ -132,5 +132,5 @@ const port = process.env.PORT || 3000;
 
 // start server
 app.listen(port, () => {
-    console.log('tour-app is listening on port ' + port);
+    console.log('tour-app is listening on port: ' + port);
 });

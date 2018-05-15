@@ -128,7 +128,9 @@ app.use((err, req, res, next) => {
     res.render('error', {message: err.message});
 });
 
+const port = process.env.PORT || 3000;
+
 // start server
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log('tour-app is listening on port 3000');
 });

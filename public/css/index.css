@@ -1,115 +1,32 @@
-.index-header {
+.index-container {
     position: absolute;
     display: block;
     width: 100%;
-    height: 30%;
+    height: 100%;
     background-color: rgba(0,0,0,0);
-    box-shadow: inset 0px 0px 10px rgba(0,0,0,0.9);
     background-image: url('/imgs/index-header.jpg');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
 }
 
-.index-header p {
+.index-container p {
     width: 100%;
     font-family: 'MontExtraLight', 'Roboto Slab';
     color: white;
     padding: 25px;
-    font-size: 1.5em;
-    background-color: rgba(0,0,0,.5);
+    font-size: 16pt;
+    background-color: rgba(0,0,0,.3);
 }
 
-.index-footer {
-    background-color: rgba(0,0,0,.1);
-    position: absolute;
+.index-container p img {
+    max-width: 438px;
+    max-height: 80px;
     width: 100%;
-    height: 70%;
-    top: 30%;
+    height: 100%;
+    margin-bottom: 15px;
 }
 
-.index-read-position {
-    position: absolute;
-    width: calc(50%);
-    height: calc(100%);
-}
-
-.index-read-image {
-    background-image: url('/imgs/read1.jpg');
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-}
-
-.index-write-position {
-    position: absolute;
-    width: calc(50%);
-    height: calc(100%);
-    left: calc(50%);
-}
-
-.index-write-image {
-    background-image: url('/imgs/write1.jpg');
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-}
-
-.index-controls {
-    box-shadow: inset 0px 0px 10px rgba(0,0,0,0.9);
-}
-
-.index-controls > a {
+.index-container p a {
     color: white;
-    font-size: 50px;
-    text-shadow: none;
-    transition: text-shadow .25s, text-decoration .25s;
-
-    position: relative;
-    text-decoration: none;
-    text-align: center;
-    width: 65%;
-    background-color: rgba(0,0,0,.5);
-
-    word-wrap: break-word;
-}
-
-.index-controls > a:hover {
-    color: #fff;
-}
-
-.index-controls > a:before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 5px;
-    bottom: 0;
-    left: 0;
-    background-color: #fff;
-    visibility: hidden;
-    -webkit-transform: scaleX(0);
-    transform: scaleX(0);
-    -webkit-transition: all 0.3s ease-in-out 0s;
-    transition: all 0.3s ease-in-out 0s;
-}
-
-.index-controls > a:hover:before {
-    visibility: visible;
-    -webkit-transform: scaleX(1);
-    transform: scaleX(1);
-}
-
-.divider-inside-top-bottom {
-    position:absolute;
-    overflow:hidden;
-    border-top:1px solid #fff;
-    border-bottom:1px solid #fff;
-}
-
-.divider-inside-top-bottom:after {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    bottom: -15px;
-    box-shadow: 0 10px 6px -6px #777;
 }

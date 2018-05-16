@@ -130,8 +130,6 @@ app.use((err, req, res, next) => {
 
 const port = 80;
 
-console.log('system port: ' + process.env.PORT);
-
 // start server
 app.listen(port, () => {
     console.log('tour-app is listening on port: ' + port);

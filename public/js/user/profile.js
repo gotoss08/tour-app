@@ -1,6 +1,8 @@
-let page = 1;
-let loadQueryData = {};
-let loadingPosts = false;
+'use strict';
+
+var page = 1;
+var loadQueryData = {};
+var loadingPosts = false;
 
 function viewPost(post) {
     window.location.href = '/p/' + post.id;
@@ -11,51 +13,51 @@ function editPost(post) {
 };
 
 function removePost(post) {
-    alertify
-        .okBtn("Удалить")
-        .cancelBtn("Отмена")
-        .confirm('Вы уверены что хотите удалить этот пост?', () => {
-            let removeAjax = $.ajax({
-                method: 'post',
-                url: '/p/' + post.id + '/remove',
-            });
-
-            removeAjax.done(() => {
-                post.card.remove();
-                $('.cards').masonry();
-                $.notify('Заметка удалена.', 'success');
-            });
-
-            removeAjax.fail(() => {
-                $.notify('Произошла ошибка при удалении.', 'success');
-            });
+    alertify.okBtn("Удалить").cancelBtn("Отмена").confirm('Вы уверены что хотите удалить этот пост?', function () {
+        var removeAjax = $.ajax({
+            method: 'post',
+            url: '/p/' + post.id + '/remove'
         });
+
+        removeAjax.done(function () {
+            post.card.remove();
+            $('.cards').masonry();
+            $.notify('Заметка удалена.', 'success');
+        });
+
+        removeAjax.fail(function () {
+            $.notify('Произошла ошибка при удалении.', 'success');
+        });
+    });
 };
 
 function createCardsForPosts(posts) {
-    for (let i = 0; i < posts.length; i++) {
-        let post = posts[i];
+    var _loop = function _loop(i) {
+        var post = posts[i];
 
-        let cardHTML = $('#card-template').html();
-        let card = $(cardHTML);
+        var cardHTML = $('#card-template').html();
+        var card = $(cardHTML);
         post.card = card;
 
-        card.find('.meta-card-header-titles').click(() => viewPost(post)).css('cursor', 'pointer');
+        card.find('.meta-card-header-titles').click(function () {
+            return viewPost(post);
+        }).css('cursor', 'pointer');
         if (profileData.currentUser) {
-            tippy(card.find('.post-edit-button').click(() => editPost(post)).css('cursor', 'pointer').get(0));
-            tippy(card.find('.post-remove-button').click(() => removePost(post)).css('cursor', 'pointer').get(0));
+            tippy(card.find('.post-edit-button').click(function () {
+                return editPost(post);
+            }).css('cursor', 'pointer').get(0));
+            tippy(card.find('.post-remove-button').click(function () {
+                return removePost(post);
+            }).css('cursor', 'pointer').get(0));
         } else card.find('.meta-card-header-buttons').remove();
 
         tippy(card.find('.meta-card-header-titles').get(0));
 
-        if (post.title) card.find('.meta-title').html(post.title);
-        else card.find('.meta-title').html('<span class="profile-meta-card-empty-field">Заметка без названия</span>');
+        if (post.title) card.find('.meta-title').html(post.title);else card.find('.meta-title').html('<span class="profile-meta-card-empty-field">Заметка без названия</span>');
 
-        if (post.subtitle) card.find('.meta-subtitle').html(post.subtitle);
-        else card.find('.meta-subtitle').html('<span class="profile-meta-card-empty-field">Заметка без подзаголовка</span>');
+        if (post.subtitle) card.find('.meta-subtitle').html(post.subtitle);else card.find('.meta-subtitle').html('<span class="profile-meta-card-empty-field">Заметка без подзаголовка</span>');
 
-        if (post.body) card.find('.meta-body').html(he.decode(post.body)).truncate({length: 200});
-        else card.find('.meta-body').html('<span class="profile-meta-card-empty-field">Заметка без описания</span>');
+        if (post.body) card.find('.meta-body').html(he.decode(post.body)).truncate({ length: 200 });else card.find('.meta-body').html('<span class="profile-meta-card-empty-field">Заметка без описания</span>');
 
         card.find('.meta-like-counter').html(post.likes);
         tippy(card.find('.meta-likes').get(0));
@@ -63,29 +65,33 @@ function createCardsForPosts(posts) {
         card.find('.meta-views-counter').html(post.uniqIpsVisited);
         tippy(card.find('.meta-views').get(0));
 
-        let postedMoment = moment(post.postedAt);
-        let metaDate = card.find('.meta-date');
+        var postedMoment = moment(post.postedAt);
+        var metaDate = card.find('.meta-date');
         metaDate.html(postedMoment.fromNow());
         metaDate.prop('title', postedMoment.format('Do MMMM YYYY в kk:m'));
         tippy(metaDate.get(0));
 
         /* countries */
-        let countriesHTML = '';
-        for (let i = 0; i < post.preparedCountries.length; i++) {
-            let country = post.preparedCountries[i];
-            countriesHTML += `<a href="/p/country/${country.id}">${country.name}</a>`;
-            if (i != post.preparedCountries.length-1) countriesHTML += ', ';
+        var countriesHTML = '';
+        for (var _i = 0; _i < post.preparedCountries.length; _i++) {
+            var country = post.preparedCountries[_i];
+            countriesHTML += '<a href="/p/country/' + country.id + '">' + country.name + '</a>';
+            if (_i != post.preparedCountries.length - 1) countriesHTML += ', ';
         }
         card.find('.meta-country').html(countriesHTML);
 
         $('.cards').append(card).masonry('appended', card);
 
-        let images = $('.meta-body img');
+        var images = $('.meta-body img');
         images.addClass('w-100 h-100');
+    };
+
+    for (var i = 0; i < posts.length; i++) {
+        _loop(i);
     }
     $('.cards').masonry('layout');
 
-    setTimeout(() => {
+    setTimeout(function () {
         $('.cards').masonry('layout');
     }, 350);
 };
@@ -97,17 +103,17 @@ function loadNewPosts() {
 
     loadQueryData.page = page;
 
-    let loadPostsAjax = $.ajax({
+    var loadPostsAjax = $.ajax({
         method: 'post',
         url: '/user/' + profileData.id + '/posts',
-        data: loadQueryData,
+        data: loadQueryData
     });
 
-    loadPostsAjax.done((data) => {
+    loadPostsAjax.done(function (data) {
         $('.cards').masonry({
             itemSelector: '.waypoint-card',
             columnWidth: '.waypoint-card',
-            percentPosition: true,
+            percentPosition: true
         });
         createCardsForPosts(data.posts);
         postsLoaded();
@@ -117,35 +123,35 @@ function loadNewPosts() {
     page += 1;
 };
 
-$(document).ready(() => {
+$(document).ready(function () {
     $('#avatar').attr('src', profileData.userAvatarPath);
     $('#username').html(profileData.username);
 
     loadQueryData = {
-        posted: true,
+        posted: true
     };
 
     if (profileData.currentUser) {
-        $('#publications-button').click(() => {
+        $('#publications-button').click(function () {
             $('#publications-button').addClass('load-posts-button-current');
             $('#drafts-button').removeClass('load-posts-button-current');
 
             page = 1;
             $('.cards').empty();
             loadQueryData = {
-                posted: true,
+                posted: true
             };
             loadNewPosts();
         });
 
-        $('#drafts-button').click(() => {
+        $('#drafts-button').click(function () {
             $('#publications-button').removeClass('load-posts-button-current');
             $('#drafts-button').addClass('load-posts-button-current');
 
             page = 1;
             $('.cards').empty();
             loadQueryData = {
-                posted: false,
+                posted: false
             };
             loadNewPosts();
         });
@@ -157,7 +163,7 @@ $(document).ready(() => {
 
     loadNewPosts();
 
-    $(window).scroll(function() {
+    $(window).scroll(function () {
         if (!loadingPosts && $(window).scrollTop() + $(window).height() == $(document).height()) {
             loadNewPosts();
         }

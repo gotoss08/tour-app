@@ -1,45 +1,50 @@
+'use strict';
 
-var createMap = () => {
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+var createMap = function createMap() {
     return new google.maps.Map($('#map').get(0), {
-        center: {lat: 49.82081217632622, lng: 73.08635614723323},
+        center: { lat: 49.82081217632622, lng: 73.08635614723323 },
         zoom: 3,
-        gestureHandling: 'greedy',
+        gestureHandling: 'greedy'
     });
 };
 
-var createGeocoderService = () => {
+var createGeocoderService = function createGeocoderService() {
     return new google.maps.Geocoder();
 };
 
-var createPlacesService = () => {
+var createPlacesService = function createPlacesService() {
     return new google.maps.places.PlacesService(map);
 };
 
-var createDirectionsService = () => {
+var createDirectionsService = function createDirectionsService() {
     return new google.maps.DirectionsService();
 };
 
-var createDirectionsDisplay = (map) => {
-    let directionsDisplay = new google.maps.DirectionsRenderer({
+var createDirectionsDisplay = function createDirectionsDisplay(map) {
+    var directionsDisplay = new google.maps.DirectionsRenderer({
         draggable: false,
         suppressMarkers: true,
-        preserveViewport: false,
+        preserveViewport: false
     });
     directionsDisplay.setMap(map);
     return directionsDisplay;
 };
 
-var createMarkerWindow = () => {
+var createMarkerWindow = function createMarkerWindow() {
     return new google.maps.InfoWindow();
 };
 
-var focusMap = (marker) => {
+var focusMap = function focusMap(marker) {
     map.setZoom(12);
     map.panTo(marker.getPosition());
     showInfoWindow(marker);
 };
 
-var initMarker = (marker, options={}) => {
+var initMarker = function initMarker(marker) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
     marker.locationNames = [];
 
     if (!options.cardId) options.cardId = '_' + Math.random().toString(36).substr(2, 9);
@@ -48,87 +53,135 @@ var initMarker = (marker, options={}) => {
         marker.locationNames = [options.locationName];
     }
 
-    marker.waypoint = {location: marker.getPosition()};
+    marker.waypoint = { location: marker.getPosition() };
     marker.cardId = options.cardId;
     markers.push(marker);
 
     waypoints.push(marker.waypoint);
 };
 
-var createMarker = async (latLng, options={}) => {
-    let marker = new google.maps.Marker({
-        map: map,
-        draggable: true,
-        animation: google.maps.Animation.DROP,
-        position: latLng,
-    });
-    initMarker(marker, options);
-    addEventListeners(marker);
-    createWaypointCard(marker);
-    recreateMapFocusWaypoints();
-    await geocodeAddress(marker);
-    await calcRoute(marker.waypoint);
-    map.setZoom(3);
-};
+var createMarker = function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(latLng) {
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var marker;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+                switch (_context.prev = _context.next) {
+                    case 0:
+                        marker = new google.maps.Marker({
+                            map: map,
+                            draggable: true,
+                            animation: google.maps.Animation.DROP,
+                            position: latLng
+                        });
+
+                        initMarker(marker, options);
+                        addEventListeners(marker);
+                        createWaypointCard(marker);
+                        recreateMapFocusWaypoints();
+                        _context.next = 7;
+                        return geocodeAddress(marker);
+
+                    case 7:
+                        _context.next = 9;
+                        return calcRoute(marker.waypoint);
+
+                    case 9:
+                        map.setZoom(3);
+
+                    case 10:
+                    case 'end':
+                        return _context.stop();
+                }
+            }
+        }, _callee, undefined);
+    }));
+
+    return function createMarker(_x2) {
+        return _ref.apply(this, arguments);
+    };
+}();
 
 // method for calculating path between all waypoints
-var calcRoute = async () => {
-    if (waypoints.length >= 2) {
-        let start = waypoints[0];
-        waypoints.splice(0, 1);
-        let finish = waypoints[waypoints.length-1];
-        waypoints.splice(waypoints.length-1, 1);
+var calcRoute = function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        var start, finish, request;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            while (1) {
+                switch (_context2.prev = _context2.next) {
+                    case 0:
+                        if (!(waypoints.length >= 2)) {
+                            _context2.next = 8;
+                            break;
+                        }
 
-        let request = {
-            origin: start,
-            destination: finish,
-            waypoints: waypoints,
-            travelMode: 'DRIVING',
-            preserveViewport: true,
-        };
+                        start = waypoints[0];
 
-        await new Promise((resolve) => {
-            directionsService.route(request, (result, status) => {
-                if (status == 'OK') {
-                    directionsDisplay.setMap(map);
-                    directionsDisplay.setDirections(result);
+                        waypoints.splice(0, 1);
+                        finish = waypoints[waypoints.length - 1];
+
+                        waypoints.splice(waypoints.length - 1, 1);
+
+                        request = {
+                            origin: start,
+                            destination: finish,
+                            waypoints: waypoints,
+                            travelMode: 'DRIVING',
+                            preserveViewport: true
+                        };
+                        _context2.next = 8;
+                        return new Promise(function (resolve) {
+                            directionsService.route(request, function (result, status) {
+                                if (status == 'OK') {
+                                    directionsDisplay.setMap(map);
+                                    directionsDisplay.setDirections(result);
+                                }
+
+                                waypoints.splice(0, 0, start);
+                                waypoints.splice(waypoints.length, 0, finish);
+                                resolve();
+                            });
+                        });
+
+                    case 8:
+                    case 'end':
+                        return _context2.stop();
                 }
+            }
+        }, _callee2, undefined);
+    }));
 
-                waypoints.splice(0, 0, start);
-                waypoints.splice(waypoints.length, 0, finish);
-                resolve();
-            });
-        });
-    }
-};
+    return function calcRoute() {
+        return _ref2.apply(this, arguments);
+    };
+}();
 
-var convertHeadersToTagLinks = () => {
-    let headersDOM = $('.medium-editor-element > h2, h3');
-    for(let i = 0; i < headersDOM.length; i++) {
-        let header = $(headersDOM[i]);
-        let headerText = header.html();
+var convertHeadersToTagLinks = function convertHeadersToTagLinks() {
+    var headersDOM = $('.medium-editor-element > h2, h3');
+    for (var i = 0; i < headersDOM.length; i++) {
+        var header = $(headersDOM[i]);
+        var headerText = header.html();
         header.html($('<a></a>').attr('href', 'www.google.ru').text(headerText));
     }
 };
 
-var recreateMapFocusWaypoints = () => {
-    markers.forEach((marker, index) => {
-        let cardDOMElement = $(`#${marker.cardId}`);
+var recreateMapFocusWaypoints = function recreateMapFocusWaypoints() {
+    markers.forEach(function (marker, index) {
+        var cardDOMElement = $('#' + marker.cardId);
 
-        let addWaypoint = (offset) => {
+        var addWaypoint = function addWaypoint(offset) {
             cardDOMElement.waypoint({
-                handler: function(direction) {
+                handler: function handler(direction) {
                     focusMap(marker);
                 },
-                offset: offset,
+                offset: offset
             });
         };
 
-        let toTop = cardDOMElement.offset().top;
-        let viewportHeight = $(window).outerHeight();
-        let containerHeight = $('.waypoint-cards').innerHeight();
+        var toTop = cardDOMElement.offset().top;
+        var viewportHeight = $(window).outerHeight();
+        var containerHeight = $('.waypoint-cards').innerHeight();
 
-        if (toTop + viewportHeight >= containerHeight) addWaypoint('85%');
-        else addWaypoint(135);
+        if (toTop + viewportHeight >= containerHeight) addWaypoint('85%');else addWaypoint(135);
     });
 };

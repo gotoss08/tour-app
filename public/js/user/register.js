@@ -1,6 +1,8 @@
-$(document).ready(() => {
-    let infoCard = $('.info-card');
-    let mainCard = $('.register-card');
+'use strict';
+
+$(document).ready(function () {
+    var infoCard = $('.info-card');
+    var mainCard = $('.register-card');
     infoCard.hide();
 
     /** **/
@@ -8,7 +10,7 @@ $(document).ready(() => {
         infoCard.show();
         infoCard.offset({
             top: card.offset().top,
-            left: mainCard.offset().left + mainCard.outerWidth() + 25,
+            left: mainCard.offset().left + mainCard.outerWidth() + 25
         });
         infoCard.html(messageHTML);
     }
@@ -19,50 +21,49 @@ $(document).ready(() => {
     }
 
     /* find elements and set content in info window */
-    let username = $('#real-username');
-    let usernameStatus = $('#username-status');
-    let usernameTextHTML = `
-        Имена пользователей могут содержать:
-        <ul>
-            <li>буквы латинского алфавита (a–z)</li>
-            <li>цифры (0–9)</li>
-            <li>дефисы (-)</li>
-            <li>символы подчеркивания (_)</li>
-            <li>точки (.)</li>
-        </ul>
-    `;
-    username.focus(() => showInfoCard(username, usernameTextHTML));
+    var username = $('#real-username');
+    var usernameStatus = $('#username-status');
+    var usernameTextHTML = '\n        \u0418\u043C\u0435\u043D\u0430 \u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u0435\u0439 \u043C\u043E\u0433\u0443\u0442 \u0441\u043E\u0434\u0435\u0440\u0436\u0430\u0442\u044C:\n        <ul>\n            <li>\u0431\u0443\u043A\u0432\u044B \u043B\u0430\u0442\u0438\u043D\u0441\u043A\u043E\u0433\u043E \u0430\u043B\u0444\u0430\u0432\u0438\u0442\u0430 (a\u2013z)</li>\n            <li>\u0446\u0438\u0444\u0440\u044B (0\u20139)</li>\n            <li>\u0434\u0435\u0444\u0438\u0441\u044B (-)</li>\n            <li>\u0441\u0438\u043C\u0432\u043E\u043B\u044B \u043F\u043E\u0434\u0447\u0435\u0440\u043A\u0438\u0432\u0430\u043D\u0438\u044F (_)</li>\n            <li>\u0442\u043E\u0447\u043A\u0438 (.)</li>\n        </ul>\n    ';
+    username.focus(function () {
+        return showInfoCard(username, usernameTextHTML);
+    });
     username.focusout(hideInfoCard);
 
-    let email = $('#real-email');
-    let emailStatus = $('#email-status');
-    email.focus(() => showInfoCard(email, 'Введите ваш реальный email адрес. В случае, если вы забудете пароль от вашего аккаунта, вы сможете восстановить его.'));
+    var email = $('#real-email');
+    var emailStatus = $('#email-status');
+    email.focus(function () {
+        return showInfoCard(email, 'Введите ваш реальный email адрес. В случае, если вы забудете пароль от вашего аккаунта, вы сможете восстановить его.');
+    });
     email.focusout(hideInfoCard);
 
-    let password1 = $('#real-password1');
-    password1.focus(() => showInfoCard(password1, 'Придумайте себе пароль. Пароль может быть любой сложности и длины, но чем длиннее, и чем больше разнообразных символов в нем будет, тем лучше.'));
+    var password1 = $('#real-password1');
+    password1.focus(function () {
+        return showInfoCard(password1, 'Придумайте себе пароль. Пароль может быть любой сложности и длины, но чем длиннее, и чем больше разнообразных символов в нем будет, тем лучше.');
+    });
     password1.focusout(hideInfoCard);
 
-    let password2 = $('#real-password2');
-    password2.focus(() => showInfoCard(password2, 'Повторите введеный выше пароль.'));
+    var password2 = $('#real-password2');
+    password2.focus(function () {
+        return showInfoCard(password2, 'Повторите введеный выше пароль.');
+    });
     password2.focusout(hideInfoCard);
 
-    let avatar = $('#avatar');
+    var avatar = $('#avatar');
 
     /* validation */
-    let usernameFree = true;
-    let emailFree = true;
+    var usernameFree = true;
+    var emailFree = true;
 
-    username.keyup(function() {
-        let usernameVal = $(this).val();
+    username.keyup(function () {
+        var usernameVal = $(this).val();
         if (usernameVal && usernameVal.trim()) {
-            let usernameAjax = $.ajax({
+            var usernameAjax = $.ajax({
                 method: 'post',
                 url: '/user/username',
-                data: {username: usernameVal},
+                data: { username: usernameVal }
             });
 
-            usernameAjax.done((response) => {
+            usernameAjax.done(function (response) {
                 if (response == 'free') {
                     username.addClass('input-valid').removeClass('input-error');
                     usernameStatus.html('Имя пользователя свободно.').addClass('status-free').removeClass('status-taken');
@@ -76,28 +77,28 @@ $(document).ready(() => {
                 }
             });
 
-            usernameAjax.fail((xhr) => {
+            usernameAjax.fail(function (xhr) {
                 console.error(xhr.statusText);
             });
         }
     });
 
-    let validateEmail = (email) => {
-        let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    var validateEmail = function validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
     };
 
-    email.keyup(function() {
-        let emailVal = $(this).val();
+    email.keyup(function () {
+        var emailVal = $(this).val();
         if (emailVal && emailVal.trim()) {
             if (validateEmail(emailVal)) {
-                let emailAjax = $.ajax({
+                var emailAjax = $.ajax({
                     method: 'post',
                     url: '/user/email',
-                    data: {email: emailVal},
+                    data: { email: emailVal }
                 });
 
-                emailAjax.done((response) => {
+                emailAjax.done(function (response) {
                     if (response == 'free') {
                         email.addClass('input-valid').removeClass('input-error');
                         emailStatus.html('Email свободен.').addClass('status-free').removeClass('status-taken');
@@ -111,7 +112,7 @@ $(document).ready(() => {
                     }
                 });
 
-                emailAjax.fail((xhr) => {
+                emailAjax.fail(function (xhr) {
                     console.error(xhr.statusText);
                 });
             } else {
@@ -143,44 +144,44 @@ $(document).ready(() => {
             }
         }
     };
-    password1.keyup(function() {
-        let thisval = $(this).val();
+    password1.keyup(function () {
+        var thisval = $(this).val();
         comparePasswords(thisval, password2.val());
     });
-    password2.keyup(function() {
-        let thisval = $(this).val();
+    password2.keyup(function () {
+        var thisval = $(this).val();
         comparePasswords(password1.val(), thisval);
     });
 
-    let checkForEmptyFields = () => {
-        let emptyFields = false;
+    var checkForEmptyFields = function checkForEmptyFields() {
+        var emptyFields = false;
 
-        let usernameText = username.val();
+        var usernameText = username.val();
         if (!usernameText || !usernameText.trim()) {
             username.notify('Имя пользователя не может быть пустым.', {
                 position: 'left',
                 className: 'error',
-                autoHide: false,
+                autoHide: false
             });
             emptyFields = true;
         }
 
-        let emailText = email.val();
+        var emailText = email.val();
         if (!emailText || !emailText.trim()) {
             email.notify('Email не может быть пустым.', {
                 position: 'left',
                 className: 'error',
-                autoHide: false,
+                autoHide: false
             });
             emptyFields = true;
         }
 
-        let passwordText = password1.val();
+        var passwordText = password1.val();
         if (!passwordText || !passwordText.trim()) {
             password1.notify('Ваш пароль не может быть пустым.', {
                 position: 'left',
                 className: 'error',
-                autoHide: false,
+                autoHide: false
             });
             emptyFields = true;
         }
@@ -188,14 +189,14 @@ $(document).ready(() => {
         return emptyFields;
     };
 
-    let validatePasswords = () => {
-        let equals = true;
+    var validatePasswords = function validatePasswords() {
+        var equals = true;
 
         if (password1.val() != password2.val()) {
             password2.notify('Пароли не совпадают.', {
                 position: 'left',
                 className: 'error',
-                autoHide: false,
+                autoHide: false
             });
             equals = false;
         }
@@ -203,10 +204,10 @@ $(document).ready(() => {
         return equals;
     };
 
-    let validateFields = () => {
+    var validateFields = function validateFields() {
         $('.notifyjs-wrapper').trigger('notify-hide');
 
-        let errors = false;
+        var errors = false;
 
         if (checkForEmptyFields()) {
             $.notify('У вас остались пустые поля!', 'error');
@@ -222,7 +223,7 @@ $(document).ready(() => {
             username.notify('Имя пользователя занято.', {
                 position: 'left',
                 className: 'error',
-                autoHide: false,
+                autoHide: false
             });
             errors = true;
         }
@@ -231,7 +232,7 @@ $(document).ready(() => {
             email.notify('Email занят.', {
                 position: 'left',
                 className: 'error',
-                autoHide: false,
+                autoHide: false
             });
             errors = true;
         }
@@ -240,19 +241,19 @@ $(document).ready(() => {
     };
 
     /* make button register user on press */
-    let registerButton = $('#register');
-    registerButton.click(() => {
+    var registerButton = $('#register');
+    registerButton.click(function () {
         if (!validateFields()) return false;
 
-        let fd = new FormData();
+        var fd = new FormData();
         fd.append('avatar', avatar.get(0).files[0]);
         fd.append('username', username.val());
         fd.append('email', email.val());
         fd.append('password', password1.val());
 
-        let xhr = new XMLHttpRequest();
+        var xhr = new XMLHttpRequest();
         xhr.open('post', '/user/register', true);
-        xhr.onload = function() {
+        xhr.onload = function () {
             if (this.status == 200) {
                 $.notify('Регистрация прошла успешно.', 'success');
                 window.location.href = '/user/me';

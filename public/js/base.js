@@ -1,33 +1,35 @@
+'use strict';
+
 $.fn.extend({
-    animateCss: function(animationName, callback) {
-        let animationEnd = (function(el) {
-            let animations = {
+    animateCss: function animateCss(animationName, callback) {
+        var animationEnd = function (el) {
+            var animations = {
                 animation: 'animationend',
                 OAnimation: 'oAnimationEnd',
                 MozAnimation: 'mozAnimationEnd',
-                WebkitAnimation: 'webkitAnimationEnd',
+                WebkitAnimation: 'webkitAnimationEnd'
             };
 
-            for (let t in animations) {
+            for (var t in animations) {
                 if (el.style[t] !== undefined) {
                     return animations[t];
                 }
             }
-        })(document.createElement('div'));
+        }(document.createElement('div'));
 
-        this.addClass('animated ' + animationName).one(animationEnd, function() {
+        this.addClass('animated ' + animationName).one(animationEnd, function () {
             $(this).removeClass('animated ' + animationName);
 
             if (typeof callback === 'function') callback();
         });
 
         return this;
-    },
+    }
 });
 
-$(document).ready(() => {
+$(document).ready(function () {
     $.notify.defaults({
         globalPosition: 'bottom left',
-        className: 'info',
+        className: 'info'
     });
 });

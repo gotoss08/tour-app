@@ -164,7 +164,7 @@ module.exports.collectPosts = (req, res, next) => {
 
     Post.find({userId: req.params.userId, posted: posted}).sort({createdAt: '-1'}).skip((page-1) * itemsPerPage).limit(itemsPerPage).exec()
         .then((posts) => {
-            if (!posts || !posts.length) throw new Error('Не удалось найти заметки.');
+            if (!posts) throw new Error('Не удалось найти заметки.');
             let data = {};
             data.posts = posts;
             return data;

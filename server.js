@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
@@ -76,7 +77,7 @@ app.use(requestIp.mw());
 app.use(methodOverride('_method'));
 
 // serve static files from template
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // set ejs as default template engine
 app.locals.__ = __y18n;

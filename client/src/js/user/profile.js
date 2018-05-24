@@ -1,6 +1,7 @@
 let page = 1;
 let loadQueryData = {};
 let loadingPosts = false;
+let postsLoadType = 'publications';
 
 function viewPost(post) {
     window.location.href = '/p/' + post.id;
@@ -33,6 +34,7 @@ function removePost(post) {
 };
 
 function createCardsForPosts(posts) {
+    console.log('creating cards for posts');
     for (let i = 0; i < posts.length; i++) {
         let post = posts[i];
 
@@ -40,11 +42,24 @@ function createCardsForPosts(posts) {
         let card = $(cardHTML);
         post.card = card;
 
-        card.find('.meta-card-header-titles').click(() => viewPost(post)).css('cursor', 'pointer');
-        if (profileData.currentUser) {
-            tippy(card.find('.post-edit-button').click(() => editPost(post)).css('cursor', 'pointer').get(0));
-            tippy(card.find('.post-remove-button').click(() => removePost(post)).css('cursor', 'pointer').get(0));
-        } else card.find('.meta-card-header-buttons').remove();
+        if (postsLoadType === 'publications') {
+            card.find('.meta-card-header-titles').click(() => viewPost(post)).css('cursor', 'pointer');
+            if (profileData.currentUser) {
+                tippy(card.find('.post-edit-button').click(() => editPost(post)).css('cursor', 'pointer').get(0));
+                tippy(card.find('.post-remove-button').click(() => removePost(post)).css('cursor', 'pointer').get(0));
+            } else card.find('.meta-card-header-buttons').remove();
+        } else if (postsLoadType === 'drafts') {
+            card.find('.post-edit-button').remove();
+            if (profileData.currentUser) {
+                card.find('.meta-card-header-titles').attr('title', 'Редактировать заметку').click(() => editPost(post)).css('cursor', 'pointer');
+                tippy(card.find('.post-remove-button').click(() => removePost(post)).css('cursor', 'pointer').get(0));
+            } else card.find('.meta-card-header-buttons').remove();
+        }
+
+        if (!profileData.currentUser) {
+            card.find('.post-edit-button').remove();
+            card.find('.post-remove-button').remove();
+        }
 
         tippy(card.find('.meta-card-header-titles').get(0));
 
@@ -88,6 +103,8 @@ function createCardsForPosts(posts) {
 };
 
 function loadNewPosts() {
+    console.log('loading new posts');
+
     loadingPosts = true;
 
     animatePostsLoading();
@@ -132,6 +149,7 @@ $(document).ready(() => {
             loadQueryData = {
                 posted: true,
             };
+            postsLoadType = 'publications';
             loadNewPosts();
         });
 
@@ -144,6 +162,7 @@ $(document).ready(() => {
             loadQueryData = {
                 posted: false,
             };
+            postsLoadType = 'drafts';
             loadNewPosts();
         });
     } else {

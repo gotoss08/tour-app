@@ -26,6 +26,8 @@ module.exports.edit = (req, res, next) => {
     util.checkUserLoginWithRedirect(req, res, next);
     checkPostIdParams(req, res, next);
 
+    console.log('edit post');
+
     Post.findById(req.params.postId).exec()
         .then((post) => {
             if (post && post.userId == req.session.userId) {
@@ -66,10 +68,12 @@ module.exports.edit = (req, res, next) => {
 module.exports.read = (req, res, next) => {
     checkPostIdParams(req, res, next);
 
+    console.log('>>>>>>>>>>> read post');
+
     let clientIp = req.clientIp;
 
     Post.findById(req.params.postId).exec()
-        .then((post) => {
+        .then((post, reject) => {
             if (post && post.posted) {
                 /* update post visit counters */
                 if (post.uniqIpsVisited.indexOf(clientIp) == -1) post.uniqIpsVisited.push(clientIp);
@@ -93,7 +97,7 @@ module.exports.read = (req, res, next) => {
             }
         })
         .then((data) => {
-            if (!data.post.voteId) {
+            if (data && data.post && !data.post.voteId) {
                 data.post.voteId = '';
                 return data;
             }

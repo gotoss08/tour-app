@@ -175,7 +175,6 @@ module.exports.collectPosts = (req, res, next) => {
                 data.preparedPosts.push({
                     id: post._id.toString(),
                     title: post.title,
-                    subtitle: post.subtitle,
                     body: post.body,
                     uniqIpsVisited: post.uniqIpsVisited.length,
                     totalVisitCount: post.totalVisitCount,

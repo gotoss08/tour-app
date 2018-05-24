@@ -20,9 +20,6 @@ function createCardsForPosts(posts) {
         if (post.title) card.find('.meta-title').html(post.title);
         else card.find('.meta-title').html('<span class="profile-meta-card-empty-field">Заметка без названия</span>');
 
-        if (post.subtitle) card.find('.meta-subtitle').html(post.subtitle);
-        else card.find('.meta-subtitle').html('<span class="profile-meta-card-empty-field">Заметка без подзаголовка</span>');
-
         if (post.body) card.find('.meta-body').html(he.decode(post.body)).truncate({length: 200});
         else card.find('.meta-body').html('<span class="profile-meta-card-empty-field">Заметка без описания</span>');
 
@@ -126,22 +123,9 @@ $(document).ready(() => {
         $('.country-select').val([countriesData.country]);
         $('.country-select').trigger('chosen:updated');
         searchPostsByCountry({countries: [countriesData.country]});
-        $('.country-select-text').hide();
-        $('.country-select-container').animate({
-            top: 0,
-        }, 550, 'easeInOutBack');
-        $('.chosen-container').show();
     } else {
-        $('.chosen-container').hide();
-        $('.country-select-text').click(() => {
-            $('.country-select-container').animate({
-                top: 0,
-            }, 550, 'easeInOutBack');
-            $('.country-select-text').hide();
-            $('.chosen-container').show();
-            $('.country-select').trigger('chosen:open');
-            $('.chosen-search-input').val('');
-        });
+        $('.country-select').trigger('chosen:open');
+        $('.chosen-search-input').val('');
     }
 
     $(window).scroll(function() {

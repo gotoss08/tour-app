@@ -467,10 +467,8 @@ var generateMapHelperCard = function generateMapHelperCard() {
 };
 
 var generateMetaCard = function generateMetaCard() {
-    var metaCardHTML = '\n        <div class="waypoint-card meta-card rounded">\n            <div class="waypoint-card-header d-flex flex-column">\n                <input class="waypoint-card-header-input meta-title" type="text" placeholder="\u0417\u0430\u0433\u043E\u043B\u043E\u0432\u043E\u043A...">\n                <textarea class="waypoint-card-header-input meta-subtitle" placeholder="\u041F\u043E\u0434\u0437\u0430\u0433\u043E\u043B\u043E\u0432\u043E\u043A..."></textarea>\n            </div>\n            <hr class="card-divider">\n            <div class="waypoint-card-body">\n                <textarea class="form-control waypoint-card-body-editor meta-body"></textarea>\n                <div class="d-flex align-items-center justify-content-end">\n                    <span class="waypoint-card-body-editor-help" title="<ul style=\'text-align: left; padding: 0; margin: 0; margin-left: 16px;\'><li>\u041F\u0440\u0438 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u0442\u0435\u043A\u0441\u0442\u0430, \u043F\u043E\u044F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u043C\u0435\u043D\u044E \u0440\u0435\u0434\u0430\u043A\u0442\u043E\u0440\u0430, \u0432 \u043A\u043E\u0442\u043E\u0440\u043E\u043C \u043C\u043E\u0436\u043D\u043E \u043F\u0440\u0438\u043C\u0435\u043D\u0438\u0442\u044C \u0440\u0430\u0437\u043D\u044B\u0435 \u0441\u0442\u0438\u043B\u0438 \u043A \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u043D\u043E\u043C\u0443 \u0444\u0440\u0430\u0433\u043C\u0435\u043D\u0442\u0443 \u0442\u0435\u043A\u0441\u0442\u0430.</li><li>\u0427\u0442\u043E\u0431\u044B \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044C \u0444\u043E\u0442\u043E\u0433\u0440\u0430\u0444\u0438\u044E, \u043F\u0440\u043E\u0441\u0442\u043E \u043F\u0435\u0440\u0435\u0442\u0430\u0449\u0438\u0442\u0435 \u0435\u0451 \u043D\u0430 \u0442\u0435\u043A\u0441\u0442 \u0432 \u0442\u043E\u043C \u043C\u0435\u0441\u0442\u0435, \u0433\u0434\u0435 \u0432\u044B \u0445\u043E\u0442\u0438\u0442\u0435 \u0447\u0442\u043E \u0431\u044B \u043E\u043D\u0430 \u043E\u043A\u0430\u0437\u0430\u043B\u0430\u0441\u044C.</li></ul>">\u041F\u043E\u043C\u043E\u0449\u044C \u043F\u043E \u0440\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044E <i class="fas fa-question-circle"></i></span>\n                </div>\n                <small id="post-body-main-error" class="form-text text-danger"></small>\n            </div>\n        </div>\n    ';
+    var metaCardHTML = '\n        <div class="waypoint-card meta-card rounded">\n            <div class="waypoint-card-header d-flex flex-column">\n                <input class="waypoint-card-header-input meta-title" type="text" placeholder="\u0417\u0430\u0433\u043E\u043B\u043E\u0432\u043E\u043A...">\n            </div>\n            <hr class="card-divider">\n            <div class="waypoint-card-body">\n                <textarea class="form-control waypoint-card-body-editor meta-body"></textarea>\n                <div class="d-flex align-items-center justify-content-end">\n                    <span class="waypoint-card-body-editor-help" title="<ul style=\'text-align: left; padding: 0; margin: 0; margin-left: 16px;\'><li>\u041F\u0440\u0438 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u0442\u0435\u043A\u0441\u0442\u0430, \u043F\u043E\u044F\u0432\u043B\u044F\u0435\u0442\u0441\u044F \u043C\u0435\u043D\u044E \u0440\u0435\u0434\u0430\u043A\u0442\u043E\u0440\u0430, \u0432 \u043A\u043E\u0442\u043E\u0440\u043E\u043C \u043C\u043E\u0436\u043D\u043E \u043F\u0440\u0438\u043C\u0435\u043D\u0438\u0442\u044C \u0440\u0430\u0437\u043D\u044B\u0435 \u0441\u0442\u0438\u043B\u0438 \u043A \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u043D\u043E\u043C\u0443 \u0444\u0440\u0430\u0433\u043C\u0435\u043D\u0442\u0443 \u0442\u0435\u043A\u0441\u0442\u0430.</li><li>\u0427\u0442\u043E\u0431\u044B \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044C \u0444\u043E\u0442\u043E\u0433\u0440\u0430\u0444\u0438\u044E, \u043F\u0440\u043E\u0441\u0442\u043E \u043F\u0435\u0440\u0435\u0442\u0430\u0449\u0438\u0442\u0435 \u0435\u0451 \u043D\u0430 \u0442\u0435\u043A\u0441\u0442 \u0432 \u0442\u043E\u043C \u043C\u0435\u0441\u0442\u0435, \u0433\u0434\u0435 \u0432\u044B \u0445\u043E\u0442\u0438\u0442\u0435 \u0447\u0442\u043E \u0431\u044B \u043E\u043D\u0430 \u043E\u043A\u0430\u0437\u0430\u043B\u0430\u0441\u044C.</li></ul>">\u041F\u043E\u043C\u043E\u0449\u044C \u043F\u043E \u0440\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u0438\u044E <i class="fas fa-question-circle"></i></span>\n                </div>\n                <small id="post-body-main-error" class="form-text text-danger"></small>\n            </div>\n        </div>\n    ';
     $('.waypoint-cards').append(metaCardHTML);
-
-    autosize($('.meta-subtitle'));
 
     var editor = new MediumEditor('.meta-card .waypoint-card-body-editor', {
         autoLink: true,
@@ -497,9 +495,6 @@ var prepareData = function prepareData() {
         // set page title to post title
         document.title = data.title;
     }
-
-    var metaSubtitle = $('.meta-subtitle').val();
-    if (metaSubtitle && metaSubtitle.trim()) data.subtitle = metaSubtitle.trim();
 
     var metaBody = MediumEditor.getEditorFromElement($('.meta-body').get(0)).getContent();
     if (metaBody) data.body = metaBody;
@@ -567,7 +562,6 @@ var loadData = function loadData(data) {
     if (data.post.title) document.title = data.post.title;else document.title = 'Своим ходом - черновик';
 
     $('.meta-title').val(data.post.title);
-    $('.meta-subtitle').val(data.post.subtitle);
     MediumEditor.getEditorFromElement($('.meta-body').get(0)).setContent(he.decode(data.post.body));
 
     data.post.markers.sort(function (a, b) {
@@ -648,9 +642,6 @@ var validateData = function validateData() {
 
     var metaTitle = $('.meta-card .meta-title');
     if (!metaTitle.val() && !metaTitle.val().trim()) showEmptyError(metaTitle);
-
-    var metaSubtitle = $('.meta-card .meta-subtitle');
-    if (!metaSubtitle.val() && !metaSubtitle.val().trim()) showEmptyError(metaSubtitle);
 
     var metaBody = $('.meta-card .waypoint-card-body-editor');
     var metaBodyContent = striptags(MediumEditor.getEditorFromElement(metaBody.get(0)).getContent());

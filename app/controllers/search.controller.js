@@ -13,7 +13,6 @@ module.exports.indexPost = (req, res, next) => {
 
     Post.find({posted: true, $or: [
         {title: {$regex: req.body.query, $options: 'i'}},
-        {subtitle: {$regex: req.body.query, $options: 'i'}},
         {body: {$regex: req.body.query, $options: 'i'}},
         {'markers.header': {$regex: req.body.query, $options: 'i'}},
         {'markers.body': {$regex: req.body.query, $options: 'i'}},
@@ -24,7 +23,6 @@ module.exports.indexPost = (req, res, next) => {
                 data.preparedPosts.push({
                     id: post._id.toString(),
                     title: post.title,
-                    subtitle: post.subtitle,
                     body: post.body,
                     uniqIpsVisited: post.uniqIpsVisited.length,
                     totalVisitCount: post.totalVisitCount,

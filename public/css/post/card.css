@@ -184,19 +184,6 @@
     font-size: 1.25em;
 }
 
-.meta-subtitle {
-    padding: 0;
-    margin: 0;
-    font-size: 1.1em;
-    font-weight: normal;
-    color: rgba(0,0,0,.84);
-    height: 15px;
-}
-
-.meta-subtitle:active, .meta-subtitle:focus, .meta-subtitle:placeholder {
-    color: rgba(0,0,0,.64);
-}
-
 .meta-card-footer
 {
     margin: 0;

@@ -225,7 +225,6 @@ module.exports.searchPostsByCountry = (req, res, next) => {
                 data.preparedPosts.push({
                     id: post._id.toString(),
                     title: post.title,
-                    subtitle: post.subtitle,
                     body: post.body,
                     uniqIpsVisited: post.uniqIpsVisited.length,
                     totalVisitCount: post.totalVisitCount,
@@ -309,9 +308,6 @@ module.exports.update = (req, res, next) => {
 
             post.title = '';
             if (postData.title) post.title = sanitizeHtml(postData.title);
-
-            post.subtitle = '';
-            if (postData.subtitle) post.subtitle = sanitizeHtml(postData.subtitle);
 
             post.body = '';
             if (postData.body) post.body = sanitizeHtmlWithOptions(postData.body);

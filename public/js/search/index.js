@@ -33,8 +33,6 @@ function createCardsForPosts(posts) {
 
         if (post.title) card.find('.meta-title').html(post.title);else card.find('.meta-title').html('<span class="profile-meta-card-empty-field">Заметка без названия</span>');
 
-        if (post.subtitle) card.find('.meta-subtitle').html(post.subtitle);else card.find('.meta-subtitle').html('<span class="profile-meta-card-empty-field">Заметка без подзаголовка</span>');
-
         if (post.body) card.find('.meta-body').html(he.decode(post.body)).truncate({ length: 200 });else card.find('.meta-body').html('<span class="profile-meta-card-empty-field">Заметка без описания</span>');
 
         card.find('.meta-like-counter').html(post.likes);

@@ -130,7 +130,6 @@ var generateMetaCard = () => {
         <div class="waypoint-card meta-card rounded w-100">
             <div class="waypoint-card-header card-bg-hover d-flex flex-column">
                 <div class="waypoint-card-header-input meta-title">Meta title</div>
-                <div class="waypoint-card-header-input meta-subtitle">Meta subtitle</div>
             </div>
             <hr class="card-divider">
             <div class="waypoint-card-body">
@@ -162,8 +161,6 @@ var generateMetaCard = () => {
     let metaCardDOMElement = $($.parseHTML(metaCardHTML));
     $('.waypoint-cards').append(metaCardDOMElement);
 
-    autosize($('.meta-subtitle'));
-
     tippy('[title]');
 };
 
@@ -173,7 +170,6 @@ var loadData = (data) => {
     document.title = data.post.title;
 
     $('.meta-title').html(data.post.title);
-    $('.meta-subtitle').html(data.post.subtitle);
     $('.meta-body').html(he.decode(data.post.body));
 
     /* counters */

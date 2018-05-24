@@ -5,9 +5,14 @@ const schema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    title: String,
-    subtitle: String,
-    body: String,
+    title: {
+        type: String,
+        default: '',
+    },
+    body: {
+        type: String,
+        default: '',
+    },
     markers: [{
         positionIndex: Number,
         position: String,
@@ -15,8 +20,14 @@ const schema = new mongoose.Schema({
         header: String,
         body: String,
     }],
-    userId: String,
-    voteId: String,
+    userId: {
+        type: String,
+        default: '',
+    },
+    voteId: {
+        type: String,
+        default: '',
+    },
     uniqIpsVisited: {
         type: [String],
         default: [],
@@ -40,7 +51,6 @@ const schema = new mongoose.Schema({
 
 schema.index({
     'title': 'text',
-    'subtitle': 'text',
     'body': 'text',
     'markers.header': 'text',
     'markers.body': 'text',

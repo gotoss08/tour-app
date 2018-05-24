@@ -22,7 +22,7 @@ $(document).ready(() => {
         let request = $.ajax({
             url: `/p/${receivedPostData.post.postId}/update`,
             method: 'post',
-            data: data
+            data: data,
         });
 
         buttonSending();
@@ -425,7 +425,6 @@ const generateMetaCard = () => {
         <div class="waypoint-card meta-card rounded">
             <div class="waypoint-card-header d-flex flex-column">
                 <input class="waypoint-card-header-input meta-title" type="text" placeholder="Заголовок...">
-                <textarea class="waypoint-card-header-input meta-subtitle" placeholder="Подзаголовок..."></textarea>
             </div>
             <hr class="card-divider">
             <div class="waypoint-card-body">
@@ -438,8 +437,6 @@ const generateMetaCard = () => {
         </div>
     `;
     $('.waypoint-cards').append(metaCardHTML);
-
-    autosize($('.meta-subtitle'));
 
     const editor = new MediumEditor(`.meta-card .waypoint-card-body-editor`, {
         autoLink: true,
@@ -466,9 +463,6 @@ const prepareData = () => {
         // set page title to post title
         document.title = data.title;
     }
-
-    let metaSubtitle = $('.meta-subtitle').val();
-    if (metaSubtitle && metaSubtitle.trim()) data.subtitle = metaSubtitle.trim();
 
     let metaBody = MediumEditor.getEditorFromElement($('.meta-body').get(0)).getContent();
     if (metaBody) data.body = metaBody;
@@ -539,7 +533,6 @@ const loadData = (data) => {
     else document.title = 'Своим ходом - черновик'
 
     $('.meta-title').val(data.post.title);
-    $('.meta-subtitle').val(data.post.subtitle);
     MediumEditor
         .getEditorFromElement($('.meta-body').get(0))
         .setContent(he.decode(data.post.body));
@@ -624,9 +617,6 @@ const validateData = () => {
 
     let metaTitle = $('.meta-card .meta-title');
     if (!metaTitle.val() && !metaTitle.val().trim()) showEmptyError(metaTitle);
-
-    let metaSubtitle = $('.meta-card .meta-subtitle');
-    if (!metaSubtitle.val() && !metaSubtitle.val().trim()) showEmptyError(metaSubtitle);
 
     let metaBody = $('.meta-card .waypoint-card-body-editor');
     let metaBodyContent = striptags(MediumEditor.getEditorFromElement(metaBody.get(0)).getContent());

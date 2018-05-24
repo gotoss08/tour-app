@@ -185,10 +185,13 @@ $(document).ready(() => {
         fd.append('username', username.val());
         fd.append('password', password1.val());
 
+        animateRegisterLoading();
+
         let xhr = new XMLHttpRequest();
         xhr.open('post', '/user/register', true);
         xhr.onload = function() {
             if (this.status == 200) {
+                animateRegisterLoaded();
                 $.notify('Регистрация прошла успешно.', 'success');
                 window.location.href = '/user/me';
             } else {

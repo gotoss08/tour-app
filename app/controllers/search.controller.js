@@ -12,12 +12,12 @@ module.exports.indexPost = (req, res, next) => {
     let itemsPerPage = 10;
 
     Post.find({posted: true, $or: [
-            {title: {$regex: req.body.query, $options: 'i'}},
-            {subtitle: {$regex: req.body.query, $options: 'i'}},
-            {body: {$regex: req.body.query, $options: 'i'}},
-            {'markers.header': {$regex: req.body.query, $options: 'i'}},
-            {'markers.body': {$regex: req.body.query, $options: 'i'}},
-        ]}).sort({createdAt: '-1'}).skip((page-1) * itemsPerPage).limit(itemsPerPage).exec()
+        {title: {$regex: req.body.query, $options: 'i'}},
+        {subtitle: {$regex: req.body.query, $options: 'i'}},
+        {body: {$regex: req.body.query, $options: 'i'}},
+        {'markers.header': {$regex: req.body.query, $options: 'i'}},
+        {'markers.body': {$regex: req.body.query, $options: 'i'}},
+    ]}).sort({createdAt: '-1'}).skip((page-1) * itemsPerPage).limit(itemsPerPage).exec()
         .then((posts) => {
             data = {posts: posts, preparedPosts: []};
             data.posts.forEach((post) => {

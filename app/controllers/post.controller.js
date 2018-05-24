@@ -135,15 +135,73 @@ module.exports.read = (req, res, next) => {
 };
 
 module.exports.countrySearch = (req, res, next) => {
-    Country.find().exec()
-        .then((countries) => {
+    Post.find({posted: true}).exec()
+        .then((posts) => {
+            data = {preparedPosts: []};
+            posts.forEach((post) => {
+                if (post.countries && post.countries.length) {
+                    data.preparedPosts.push({
+                        countries: Array.from(post.countries),
+                    });
+                }
+            });
+            return data;
+        })
+        .then((data) => {
+            return Country.find().exec().then((countries) => {
+                data.countries = [];
+                countries.forEach((country) => {
+                    data.countries.push({
+                        id: country._id,
+                        name: country.name,
+                    });
+                });
+                return data;
+            });
+        })
+        .then((data) => {
+            data.preparedPosts.forEach((post) => {
+                let postCountryIds = [];
+                post.countries.forEach((country) => {
+                    postCountryIds.push(new mongoose.Types.ObjectId(country));
+                });
+                post.preparedCountries = [];
+                postCountryIds.forEach((postCountryId) => {
+                    data.countries.forEach((country) => {
+                        let countryId = country.id;
+
+                        if (postCountryId.equals(countryId)) {
+                            post.preparedCountries.push({
+                                id: country.id,
+                                name: country.name,
+                            });
+                        }
+                    });
+                });
+            });
+            return data;
+        })
+        .then((data) => {
+            let countries = [];
+            data.preparedPosts.forEach((post) => {
+                if (post.preparedCountries && post.preparedCountries.length) {
+                    post.preparedCountries.forEach((preparedCountry) => {
+                        let alreadyContainsCountry = false;
+                        countries.forEach((country) => {
+                            if (country.id == preparedCountry.id) alreadyContainsCountry = true;
+                        });
+                        if (!alreadyContainsCountry) countries.push(preparedCountry);
+                    });
+                }
+            });
+
             data = {};
             data.countries = countries;
             data.country = '';
             if (req.params.countryId) data.country = req.params.countryId;
-            return data;
-        })
-        .then((data) => {
+
+            console.log(`final data: ${JSON.stringify(data, null, 2)}`);
+
             return res.render('post/country', data);
         })
         .catch((err) => {
@@ -160,7 +218,7 @@ module.exports.searchPostsByCountry = (req, res, next) => {
     if (req.body.page) page = req.body.page;
     let itemsPerPage = 10;
 
-    Post.find({countries: {$all: req.body.countries}}).sort({createdAt: '-1'}).skip((page-1) * itemsPerPage).limit(itemsPerPage).exec()
+    Post.find({posted: true, countries: {$all: req.body.countries}}).sort({createdAt: '-1'}).skip((page-1) * itemsPerPage).limit(itemsPerPage).exec()
         .then((posts) => {
             data = {posts: posts, preparedPosts: []};
             data.posts.forEach((post) => {
@@ -244,7 +302,6 @@ module.exports.update = (req, res, next) => {
 
     Post.findById(req.params.postId).exec()
         .then((post) => {
-            post.posted = false;
             if (postData.posted) {
                 post.posted = postData.posted;
                 post.createdAt = new Date();

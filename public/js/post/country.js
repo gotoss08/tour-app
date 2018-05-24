@@ -52,7 +52,7 @@ function createCardsForPosts(posts) {
 
             if (data.userAvatarPath) {
                 authorAvatar.empty();
-                authorAvatar.css('background-image', 'url(' + data.userAvatarPath + ')');
+                authorAvatar.css('background-image', `url(data.userAvatarPath)`);
             }
         });
 
@@ -97,7 +97,7 @@ function searchPostsByCountry(data) {
         page = 1;
     }
 
-    if (!data) data = { countries: countrySelectVal };
+    if (!data) data = {countries: countrySelectVal};
     data.page = page;
 
     let searchByCountryAjax = $.ajax({

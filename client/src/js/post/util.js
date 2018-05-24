@@ -3,6 +3,7 @@ var createMap = () => {
         center: {lat: 49.82081217632622, lng: 73.08635614723323},
         zoom: 3,
         gestureHandling: 'greedy',
+        keyboardShortcuts: false,
     });
 };
 

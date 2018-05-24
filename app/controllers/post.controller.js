@@ -200,8 +200,6 @@ module.exports.countrySearch = (req, res, next) => {
             data.country = '';
             if (req.params.countryId) data.country = req.params.countryId;
 
-            console.log(`final data: ${JSON.stringify(data, null, 2)}`);
-
             return res.render('post/country', data);
         })
         .catch((err) => {

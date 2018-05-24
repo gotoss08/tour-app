@@ -26,7 +26,7 @@ var createDirectionsDisplay = function createDirectionsDisplay(map) {
     var directionsDisplay = new google.maps.DirectionsRenderer({
         draggable: false,
         suppressMarkers: true,
-        preserveViewport: false
+        preserveViewport: true
     });
     directionsDisplay.setMap(map);
     return directionsDisplay;
@@ -78,18 +78,14 @@ var createMarker = function () {
                         initMarker(marker, options);
                         addEventListeners(marker);
                         createWaypointCard(marker);
-                        recreateMapFocusWaypoints();
-                        _context.next = 7;
+                        _context.next = 6;
                         return geocodeAddress(marker);
 
-                    case 7:
-                        _context.next = 9;
+                    case 6:
+                        _context.next = 8;
                         return calcRoute(marker.waypoint);
 
-                    case 9:
-                        map.setZoom(3);
-
-                    case 10:
+                    case 8:
                     case 'end':
                         return _context.stop();
                 }
@@ -126,8 +122,7 @@ var calcRoute = function () {
                             origin: start,
                             destination: finish,
                             waypoints: waypoints,
-                            travelMode: 'DRIVING',
-                            preserveViewport: true
+                            travelMode: 'DRIVING'
                         };
                         _context2.next = 8;
                         return new Promise(function (resolve) {
@@ -163,25 +158,4 @@ var convertHeadersToTagLinks = function convertHeadersToTagLinks() {
         var headerText = header.html();
         header.html($('<a></a>').attr('href', 'www.google.ru').text(headerText));
     }
-};
-
-var recreateMapFocusWaypoints = function recreateMapFocusWaypoints() {
-    markers.forEach(function (marker, index) {
-        var cardDOMElement = $('#' + marker.cardId);
-
-        var addWaypoint = function addWaypoint(offset) {
-            cardDOMElement.waypoint({
-                handler: function handler(direction) {
-                    focusMap(marker);
-                },
-                offset: offset
-            });
-        };
-
-        var toTop = cardDOMElement.offset().top;
-        var viewportHeight = $(window).outerHeight();
-        var containerHeight = $('.waypoint-cards').innerHeight();
-
-        if (toTop + viewportHeight >= containerHeight) addWaypoint('85%');else addWaypoint(135);
-    });
 };

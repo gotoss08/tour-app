@@ -283,22 +283,21 @@ var removeMarker = function () {
                         marker.setMap(null);
                         removeWaypointCard(marker);
                         marker = null;
-                        recreateMapFocusWaypoints();
 
                         if (!(waypoints.length < 2)) {
-                            _context3.next = 10;
+                            _context3.next = 9;
                             break;
                         }
 
                         directionsDisplay.setMap(null);
-                        _context3.next = 12;
+                        _context3.next = 11;
                         break;
 
-                    case 10:
-                        _context3.next = 12;
+                    case 9:
+                        _context3.next = 11;
                         return calcRoute();
 
-                    case 12:
+                    case 11:
                     case 'end':
                         return _context3.stop();
                 }
@@ -388,13 +387,6 @@ var createWaypointCard = function () {
                                 if (headerElement.val()) {
                                     updateCardName(marker, headerElement.val().trim());
                                 }
-                            });
-
-                            // body editor input changed -> recreate map focus waypoints
-                            var bodyEditorElement = $('#' + marker.cardId + ' .waypoint-card-body-editor');
-                            console.dir(bodyEditorElement);
-                            bodyEditorElement.change(function () {
-                                return recreateMapFocusWaypoints();
                             });
 
                             // button for focusing on marker
@@ -604,8 +596,6 @@ var loadData = function loadData(data) {
             MediumEditor.getEditorFromElement($('#' + cardId + ' .waypoint-card-body-editor').get(0)).setContent(he.decode(body));
         }
     });
-
-    recreateMapFocusWaypoints();
 
     if (data.voteAttached) {
         // create main vote card

@@ -55,11 +55,6 @@ $(document).ready(() => {
         });
     };
 
-    let forgotPassword = () => {
-        $.notify('Эта функция пока не доступна.', 'warn');
-        // TODO: implement password remove
-    };
-
     let register = () => {
         window.location.href = '/user/register';
     };
@@ -70,9 +65,6 @@ $(document).ready(() => {
 
     let loginButton = $('#login');
     loginButton.click(login);
-
-    let forgotPassButton = $('#forgot-password');
-    forgotPassButton.click(forgotPassword);
 
     let registerButton = $('#register');
     registerButton.click(register);

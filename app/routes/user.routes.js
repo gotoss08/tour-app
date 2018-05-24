@@ -5,7 +5,6 @@ router.get('/register', userController.userRegisterGet);
 router.get('/login', userController.userLoginGet);
 
 router.post('/username', userController.isUsernameAlreayTaken);
-router.post('/email', userController.isEmailAlreayTaken);
 
 router.post('/register', userController.userRegisterPost);
 router.post('/login', userController.userLoginPost);

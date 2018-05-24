@@ -34,11 +34,6 @@ $(document).ready(() => {
     username.focus(() => showInfoCard(username, usernameTextHTML));
     username.focusout(hideInfoCard);
 
-    let email = $('#real-email');
-    let emailStatus = $('#email-status');
-    email.focus(() => showInfoCard(email, 'Введите ваш реальный email адрес. В случае, если вы забудете пароль от вашего аккаунта, вы сможете восстановить его.'));
-    email.focusout(hideInfoCard);
-
     let password1 = $('#real-password1');
     password1.focus(() => showInfoCard(password1, 'Придумайте себе пароль. Пароль может быть любой сложности и длины, но чем длиннее, и чем больше разнообразных символов в нем будет, тем лучше.'));
     password1.focusout(hideInfoCard);
@@ -51,7 +46,6 @@ $(document).ready(() => {
 
     /* validation */
     let usernameFree = true;
-    let emailFree = true;
 
     username.keyup(function() {
         let usernameVal = $(this).val();
@@ -79,45 +73,6 @@ $(document).ready(() => {
             usernameAjax.fail((xhr) => {
                 console.error(xhr.statusText);
             });
-        }
-    });
-
-    let validateEmail = (email) => {
-        let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(email).toLowerCase());
-    };
-
-    email.keyup(function() {
-        let emailVal = $(this).val();
-        if (emailVal && emailVal.trim()) {
-            if (validateEmail(emailVal)) {
-                let emailAjax = $.ajax({
-                    method: 'post',
-                    url: '/user/email',
-                    data: {email: emailVal},
-                });
-
-                emailAjax.done((response) => {
-                    if (response == 'free') {
-                        email.addClass('input-valid').removeClass('input-error');
-                        emailStatus.html('Email свободен.').addClass('status-free').removeClass('status-taken');
-                        emailFree = true;
-                    } else if (response == 'taken') {
-                        email.addClass('input-error').removeClass('input-valid');
-                        emailStatus.html('Такой email уже используется.').addClass('status-taken').removeClass('status-free');
-                        emailFree = false;
-                    } else {
-                        console.error('Произошла ошибка на сервере.');
-                    }
-                });
-
-                emailAjax.fail((xhr) => {
-                    console.error(xhr.statusText);
-                });
-            } else {
-                email.addClass('input-error').removeClass('input-valid');
-                emailStatus.html('Не правильный формат email адреса.').addClass('status-taken').removeClass('status-free');
-            }
         }
     });
 
@@ -158,16 +113,6 @@ $(document).ready(() => {
         let usernameText = username.val();
         if (!usernameText || !usernameText.trim()) {
             username.notify('Имя пользователя не может быть пустым.', {
-                position: 'left',
-                className: 'error',
-                autoHide: false,
-            });
-            emptyFields = true;
-        }
-
-        let emailText = email.val();
-        if (!emailText || !emailText.trim()) {
-            email.notify('Email не может быть пустым.', {
                 position: 'left',
                 className: 'error',
                 autoHide: false,
@@ -227,15 +172,6 @@ $(document).ready(() => {
             errors = true;
         }
 
-        if (!emailFree) {
-            email.notify('Email занят.', {
-                position: 'left',
-                className: 'error',
-                autoHide: false,
-            });
-            errors = true;
-        }
-
         return !errors;
     };
 
@@ -247,7 +183,6 @@ $(document).ready(() => {
         let fd = new FormData();
         fd.append('avatar', avatar.get(0).files[0]);
         fd.append('username', username.val());
-        fd.append('email', email.val());
         fd.append('password', password1.val());
 
         let xhr = new XMLHttpRequest();

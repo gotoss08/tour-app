@@ -22,7 +22,7 @@ var createDirectionsDisplay = (map) => {
     let directionsDisplay = new google.maps.DirectionsRenderer({
         draggable: false,
         suppressMarkers: true,
-        preserveViewport: false,
+        preserveViewport: true,
     });
     directionsDisplay.setMap(map);
     return directionsDisplay;
@@ -64,10 +64,8 @@ var createMarker = async (latLng, options={}) => {
     initMarker(marker, options);
     addEventListeners(marker);
     createWaypointCard(marker);
-    recreateMapFocusWaypoints();
     await geocodeAddress(marker);
     await calcRoute(marker.waypoint);
-    map.setZoom(3);
 };
 
 // method for calculating path between all waypoints
@@ -83,7 +81,6 @@ var calcRoute = async () => {
             destination: finish,
             waypoints: waypoints,
             travelMode: 'DRIVING',
-            preserveViewport: true,
         };
 
         await new Promise((resolve) => {
@@ -108,26 +105,4 @@ var convertHeadersToTagLinks = () => {
         let headerText = header.html();
         header.html($('<a></a>').attr('href', 'www.google.ru').text(headerText));
     }
-};
-
-var recreateMapFocusWaypoints = () => {
-    markers.forEach((marker, index) => {
-        let cardDOMElement = $(`#${marker.cardId}`);
-
-        let addWaypoint = (offset) => {
-            cardDOMElement.waypoint({
-                handler: function(direction) {
-                    focusMap(marker);
-                },
-                offset: offset,
-            });
-        };
-
-        let toTop = cardDOMElement.offset().top;
-        let viewportHeight = $(window).outerHeight();
-        let containerHeight = $('.waypoint-cards').innerHeight();
-
-        if (toTop + viewportHeight >= containerHeight) addWaypoint('85%');
-        else addWaypoint(135);
-    });
 };

@@ -56,11 +56,6 @@ $(document).ready(function () {
         });
     };
 
-    var forgotPassword = function forgotPassword() {
-        $.notify('Эта функция пока не доступна.', 'warn');
-        // TODO: implement password remove
-    };
-
     var register = function register() {
         window.location.href = '/user/register';
     };
@@ -71,9 +66,6 @@ $(document).ready(function () {
 
     var loginButton = $('#login');
     loginButton.click(login);
-
-    var forgotPassButton = $('#forgot-password');
-    forgotPassButton.click(forgotPassword);
 
     var registerButton = $('#register');
     registerButton.click(register);

@@ -244,8 +244,6 @@ var loadData = function loadData(data) {
         }
     });
 
-    recreateMapFocusWaypoints();
-
     if (data.voteAttached) {
         // create main vote card
         createVoteCard();

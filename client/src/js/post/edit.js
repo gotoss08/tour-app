@@ -249,7 +249,6 @@ const removeMarker = async (marker) => {
     marker.setMap(null);
     removeWaypointCard(marker);
     marker = null;
-    recreateMapFocusWaypoints();
     if (waypoints.length < 2) {
         directionsDisplay.setMap(null);
     } else {
@@ -350,11 +349,6 @@ const createWaypointCard = async (marker) => {
                 updateCardName(marker, headerElement.val().trim());
             }
         });
-
-        // body editor input changed -> recreate map focus waypoints
-        let bodyEditorElement = $(`#${marker.cardId} .waypoint-card-body-editor`);
-        console.dir(bodyEditorElement);
-        bodyEditorElement.change(() => recreateMapFocusWaypoints());
 
         // button for focusing on marker
         $(`#${marker.cardId} .show-on-map-button`).click(() => {
@@ -579,8 +573,6 @@ const loadData = (data) => {
                 .setContent(he.decode(body));
         }
     });
-
-    recreateMapFocusWaypoints();
 
     if (data.voteAttached) {
         // create main vote card

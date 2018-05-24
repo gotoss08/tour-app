@@ -34,23 +34,13 @@ module.exports.isUsernameAlreayTaken = (req, res, next) => {
     });
 };
 
-module.exports.isEmailAlreayTaken = (req, res, next) => {
-    if (!req.body.email) return res.sendStatus(400);
-
-    User.findOne({email: req.body.email}).exec().then((user) => {
-        if (!user) res.status(200).send('free');
-        else res.status(200).send('taken');
-    });
-};
-
 
 module.exports.userRegisterPost = (req, res, next) => {
-    if (!req.body.username || !req.body.email || !req.body.password) return res.status(400).send('Не найдено пользовательской информации.');
+    if (!req.body.username || !req.body.password) return res.status(400).send('Не найдено пользовательской информации.');
 
     /* process user info */
     const userData = {
         username: req.body.username,
-        email: req.body.email,
         password: req.body.password,
     };
 

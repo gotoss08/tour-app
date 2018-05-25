@@ -7,7 +7,7 @@ function animateRegisterLoaded() {
 };
 
 $(document).ready(() => {
-    $('#header .header-page-control-section').append('<span id="avatar-load-status" title="Статус загрузки аватарки"></span>');
+    $('#header .header-page-control-section').append('<span id="avatar-load-status" title="Загрузка аватарки"></span>');
 
     tippy('[title]');
 

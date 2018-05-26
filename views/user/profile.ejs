@@ -76,8 +76,6 @@
 <!-- tippy lib for confirm dialog -->
 <script src="/js/libs/alertify.js"></script>
 <!-- profile scripts -->
-<!-- load custom profile header -->
-<script src="/js/user/profile-header.js"></script>
 <script>
     var profileData = {
         id: '<%= user._id %>',
@@ -90,5 +88,7 @@
         totalUniqViewsCount: <%= totalUniqViewsCount %>,
     };
 </script>
+<!-- load custom profile header -->
+<script src="/js/user/profile-header.js"></script>
 <script src="/js/user/profile.js"></script>
 <% include ../partials/footer.ejs %>

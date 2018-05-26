@@ -1,6 +1,7 @@
 let page = 1;
 let loadQueryData = {};
 let prevCountrySelectVal;
+let feed = true;
 
 function viewPost(post) {
     window.location.href = '/p/' + post.id;
@@ -78,8 +79,9 @@ function createCardsForPosts(posts) {
 
 function searchPostsByCountry(data) {
     let countrySelectVal = $('.country-select').val();
-    if (!countrySelectVal.length && (!data || data && !data.countries.length)) return;
 
+    if (!countrySelectVal.length && (!data || data && !data.countries.length)) feed = true;
+    else feed = false;
 
     if (JSON.stringify(prevCountrySelectVal) !== JSON.stringify(countrySelectVal) ) {
         $('.cards').empty();
@@ -89,6 +91,9 @@ function searchPostsByCountry(data) {
 
     if (!data) data = {countries: countrySelectVal};
     data.page = page;
+    data.feed = feed;
+
+    console.log('sending: ' + JSON.stringify(data, null, 2));
 
     let searchByCountryAjax = $.ajax({
         method: 'post',
@@ -122,10 +127,15 @@ $(document).ready(() => {
     if (countriesData.country) {
         $('.country-select').val([countriesData.country]);
         $('.country-select').trigger('chosen:updated');
+
+        feed = false;
         searchPostsByCountry({countries: [countriesData.country]});
     } else {
-        $('.country-select').trigger('chosen:open');
-        $('.chosen-search-input').val('');
+        // $('.country-select').trigger('chosen:open');
+        // $('.chosen-search-input').val('');
+
+        feed = true;
+        searchPostsByCountry();
     }
 
     $(window).scroll(function() {

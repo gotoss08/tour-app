@@ -26,8 +26,6 @@ module.exports.edit = (req, res, next) => {
     util.checkUserLoginWithRedirect(req, res, next);
     checkPostIdParams(req, res, next);
 
-    console.log('edit post');
-
     Post.findById(req.params.postId).exec()
         .then((post) => {
             if (post && post.userId == req.session.userId) {

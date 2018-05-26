@@ -28,13 +28,13 @@ function save() {
     });
 
     request.done(function (data, status) {
-        $.notify('Данные успешно сохранены на сервере.', 'success');
+        $.notify('Сохранение прошло успешно.', 'success');
         $(button).attr('disabled', false);
         // loadData(data);
     });
 
     request.fail(function (xhr, status) {
-        $.notify('Ошибка при отправке данных на сервер.', 'error');
+        $.notify('Ошибка при сохранении.', 'error');
     });
 
     request.always(function () {

@@ -13,9 +13,9 @@
 }
 
 #avatar {
-    flex-shrink: 0;
-    min-width: 100%;
-    min-height: 100%
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
 .load-posts-button{

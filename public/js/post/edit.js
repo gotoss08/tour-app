@@ -19,8 +19,6 @@ function save() {
 
     buttonSending();
 
-    // removeAllMarkers();
-
     var request = $.ajax({
         url: '/p/' + receivedPostData.post.postId + '/update',
         method: 'post',
@@ -30,7 +28,6 @@ function save() {
     request.done(function (data, status) {
         $.notify('Сохранение прошло успешно.', 'success');
         $(button).attr('disabled', false);
-        // loadData(data);
     });
 
     request.fail(function (xhr, status) {
@@ -42,14 +39,31 @@ function save() {
     });
 };
 
+function updateButtons() {
+    var postHideButton = $('#post-hide-button');
+    var gotoPostButton = $('#goto-post-button');
+    var postPublishButton = $('#post-publish-button');
+
+    if (receivedPostData.post.posted) {
+        postHideButton.show();
+        gotoPostButton.show();
+        postPublishButton.hide();
+    } else {
+        postHideButton.hide();
+        gotoPostButton.hide();
+        postPublishButton.show();
+    }
+};
+
 $(document).ready(function () {
     // post saving
     $('#post-save-button').click(save);
 
+    // auto save each 30 seconds
     setInterval(save, 30 * 1000);
 
-    var postPublishButton = $('#post-publish-button');
-    postPublishButton.click(function () {
+    // publish post
+    $('#post-publish-button').click(function () {
         if (!validateData()) return false;
 
         var data = prepareData();
@@ -60,7 +74,6 @@ $(document).ready(function () {
         var prevHTML = $(self).html();
 
         var buttonSending = function buttonSending() {
-            $.notify('Button click');
             $(self).html('<i class="fas fa-spinner"></i>');
             $(self).children('i').addClass('spinner-rotation');
             $(self).attr('disabled', true);
@@ -79,16 +92,19 @@ $(document).ready(function () {
 
         buttonSending();
 
-        removeAllMarkers();
-
         request.done(function (data, status) {
-            $.notify('[send to server] was ' + status, 'success');
+            $.notify('Заметка опубликована');
             $(self).attr('disabled', false);
-            window.location.href = '/p/' + receivedPostData.post.postId;
+
+            // update local post data
+            receivedPostData.post.posted = true;
+
+            // update header buttons
+            updateButtons();
         });
 
         request.fail(function (xhr, status) {
-            $.notify('[send to server] was ' + status, 'danger');
+            $.notify('Ошибка при публикации');
         });
 
         request.always(function () {
@@ -96,16 +112,26 @@ $(document).ready(function () {
         });
     });
 
-    var postHideButton = $('#post-hide-button');
-    postHideButton.click(function () {
+    // goto post
+    $('#goto-post-button').click(function () {
+        window.location.href = '/p/' + receivedPostData.post.postId;
+    });
+
+    // hide post
+    $('#post-hide-button').click(function () {
+        var self = undefined;
+
         var hideAjax = $.ajax({
             method: 'post',
             url: '/p/' + receivedPostData.post.postId + '/hide'
         });
 
         hideAjax.done(function () {
-            postHideButton.hide();
-            postPublishButton.show();
+            // update local post data
+            receivedPostData.post.posted = false;
+
+            // update header buttons
+            updateButtons();
 
             $.notify('Заметка успешно скрыта.', 'success');
         });
@@ -115,14 +141,7 @@ $(document).ready(function () {
         });
     });
 
-    if (receivedPostData.post.posted) {
-        postHideButton.show();
-        postPublishButton.hide();
-    } else {
-        postHideButton.hide();
-        postPublishButton.show();
-    }
-
+    // remove post
     $('#post-remove-button').click(function () {
         alertify.okBtn('Удалить').cancelBtn('Отмена').confirm('Вы уверены что хотите удалить этот пост?', function () {
             var removeAjax = $.ajax({
@@ -139,6 +158,9 @@ $(document).ready(function () {
             });
         });
     });
+
+    // if post is posted, remove unncessary buttons and show needed
+    updateButtons();
 });
 
 var map = void 0;

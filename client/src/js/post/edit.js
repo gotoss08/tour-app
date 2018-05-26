@@ -15,8 +15,6 @@ function save() {
 
     buttonSending();
 
-    // removeAllMarkers();
-
     let request = $.ajax({
         url: `/p/${receivedPostData.post.postId}/update`,
         method: 'post',
@@ -26,7 +24,6 @@ function save() {
     request.done((data, status) => {
         $.notify('Сохранение прошло успешно.', 'success');
         $(button).attr('disabled', false);
-        // loadData(data);
     });
 
     request.fail((xhr, status) => {
@@ -38,14 +35,31 @@ function save() {
     });
 };
 
+function updateButtons() {
+    const postHideButton = $('#post-hide-button');
+    const gotoPostButton = $('#goto-post-button');
+    const postPublishButton = $('#post-publish-button');
+
+    if (receivedPostData.post.posted) {
+        postHideButton.show();
+        gotoPostButton.show();
+        postPublishButton.hide();
+    } else {
+        postHideButton.hide();
+        gotoPostButton.hide();
+        postPublishButton.show();
+    }
+};
+
 $(document).ready(() => {
     // post saving
     $('#post-save-button').click(save);
 
+    // auto save each 30 seconds
     setInterval(save, 30 * 1000);
 
-    const postPublishButton = $('#post-publish-button');
-    postPublishButton.click(function() {
+    // publish post
+    $('#post-publish-button').click(function() {
         if (!validateData()) return false;
 
         let data = prepareData();
@@ -56,7 +70,6 @@ $(document).ready(() => {
         let prevHTML = $(self).html();
 
         let buttonSending = () => {
-            $.notify('Button click');
             $(self).html('<i class="fas fa-spinner"></i>');
             $(self).children('i').addClass('spinner-rotation');
             $(self).attr('disabled', true);
@@ -75,16 +88,19 @@ $(document).ready(() => {
 
         buttonSending();
 
-        removeAllMarkers();
-
         request.done((data, status) => {
-            $.notify('[send to server] was ' + status, 'success')
+            $.notify('Заметка опубликована');
             $(self).attr('disabled', false);
-            window.location.href = '/p/' + receivedPostData.post.postId;
+
+            // update local post data
+            receivedPostData.post.posted = true;
+
+            // update header buttons
+            updateButtons();
         });
 
         request.fail((xhr, status) => {
-            $.notify('[send to server] was ' + status, 'danger')
+            $.notify('Ошибка при публикации');
         });
 
         request.always(() => {
@@ -92,16 +108,26 @@ $(document).ready(() => {
         });
     });
 
-    const postHideButton = $('#post-hide-button');
-    postHideButton.click(() => {
+    // goto post
+    $('#goto-post-button').click(() => {
+        window.location.href = '/p/' + receivedPostData.post.postId;
+    });
+
+    // hide post
+    $('#post-hide-button').click(() => {
+        let self = this;
+
         let hideAjax = $.ajax({
             method: 'post',
             url: `/p/${receivedPostData.post.postId}/hide`,
         });
 
         hideAjax.done(() => {
-            postHideButton.hide();
-            postPublishButton.show();
+            // update local post data
+            receivedPostData.post.posted = false;
+
+            // update header buttons
+            updateButtons();
 
             $.notify('Заметка успешно скрыта.', 'success');
         });
@@ -111,14 +137,7 @@ $(document).ready(() => {
         });
     });
 
-    if (receivedPostData.post.posted) {
-        postHideButton.show();
-        postPublishButton.hide();
-    } else {
-        postHideButton.hide();
-        postPublishButton.show();
-    }
-
+    // remove post
     $('#post-remove-button').click(function() {
         alertify
             .okBtn('Удалить')
@@ -138,6 +157,9 @@ $(document).ready(() => {
                 });
             });
     });
+
+    // if post is posted, remove unncessary buttons and show needed
+    updateButtons();
 });
 
 let map;

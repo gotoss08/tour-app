@@ -147,6 +147,8 @@ $(document).ready(function () {
     $('#avatar').attr('src', profileData.userAvatarPath);
     $('#username').html(profileData.username);
 
+    document.title = 'Профиль - ' + profileData.username;
+
     loadQueryData = {
         posted: true
     };

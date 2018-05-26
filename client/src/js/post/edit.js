@@ -1,48 +1,48 @@
-$(document).ready(() => {
-    $('#post-save-button').click(function() {
-        if (!validateVote(true)) return false;
-        $('.notifyjs-wrapper').trigger('notify-hide');
+function save() {
+    let button = $('#post-save-button');
+    let prevHTML = $(button).html();
 
-        let data = prepareData();
+    let buttonSending = () => {
+        $(button).html('<i class="fas fa-spinner"></i>');
+        $(button).children('i').addClass('spinner-rotation');
+        $(button).attr('disabled', true);
+    };
 
-        let self = this;
-        let prevHTML = $(self).html();
+    let buttonReceived = () => {
+        $(button).html(prevHTML);
+        $(button).attr('disabled', false);
+    };
 
-        let buttonSending = () => {
-            $(self).html('<i class="fas fa-spinner"></i>');
-            $(self).children('i').addClass('spinner-rotation');
-            $(self).attr('disabled', true);
-        };
+    buttonSending();
 
-        let buttonReceived = () => {
-            $(self).html(prevHTML);
-            $(self).attr('disabled', false);
-        };
+    // removeAllMarkers();
 
-        let request = $.ajax({
-            url: `/p/${receivedPostData.post.postId}/update`,
-            method: 'post',
-            data: data,
-        });
-
-        buttonSending();
-
-        removeAllMarkers();
-
-        request.done((data, status) => {
-            $.notify('Данные успешно сохранены на сервере.', 'success');
-            $(self).attr('disabled', false);
-            loadData(data);
-        });
-
-        request.fail((xhr, status) => {
-            $.notify('Ошибка при отправке данных на сервер.', 'error');
-        });
-
-        request.always(() => {
-            buttonReceived();
-        });
+    let request = $.ajax({
+        url: `/p/${receivedPostData.post.postId}/update`,
+        method: 'post',
+        data: prepareData(),
     });
+
+    request.done((data, status) => {
+        $.notify('Данные успешно сохранены на сервере.', 'success');
+        $(button).attr('disabled', false);
+        // loadData(data);
+    });
+
+    request.fail((xhr, status) => {
+        $.notify('Ошибка при отправке данных на сервер.', 'error');
+    });
+
+    request.always(() => {
+        buttonReceived();
+    });
+};
+
+$(document).ready(() => {
+    // post saving
+    $('#post-save-button').click(save);
+
+    setInterval(save, 30 * 1000);
 
     const postPublishButton = $('#post-publish-button');
     postPublishButton.click(function() {

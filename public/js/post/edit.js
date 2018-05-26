@@ -2,51 +2,51 @@
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-$(document).ready(function () {
-    $('#post-save-button').click(function () {
-        if (!validateVote(true)) return false;
-        $('.notifyjs-wrapper').trigger('notify-hide');
+function save() {
+    var button = $('#post-save-button');
+    var prevHTML = $(button).html();
 
-        var data = prepareData();
+    var buttonSending = function buttonSending() {
+        $(button).html('<i class="fas fa-spinner"></i>');
+        $(button).children('i').addClass('spinner-rotation');
+        $(button).attr('disabled', true);
+    };
 
-        var self = this;
-        var prevHTML = $(self).html();
+    var buttonReceived = function buttonReceived() {
+        $(button).html(prevHTML);
+        $(button).attr('disabled', false);
+    };
 
-        var buttonSending = function buttonSending() {
-            $(self).html('<i class="fas fa-spinner"></i>');
-            $(self).children('i').addClass('spinner-rotation');
-            $(self).attr('disabled', true);
-        };
+    buttonSending();
 
-        var buttonReceived = function buttonReceived() {
-            $(self).html(prevHTML);
-            $(self).attr('disabled', false);
-        };
+    // removeAllMarkers();
 
-        var request = $.ajax({
-            url: '/p/' + receivedPostData.post.postId + '/update',
-            method: 'post',
-            data: data
-        });
-
-        buttonSending();
-
-        removeAllMarkers();
-
-        request.done(function (data, status) {
-            $.notify('Данные успешно сохранены на сервере.', 'success');
-            $(self).attr('disabled', false);
-            loadData(data);
-        });
-
-        request.fail(function (xhr, status) {
-            $.notify('Ошибка при отправке данных на сервер.', 'error');
-        });
-
-        request.always(function () {
-            buttonReceived();
-        });
+    var request = $.ajax({
+        url: '/p/' + receivedPostData.post.postId + '/update',
+        method: 'post',
+        data: prepareData()
     });
+
+    request.done(function (data, status) {
+        $.notify('Данные успешно сохранены на сервере.', 'success');
+        $(button).attr('disabled', false);
+        // loadData(data);
+    });
+
+    request.fail(function (xhr, status) {
+        $.notify('Ошибка при отправке данных на сервер.', 'error');
+    });
+
+    request.always(function () {
+        buttonReceived();
+    });
+};
+
+$(document).ready(function () {
+    // post saving
+    $('#post-save-button').click(save);
+
+    setInterval(save, 30 * 1000);
 
     var postPublishButton = $('#post-publish-button');
     postPublishButton.click(function () {

@@ -66,8 +66,6 @@ module.exports.edit = (req, res, next) => {
 module.exports.read = (req, res, next) => {
     checkPostIdParams(req, res, next);
 
-    console.log('>>>>>>>>>>> read post');
-
     let clientIp = req.clientIp;
 
     Post.findById(req.params.postId).exec()
